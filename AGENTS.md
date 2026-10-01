@@ -1,33 +1,25 @@
 # AGENTS.md
 
-This file provides guidance to Codex when working with code in this repository.
+「抽袜子 / chouwazi」通过一套 Flutter/Dart 游戏源码编译 Android、iOS 和原生鸿蒙 HAP。使用与验证状态见 [README.md](README.md)，工具链和产物见 [docs/BUILDING.md](docs/BUILDING.md)。
 
-「抽袜子 / chouwazi」是 Android 与 iOS 两端各自独立实现的原生多指抽签小游戏，无第三方运行库、无网络。玩法、环境要求与构建步骤见 [README.md](README.md)，Android 侧补充说明见 [android/README.txt](android/README.txt)。
+## 共享实现
 
-## 架构
+- 游戏规则只改 `lib/draw_round.dart`，物理触点、按钮与生命周期规则只改 `lib/game_session.dart`，并更新 `test/`。平台壳不复制游戏状态机或界面。
+- 上限 10 指；触点用稳定 pointer ID；增减参与者重置唯一的 3.8 秒截止时间（0.8 秒准备 + 3 秒倒计时），移动不重置；结果冻结；空缺槽位复用；随机索引等概率。
+- 倒计时源是单调 `Stopwatch`。所有物理触点（含超限和结果后的新增触点）松开才允许重开；控制按钮手势不参与抽签。系统取消触控或失活清理未完成轮次，保留已产生结果。
+- 简体、繁体、英文界面统一在 `lib/strings.dart`。桌面应用名属于各端原生资源，改名时同步三端资源。
 
-- 两端不共享代码，抽签规则在各端的平台无关状态模型里各写一份：`android/app/src/main/java/com/alex/fingerdraw/DrawState.java` 与 `ios/Sources/DrawCore/DrawRound.swift`。改规则（上限 10 指、加入/离开重置倒计时、移动不重置、结果冻结、槽位复用、等概率选取）须两端模型和两端测试（`android/tests/DrawStateTest.java`、`ios/Tests/DrawCoreTests/`）同步修改。
-- 倒计时只有一个截止时间：`3.8s = 0.8s 准备 + 3s 倒计时`；UI 根据剩余时间大于 3 秒显示「准备」阶段。时间源为单调时钟（Android `SystemClock.uptimeMillis()`、iOS `ProcessInfo.systemUptime`），iOS 的 `PrivacyInfo.xcprivacy` 因此声明了 SystemBootTime 用途。
-- 玩家以触点身份标识（Android pointer ID、iOS `UITouch`），不用数组下标；UI 层（`MainActivity` 的 Canvas 视图、`GameView` 的 UIKit 视图）只负责把触控事件转成模型调用并定时 `tick`。
-- iOS 的 Xcode 工程把 `Sources/DrawCore/DrawRound.swift` 直接编进 App target，`GameView` 不 `import DrawCore`；`ios/Package.swift` 只服务 `swift test`。`project.pbxproj` 为手写、顺序 ID，新增源文件或资源需手动登记。
-- 本地化：iOS 有 `en`、`zh-Hans`、`zh-Hant` 三套 `Localizable.strings` 与 `InfoPlist.strings`（应用名）；Android 只有应用名走 `values` / `values-zh`，界面文字直接写在 `MainActivity.java`（中文）。
-- 标识历史沿用：Android `applicationId` / 包名为 `com.alex.fingerdraw`（Gradle 工程名 FingerDraw），iOS Bundle Identifier 为 `com.alex.chouwazi`。改 Android `applicationId` 会让已安装版本无法覆盖升级。
-- Android 版本号在 `android/app/build.gradle`（`versionCode` / `versionName`）；`build-local.sh` 输出文件名与 `android/README.txt` 也写死了 `1.0.1`，升版时一起改。
+## 构建与验证
 
-## 验证
+- Android / iOS 使用 Flutter 3.27.4；鸿蒙使用固定提交的 Flutter OH 3.27.5-ohos-1.0.0 与 SDK 5.1.0.840。升级须复验三端，不把 Google Flutter 的 APK 支持当作鸿蒙 HAP 支持。
+- 在根目录执行 `flutter analyze`、`flutter test`。鸿蒙自动构建入口为 `bash scripts/build-ohos.sh`，工具链落在 gitignored `.tooling/`，不改变全局 SDK。
+- iOS 工程为 `ios/Runner.xcworkspace` / `Runner` scheme。新增原生 iOS 资源需登记 `project.pbxproj`；共享 Dart 文件不需要逐个登记。
+- GitHub Actions `build.yml` 仅手动触发，执行共享测试并真实构建三端。本机 Linux 可构建 APK/HAP，iOS 必须在 macOS/Xcode 构建。
+- 多指触控、显示和震动仍须真机确认；验证结论变化时更新 README「验证状态」，保留编译、安装与真机体验的区别。
 
-- Android 状态测试（本机 Java 17 可跑，与 CI 相同）：
+## 平台约束
 
-  ```sh
-  cd android && mkdir -p build/test-classes \
-    && javac -d build/test-classes app/src/main/java/com/alex/fingerdraw/DrawState.java tests/DrawStateTest.java \
-    && java -cp build/test-classes DrawStateTest
-  ```
-
-- 本机没有 Gradle（工程不带 wrapper）和 Swift/Xcode。APK 构建、`swift test` 与 `xcodebuild` 依赖 GitHub Actions 的 `Build Android and iOS`（`.github/workflows/build.yml`，仅 `workflow_dispatch`，私有仓库消耗 Actions 额度），可用 `gh workflow run build.yml` 触发。
-- 多指触控、显示与震动效果只能在真机确认；README 的「验证状态」一节记录各端已验证到哪一步，结论变化时同步更新。
-
-## 约束
-
-- 隐私承诺是完全离线：Android 只申请震动权限，iOS 不申请任何权限。新增网络、权限或受限 API 时，同步更新 README「隐私」一节与 `PrivacyInfo.xcprivacy`。
-- 仓库不含签名材料，`.gitignore` 屏蔽证书、描述文件与 keystore；`build-local.sh` 在 `android/build/` 生成本地自签名 keystore，不入库。
+- Android applicationId 保持 `com.alex.fingerdraw`；iOS 与鸿蒙为 `com.alex.chouwazi`。包名相同也不代表不同签名可以覆盖安装。
+- 版本统一来自 `pubspec.yaml`，鸿蒙 `ohos/AppScope/app.json5` 同步，脚本会拒绝版本不一致。
+- 离线承诺适用于最终产物：Android 和鸿蒙系统权限仅震动；AndroidX 的应用内部广播权限须保持 signature 级；iOS 保留应用与引擎隐私清单。构建脚本校验真实 APK/HAP 权限，新增权限或联网能力时同步隐私说明。
+- 签名材料与本机路径不入库。Android 当前 Release 是调试签名试用包；iOS/HAP 的 CI 产物未签名。发布和设备签名沿用户授权处理。

@@ -1,4 +1,4 @@
-name: Build Android and iOS
+name: Build Android, iOS and HarmonyOS
 on:
   workflow_dispatch:
 permissions:
@@ -6,6 +6,7 @@ permissions:
 jobs:
   android:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -16,45 +17,88 @@ jobs:
         with:
           # Override the action default, which includes the unavailable legacy tools package.
           packages: 'platform-tools'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: subosito/flutter-action@v2
         with:
-          gradle-version: '8.9'
+          flutter-version: '3.27.4'
+          channel: stable
+          cache: true
       - name: Install Android SDK
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - name: Test round state
-        working-directory: android
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'ndk;26.3.11579264'
+      - name: Check shared source
         run: |
-          mkdir -p build/test-classes
-          javac -d build/test-classes app/src/main/java/com/alex/fingerdraw/DrawState.java tests/DrawStateTest.java
-          java -cp build/test-classes DrawStateTest
-      - name: Build debug APK
-        working-directory: android
-        run: gradle --no-daemon :app:assembleDebug
+          flutter pub get --enforce-lockfile
+          dart format --output=none --set-exit-if-changed lib test
+          flutter analyze --no-pub
+          flutter test --no-pub
+      - name: Build offline trial APK
+        run: flutter build apk --release --no-pub
+      - name: Verify APK signature and permissions
+        shell: bash
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
+          python3 scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: chouwazi-android-debug
-          path: android/app/build/outputs/apk/debug/*.apk
+          name: chouwazi-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
   ios:
     runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
-      - name: Test round state
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: stable
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter precache --ios
+      - name: Install iOS engine integration
         working-directory: ios
-        run: swift test
+        run: pod install
       - name: Build simulator app
-        working-directory: ios
-        run: xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+        run: flutter build ios --simulator --debug --no-codesign --no-pub
       - name: Build unsigned device app
-        working-directory: ios
-        run: xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build-device CODE_SIGNING_ALLOWED=NO build
+        run: flutter build ios --release --no-codesign --no-pub
       - name: Package build artifacts
-        working-directory: ios
         run: |
-          ditto -c -k --sequesterRsrc --keepParent build/Build/Products/Debug-iphonesimulator/chouwazi.app build/chouwazi-simulator.zip
-          ditto -c -k --sequesterRsrc --keepParent build-device/Build/Products/Release-iphoneos/chouwazi.app build-device/chouwazi-device-unsigned.zip
+          python3 scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
+          ditto -c -k --sequesterRsrc --keepParent build/ios/iphonesimulator/Runner.app build/chouwazi-simulator.zip
+          ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app build/chouwazi-device-unsigned.zip
       - uses: actions/upload-artifact@v4
         with:
           name: chouwazi-ios-builds
           path: |
-            ios/build/chouwazi-simulator.zip
-            ios/build-device/chouwazi-device-unsigned.zip
+            build/chouwazi-simulator.zip
+            build/chouwazi-device-unsigned.zip
+          if-no-files-found: error
+  harmony:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/cache@v4
+        with:
+          path: .tooling
+          key: harmony-linux-x64-sdk-5.1.0.840-flutter-c8a0f037-v1
+      - name: Build unsigned HarmonyOS HAP
+        run: bash scripts/build-ohos.sh
+      - name: Test shared code on Flutter OH
+        shell: bash
+        run: |
+          source scripts/ohos-env.sh
+          flutter test --no-pub
+          git diff --exit-code -- pubspec.lock
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chouwazi-harmony-hap
+          path: build/ohos/chouwazi-unsigned.hap
+          if-no-files-found: error

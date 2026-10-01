@@ -1,14 +1,14 @@
 # iOS 真机试用指南
 
-当前可从源码通过 Xcode 安装试用。CI 已验证编译，真机安装和下列验收项目均待执行；不把编译成功当作设备验证通过。
+当前使用三端共用的 Flutter 源码，通过 Xcode 签名安装。最新编译证据统一见[根 README](../README.md#验证状态)，真机安装和下列验收项目均待执行。
 
 ## 准备与安装
 
 准备一台装有 Xcode 的 Mac、Apple 账号和 iOS / iPadOS 15.0+ 设备。首次验证使用连接线。已验证的构建工具为 Xcode 16.4；设备系统较新时，需使用支持该设备系统的 Xcode。
 
-1. 在 Mac 获取本仓库源码，打开 `ios/Chouwazi.xcodeproj`，选择 `Chouwazi` scheme。
+1. 在 Mac 获取源码并安装 Flutter 3.27.4，在根目录执行 `flutter pub get --enforce-lockfile`、`flutter precache --ios`、`(cd ios && pod install)`、`flutter build ios --config-only --no-codesign`，再打开 `ios/Runner.xcworkspace`，选择 `Runner` scheme。工具链说明见[构建指南](../docs/BUILDING.md)。
 2. 在 Xcode 设置中的 Apple Accounts（部分版本称 Accounts）登录自己的 Apple 账号。个人设备开发试用可选择 Personal Team；分发给其他人另行准备签名与分发方案。
-3. 选中 `Chouwazi` target → Signing & Capabilities，开启 Automatically manage signing，选择自己的 Team。若 `com.alex.chouwazi` 无法注册，仅在本地改为账号可用的唯一 Bundle Identifier，并记录实际值；不要把个人 Team 或签名材料提交进仓库。
+3. 选中 `Runner` target → Signing & Capabilities，开启 Automatically manage signing，选择自己的 Team。若 `com.alex.chouwazi` 无法注册，仅在本地改为账号可用的唯一 Bundle Identifier，并记录实际值；不要把个人 Team 或签名材料提交进仓库。
 4. 连接并解锁设备，按提示信任 Mac，在 Xcode 的运行目标中选择该设备，等待配对和设备准备完成。
 5. 系统要求 Developer Mode 时，在设备「设置 → 隐私与安全 → 开发者模式」开启，按提示重启并确认。没有此入口时，先完成 Xcode 配对，再按 Xcode 的设备提示处理。
 6. 按 `⌘R` 构建、签名、安装并启动。首次运行若有开发者信任提示，按系统指引处理。
@@ -18,21 +18,14 @@
 
 ## CI 产物与适用范围
 
-[2026-10-01 构建](https://github.com/dzshzx/chouwazi/actions/runs/36856498443)的 `chouwazi-ios-builds` artifact 包含以下文件，下载需有私有仓库访问权。Actions 产物有保留期限，过期后可按对应源码重新构建。
+当前工作流的 `chouwazi-ios-builds` artifact 包含以下文件，下载需有私有仓库访问权。Actions 产物有保留期限，过期后可按对应源码重新构建。使用根 README 指向的共享版构建，不将旧原生实现的构建记录当作本次迁移验收。
 
 | 文件 | 用途 |
 | --- | --- |
-| `chouwazi-simulator.zip` | 模拟器 `.app`，不能安装到 iPhone/iPad |
+| `chouwazi-simulator.zip` | 模拟器 `Runner.app`，不能安装到 iPhone/iPad |
 | `chouwazi-device-unsigned.zip` | 真机 Release 编译产物，未签名、无描述文件，不能直接安装；首次试用使用上面的 Xcode 源码安装流程 |
 
-验证源码：`2ab5177556f5d2b7c2fbcb38c55568f6e77b5296`；Bundle Identifier：`com.alex.chouwazi`；版本：`1.0.1 (2)`；最低系统：15.0。3 项 Swift 测试通过，两个构建均成功，产物含可执行文件、`Assets.car`、`PrivacyInfo.xcprivacy` 和 en / zh-Hans / zh-Hant 的两组本地化资源。该轮未执行模拟器启动和真机安装。
-
-下载后核验 SHA-256（对内层两个 zip 文件计算）：
-
-```text
-9e0ea737a73443a749b01359f81988887cd78328fb9b6b0eefc4cddc909cd4ae  chouwazi-simulator.zip
-4a758dea00604c6d91e7c2381483df9868bc7e99240bf1261108de926d17f0d0  chouwazi-device-unsigned.zip
-```
+Bundle Identifier 保持 `com.alex.chouwazi`，最低系统为 iOS 15。CI 检查真实 bundle 中的 Flutter 引擎、共享 Dart 资源、应用隐私清单、图标和三语言桌面名称。源码 SHA、版本与构建结论以对应 Actions 运行及根 README 为准。
 
 ## 真机验收清单
 
