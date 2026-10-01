@@ -37,7 +37,7 @@ flutter pub get --enforce-lockfile
 flutter analyze
 flutter test
 flutter build apk --release
-# 以下两项需要 macOS 和 Xcode
+# 以下 iOS 命令需要 macOS 和 Xcode
 flutter precache --ios
 (cd ios && pod install)
 flutter build ios --simulator --debug --no-codesign
@@ -52,7 +52,7 @@ bash scripts/build-ohos.sh
 
 进入 GitHub Actions → **Build Android, iOS and HarmonyOS** → Run workflow，一次构建三端。工作流仅手动触发，私有仓库会消耗 Actions 额度。产物为试用 APK、iOS 模拟器与未签名真机 app、未签名鸿蒙 HAP，不执行应用商店发布。
 
-Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi`。Android Release 构建暂用调试签名供试用，不能保证覆盖原本地签名或其他 CI 运行的安装包。iOS 与鸿蒙未签名产物不能直接安装，需自己的开发者签名；iOS 操作见 [真机试用指南](ios/DEVICE-TESTING.md)。仓库不保存签名私钥、证书或描述文件。
+Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi`。Android Release 构建暂用调试签名供试用，不能保证覆盖原本地签名或其他 CI 运行的安装包。iOS 与鸿蒙未签名产物不能直接安装到普通真机，需自己的开发者签名；模拟器要求与真机不同，详见[构建指南](docs/BUILDING.md)。iOS 操作见 [真机试用指南](ios/DEVICE-TESTING.md)。仓库不保存签名私钥、证书或描述文件。
 
 ## 验证状态
 
@@ -60,7 +60,7 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 - 共享实现：12 项状态与多指交互测试在 Google Flutter 和 Flutter OH 下均通过，静态分析通过；已检查共享渲染器的首页与结果画面。
 - Android：真实编译 Release APK，下载后通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35；系统权限仅震动，内部广播权限保持 signature 级。
 - iOS：macOS / Xcode 16.4 真实编译模拟器 Debug 与真机 Release；下载后回读包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单。真机包无本地网络调试声明。
-- 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致。保留旧产物并故意制造 Dart 编译错误的负测已确认构建失败退出，恢复源码后重建成功。
+- 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致；编译失败传播的负测通过。
 - 三端真机安装、多指上限、显示与震动均待设备验收。编译通过不等于设备验证通过。
 
 ## 隐私

@@ -69,9 +69,13 @@ bash scripts/build-ohos.sh
 
 该命令自动配置并校验固定工具链，下载 Flutter OH 引擎、解析依赖，再通过该版本官方 Hvigor 插件真实编译 Dart、ArkTS 和原生 HAP。旧版 `flutter build hap` 在编译后强制检查签名，因此无签名构建直接调用同一 Hvigor 插件；所有编译错误保持失败退出，不忽略失败、不伪造签名。
 
+固定版本的 Hvigor 插件会捕获 Dart 编译异常而继续执行，所以入口先独立编译并检查退出码，再打包；`check-hap.py` 比对最终 HAP 与本次 AOT 输出的 `.text` / `.rodata`，防止旧产物被误判为新构建成功。修改此流程时需保留旧产物做编译错误负测，不能只检查 HAP 文件是否存在。
+
 输出 `build/ohos/chouwazi-unsigned.hap`。脚本校验包内 `module.json`、`pack.info`、`libapp.so` 和 `libflutter.so`，并拒绝震动以外的权限。版本在 `pubspec.yaml` 与 `ohos/AppScope/app.json5` 中须一致，不一致会停止构建。
 
 安装需要在 DevEco Studio 中打开 `ohos/`，使用自己的开发者账号和设备配置签名。完成签名后再通过该版本 Flutter OH 的 `flutter build hap --release` / `flutter run` 或 DevEco 运行；不要把证书、密码、私钥、描述文件或含个人签名的配置提交进仓库。
+
+**普通鸿蒙真机要求 HAP 签名，开启开发者模式也不能省略。** 模拟器调试可不配置签名，但本项目当前 CI 产物是 arm64 真机目标，不能据此保证兼容任意模拟器的架构和系统版本；模拟器需选择匹配的构建目标。签名要求见[华为官方入门说明](https://developer.huawei.com/consumer/cn/develop-novice-guide/)。
 
 鸿蒙验收沿用 [iOS 指南中的游戏验收清单](../ios/DEVICE-TESTING.md#真机验收清单)，另记录 HarmonyOS 版本、设备型号、HAP 签名与安装结果。未签名编译通过不代表商用鸿蒙真机已验证。
 
