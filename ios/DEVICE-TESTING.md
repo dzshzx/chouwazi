@@ -1,0 +1,67 @@
+# iOS 真机试用指南
+
+当前可从源码通过 Xcode 安装试用。CI 已验证编译，真机安装和下列验收项目均待执行；不把编译成功当作设备验证通过。
+
+## 准备与安装
+
+准备一台装有 Xcode 的 Mac、Apple 账号和 iOS / iPadOS 15.0+ 设备。首次验证使用连接线。已验证的构建工具为 Xcode 16.4；设备系统较新时，需使用支持该设备系统的 Xcode。
+
+1. 在 Mac 获取本仓库源码，打开 `ios/Chouwazi.xcodeproj`，选择 `Chouwazi` scheme。
+2. 在 Xcode 设置中的 Apple Accounts（部分版本称 Accounts）登录自己的 Apple 账号。个人设备开发试用可选择 Personal Team；分发给其他人另行准备签名与分发方案。
+3. 选中 `Chouwazi` target → Signing & Capabilities，开启 Automatically manage signing，选择自己的 Team。若 `com.alex.chouwazi` 无法注册，仅在本地改为账号可用的唯一 Bundle Identifier，并记录实际值；不要把个人 Team 或签名材料提交进仓库。
+4. 连接并解锁设备，按提示信任 Mac，在 Xcode 的运行目标中选择该设备，等待配对和设备准备完成。
+5. 系统要求 Developer Mode 时，在设备「设置 → 隐私与安全 → 开发者模式」开启，按提示重启并确认。没有此入口时，先完成 Xcode 配对，再按 Xcode 的设备提示处理。
+6. 按 `⌘R` 构建、签名、安装并启动。首次运行若有开发者信任提示，按系统指引处理。
+7. 确认桌面图标可以再次打开应用，再断开连接，执行下面的验收。启用飞行模式并关闭 Wi-Fi，完成至少一轮抽签。
+
+步骤依据 Apple 的[设备运行说明](https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices)、[签名流程](https://help.apple.com/xcode/mac/current/en.lproj/dev60b6fbbc7.html)和[开发者模式说明](https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device)。账号签名与安装准备可能需要联网，应用玩法本身完全离线。
+
+## CI 产物与适用范围
+
+[2026-10-01 构建](https://github.com/dzshzx/chouwazi/actions/runs/36856498443)的 `chouwazi-ios-builds` artifact 包含以下文件，下载需有私有仓库访问权。Actions 产物有保留期限，过期后可按对应源码重新构建。
+
+| 文件 | 用途 |
+| --- | --- |
+| `chouwazi-simulator.zip` | 模拟器 `.app`，不能安装到 iPhone/iPad |
+| `chouwazi-device-unsigned.zip` | 真机 Release 编译产物，未签名、无描述文件，不能直接安装；首次试用使用上面的 Xcode 源码安装流程 |
+
+验证源码：`2ab5177556f5d2b7c2fbcb38c55568f6e77b5296`；Bundle Identifier：`com.alex.chouwazi`；版本：`1.0.1 (2)`；最低系统：15.0。3 项 Swift 测试通过，两个构建均成功，产物含可执行文件、`Assets.car`、`PrivacyInfo.xcprivacy` 和 en / zh-Hans / zh-Hant 的两组本地化资源。该轮未执行模拟器启动和真机安装。
+
+下载后核验 SHA-256（对内层两个 zip 文件计算）：
+
+```text
+9e0ea737a73443a749b01359f81988887cd78328fb9b6b0eefc4cddc909cd4ae  chouwazi-simulator.zip
+4a758dea00604c6d91e7c2381483df9868bc7e99240bf1261108de926d17f0d0  chouwazi-device-unsigned.zip
+```
+
+## 真机验收清单
+
+尽可能覆盖一台 iPhone 和一台 iPad；未测设备和语言保留「待测」。每次记录设备型号、系统版本、源码提交、应用版本、语言与实际最大触点数。
+
+| 项目 | 操作和预期 | 状态 |
+| --- | --- | --- |
+| 启动与布局 | 冷启动、退出后再打开；标题、底部文字和按钮不被刘海或 Home 指示条遮挡；设备旋转后仍可正常操作 | 待测 |
+| 本地化 | 分别使用简体中文、繁体中文、英文；检查桌面名称、首页、结果和按钮是否完整显示 | 待测 |
+| 单指等待 | 仅一指按住，显示等待更多手指，不开始抽签 | 待测 |
+| 两指抽签 | 第二指加入后先准备约 0.8 秒，再显示 3 秒倒计时，仅选出一个已有编号 | 待测 |
+| 移动与增减 | 倒计时中移动手指不重置；加入第三指或从三指减至两指重新准备；减至一指停止倒计时 | 待测 |
+| 身份与槽位 | 三指加入后移走中间编号，再加一指；原有手指编号保持，新指复用空缺编号 | 待测 |
+| 多指上限 | 逐步增加手指，记录设备真实报告的最大数量；应用最多收录 10 指，不能把硬件少报触点判作应用支持十指 | 待测 |
+| 结果冻结 | 抽中后移动、移开或新增手指，中奖编号与结果位置不变；所有手指松开后才能点「再来一轮」 | 待测 |
+| 连续游戏 | 完成至少 10 轮，检查是否有残留编号、无法重开、重复结果事件或崩溃；这不构成随机分布统计检验 | 待测 |
+| 系统打断 | 准备中、倒计时中分别打开控制中心、切后台或锁屏，返回后无旧倒计时；已有结果在失活恢复后仍保留并可重开 | 待测 |
+| 触控取消 | 触发设备系统多指手势，再回到游戏；不残留已取消手指，不出现无法重开的状态 | 待测 |
+| 震动 | 支持震动的设备分别测试开/关；关闭后无游戏震动，开启后加入、倒计时和结果反馈正常；不支持的设备记不适用 | 待测 |
+| 离线 | 飞行模式且 Wi-Fi 关闭，冷启动并完成抽签和重开，无联网要求或权限弹窗 | 待测 |
+
+问题回报应包含：设备/系统、语言、提交与版本、复现步骤、预期与实际、出现频率、截图或录屏。崩溃时附 Xcode 或设备诊断中的对应崩溃日志，去掉账号与设备标识等个人信息。
+
+## 安装问题定位
+
+- 找不到设备或系统不支持：先检查连接、解锁、信任、配对状态及 Xcode 对设备系统的支持。
+- 提示缺 Team、Bundle Identifier 不可用或缺 provisioning profile：回到 Signing & Capabilities，核对账号、Team、唯一标识和自动签名；保留 Xcode 的原始错误便于继续排查。
+- 提示 Developer Mode 未开启：按系统提示完成开启、重启和再次确认。
+- 下载 zip 后无法安装：先区分模拟器产物与未签名真机产物；两者都不是可直接安装的已签名 IPA。
+- 曾能安装，后来不能启动：先查看签名或描述文件是否失效，通过自己的 Xcode/Team 重新签名运行；不要把这一现象直接判为游戏逻辑崩溃。
+
+完成设备验收后，将实测记录与问题结论写入本文件，并同步根 README 的「验证状态」。

@@ -1,6 +1,6 @@
 # 抽袜子 · chouwazi
 
-Android 和 iOS 原生多人手指抽签小游戏。中文系统应用名称为「抽袜子」，英文为「chouwazi」。本项目拟发布到私有 GitHub 仓库。
+Android 和 iOS 原生多人手指抽签小游戏。中文系统应用名称为「抽袜子」，英文为「chouwazi」。源码托管于私有 GitHub 仓库。
 
 ## 玩法
 
@@ -52,6 +52,8 @@ xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi \
 
 默认 Bundle Identifier 为 `com.alex.chouwazi`。UI 使用 UIKit，系统正常处理安全区域；没有网络依赖和第三方运行库。多点触控基于稳定的 UITouch 身份跟踪，触控取消或应用失活时清理未完成状态。
 
+首次安装到 iPhone/iPad、签名问题排查和逐项验收见 [iOS 真机试用指南](ios/DEVICE-TESTING.md)。
+
 ## GitHub Actions
 
 进入仓库 Actions → Build Android and iOS → Run workflow，构建过程会执行两端的核心状态测试，输出 Android debug APK、iOS 模拟器 app 和未签名真机 app 压缩包。
@@ -63,7 +65,8 @@ xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi \
 ## 验证状态
 
 - Android：前一版原生源码已编译，APK 签名校验通过；状态模型测试已执行通过。
-- iOS：已提供完整源码、Xcode 工程、状态模型测试及构建工作流；创建环境为 Linux，没有 Xcode 或 Swift 工具链，尚未完成 Swift 编译、模拟器或真机验证。
+- iOS：2026-10-01 在 macOS 15 / Xcode 16.4 上通过 3 项 Swift 状态测试、模拟器 Debug 构建和未签名真机 Release 构建；[iOS 构建记录](https://github.com/dzshzx/chouwazi/actions/runs/36856498443/job/110350130189)对应源码 `2ab5177`，版本为 `1.0.1 (2)`。已下载核验两份产物中的可执行文件、三语言资源、图标资源和隐私清单。尚未启动模拟器或安装真机，签名、多指触控、界面与震动仍待设备验收。
+- 同次 Actions 的 Android 任务在 SDK 初始化时因 `Failed to find package 'tools'` 失败，未进入 Android 测试和构建；整次工作流为失败，iOS 任务单独成功。此问题待 Android 构建维护时处理。
 - 双端十指触控与实际显示效果仍需设备测试。
 
 ## 隐私
