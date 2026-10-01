@@ -59,6 +59,8 @@ python3 scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/ipho
 
 必须在 macOS 上执行。使用 Xcode 运行时打开 `ios/Runner.xcworkspace`，选择 Runner scheme。CI 分别打包 `chouwazi-simulator.zip` 与 `chouwazi-device-unsigned.zip`；两者都含 `Runner.app`，只能在匹配的平台使用。真机包未签名，不是可直接安装的 IPA。签名与验收见 [iOS 真机试用指南](../ios/DEVICE-TESTING.md)。
 
+Runner scheme 默认以 Release 运行，避免真机试用启动 Flutter 的本地网络调试服务。CI 的 Debug 模拟器包仅供开发；手工改用 Debug/Profile 调试时，Flutter 可能请求本地网络访问以支持 DevTools，不属于 Release 游戏功能。CI 检查真机 Release 的 Info.plist 不包含这类声明。
+
 ## 原生鸿蒙
 
 ```sh

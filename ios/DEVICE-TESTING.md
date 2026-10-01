@@ -11,7 +11,7 @@
 3. 选中 `Runner` target → Signing & Capabilities，开启 Automatically manage signing，选择自己的 Team。若 `com.alex.chouwazi` 无法注册，仅在本地改为账号可用的唯一 Bundle Identifier，并记录实际值；不要把个人 Team 或签名材料提交进仓库。
 4. 连接并解锁设备，按提示信任 Mac，在 Xcode 的运行目标中选择该设备，等待配对和设备准备完成。
 5. 系统要求 Developer Mode 时，在设备「设置 → 隐私与安全 → 开发者模式」开启，按提示重启并确认。没有此入口时，先完成 Xcode 配对，再按 Xcode 的设备提示处理。
-6. 按 `⌘R` 构建、签名、安装并启动。首次运行若有开发者信任提示，按系统指引处理。
+6. 保持 Runner scheme 默认的 Release 运行配置，按 `⌘R` 构建、签名、安装并启动。首次运行若有开发者信任提示，按系统指引处理。若自行切换 Debug/Profile，Flutter 开发调试服务可能触发本地网络提示，真机试用请使用 Release。
 7. 确认桌面图标可以再次打开应用，再断开连接，执行下面的验收。启用飞行模式并关闭 Wi-Fi，完成至少一轮抽签。
 
 步骤依据 Apple 的[设备运行说明](https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices)、[签名流程](https://help.apple.com/xcode/mac/current/en.lproj/dev60b6fbbc7.html)和[开发者模式说明](https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device)。账号签名与安装准备可能需要联网，应用玩法本身完全离线。

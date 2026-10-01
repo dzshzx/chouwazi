@@ -66,3 +66,5 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 完全离线，不收集个人信息、不上传数据、不含广告。Android 与鸿蒙使用的系统权限仅震动，iOS 无需用户授权权限。AndroidX 另自动声明应用自身的 signature 级内部广播保护权限，限定同签名调用；它不授予联网或个人数据访问。构建检查同时验证其保护等级。应用使用单调时钟计时，iOS 同时打包应用隐私清单与 Flutter 引擎自身清单。
 
 下载 SDK、构建依赖与开发者签名可能需要联网；已安装游戏不需要网络。为保持权限承诺，Android 调试配置也未添加 INTERNET 权限，网络调试服务不作为本项目的默认能力。
+
+iOS 真机试用默认使用 Release；Debug 模拟器包仅供开发，Flutter 的 Debug/Profile 网络调试服务不属于发布版游戏。

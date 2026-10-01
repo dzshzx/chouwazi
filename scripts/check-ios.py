@@ -13,6 +13,9 @@ for path in sys.argv[1:]:
                  "Frameworks/App.framework/flutter_assets/AssetManifest.bin"]:
         assert (app / name).is_file(), f"Missing {name} in {app}"
     for language in ["en", "zh-Hans", "zh-Hant"]:
-        assert (app / language / "InfoPlist.strings").is_file(), f"Missing {language} app name"
+        assert (app / f"{language}.lproj" / "InfoPlist.strings").is_file(), f"Missing {language} app name"
+    if info['CFBundleSupportedPlatforms'] == ['iPhoneOS']:
+        assert 'NSLocalNetworkUsageDescription' not in info, 'Device release includes debug network service'
+        assert 'NSBonjourServices' not in info, 'Device release advertises a network service'
     print(f"Verified {app}: {info['CFBundleSupportedPlatforms']}, "
           f"{info['CFBundleShortVersionString']} ({info['CFBundleVersion']})")
