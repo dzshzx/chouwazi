@@ -67,4 +67,4 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 
 下载 SDK、构建依赖与开发者签名可能需要联网；已安装游戏不需要网络。为保持权限承诺，Android 调试配置也未添加 INTERNET 权限，网络调试服务不作为本项目的默认能力。
 
-iOS 真机试用默认使用 Release；Debug 模拟器包仅供开发，Flutter 的 Debug/Profile 网络调试服务不属于发布版游戏。
+iOS 真机试用使用 Release，Xcode 操作见试用指南；Debug 模拟器包仅供开发，Flutter 的 Debug/Profile 网络调试服务不属于发布版游戏。
