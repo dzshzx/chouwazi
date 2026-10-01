@@ -58,6 +58,8 @@ xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi \
 
 进入仓库 Actions → Build Android and iOS → Run workflow，构建过程会执行两端的核心状态测试，输出 Android debug APK、iOS 模拟器 app 和未签名真机 app 压缩包。
 
+Android 初始化显式将 setup-android 的包列表设为 `platform-tools`，避免其默认列表中的旧 `tools` 包；后续步骤安装 Android 35 平台与 build-tools 35.0.0。
+
 工作流仅手动触发，私有仓库执行可能占用账号 Actions 额度。iOS 未签名产物不能直接安装到 iPhone；真机分发需要 Apple 签名、描述文件或 TestFlight。项目不包含证书、令牌或签名私钥。
 
 原对话中生成的 Android APK 使用独立的本地签名；CI 调试包的签名与它不同，通常不能直接覆盖旧安装。持续分发需自行配置稳定签名。
@@ -66,7 +68,7 @@ xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi \
 
 - Android：2026-10-01 在 [Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/36857157020)中通过状态模型测试和 Gradle debug APK 构建，对应源码 `2ba1726`。下载产物后通过 `apksigner verify --verbose` 校验（v1 / v2），确认包名 `com.alex.fingerdraw`、版本 `1.0.1 (2)`、最低 API 23、目标 API 35，权限仅震动；尚未完成此 CI 包的真机安装验证。
 - iOS：2026-10-01 在 macOS 15 / Xcode 16.4 上通过 3 项 Swift 状态测试、模拟器 Debug 构建和未签名真机 Release 构建；[iOS 构建记录](https://github.com/dzshzx/chouwazi/actions/runs/36856498443/job/110350130189)对应源码 `2ab5177`，版本为 `1.0.1 (2)`。已下载核验两份产物中的可执行文件、三语言资源、图标资源和隐私清单。尚未启动模拟器或安装真机，签名、多指触控、界面与震动仍待设备验收。
-- 首次 Actions 的 Android SDK 初始化曾因 `Failed to find package 'tools'` 失败；已显式覆盖 setup-android 的默认包列表为 `platform-tools`，由后续步骤安装 Android 35 平台与 build-tools 35.0.0。上述 `36857157020` 运行中 Android 和 iOS 任务均成功。
+- 最新复验：上述 `36857157020` 运行中 Android 和 iOS 任务均成功；iOS 应用源码与已下载核验的首轮产物对应源码一致。
 - 双端十指触控与实际显示效果仍需设备测试。
 
 ## 隐私
