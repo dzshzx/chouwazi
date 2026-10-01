@@ -64,9 +64,9 @@ xcodebuild -project Chouwazi.xcodeproj -scheme Chouwazi \
 
 ## 验证状态
 
-- Android：前一版原生源码已编译，APK 签名校验通过；状态模型测试已执行通过。
+- Android：2026-10-01 在 [Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/36857157020)中通过状态模型测试和 Gradle debug APK 构建，对应源码 `2ba1726`。下载产物后通过 `apksigner verify --verbose` 校验（v1 / v2），确认包名 `com.alex.fingerdraw`、版本 `1.0.1 (2)`、最低 API 23、目标 API 35，权限仅震动；尚未完成此 CI 包的真机安装验证。
 - iOS：2026-10-01 在 macOS 15 / Xcode 16.4 上通过 3 项 Swift 状态测试、模拟器 Debug 构建和未签名真机 Release 构建；[iOS 构建记录](https://github.com/dzshzx/chouwazi/actions/runs/36856498443/job/110350130189)对应源码 `2ab5177`，版本为 `1.0.1 (2)`。已下载核验两份产物中的可执行文件、三语言资源、图标资源和隐私清单。尚未启动模拟器或安装真机，签名、多指触控、界面与震动仍待设备验收。
-- 同次 Actions 的 Android 任务在 SDK 初始化时因 `Failed to find package 'tools'` 失败，未进入 Android 测试和构建；整次工作流为失败，iOS 任务单独成功。此问题待 Android 构建维护时处理。
+- 首次 Actions 的 Android SDK 初始化曾因 `Failed to find package 'tools'` 失败；已显式覆盖 setup-android 的默认包列表为 `platform-tools`，由后续步骤安装 Android 35 平台与 build-tools 35.0.0。上述 `36857157020` 运行中 Android 和 iOS 任务均成功。
 - 双端十指触控与实际显示效果仍需设备测试。
 
 ## 隐私
