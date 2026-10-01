@@ -56,9 +56,11 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 
 ## 验证状态
 
-- 共享实现：12 项状态与多指交互测试通过，静态分析通过。
-- 鸿蒙：本机已真实编译共享游戏为 arm64 Release HAP，校验产物含编译后的 Dart 代码及 Flutter 引擎，权限仅震动。
-- Android / iOS：迁移后完整 CI 构建验收进行中；迁移前的原生构建成功记录不作为共享版通过的证据。
+- 2026-10-01，[同一提交的三端 Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/36864698238)全部成功，源码为 `f63ab79`，应用版本为 `1.0.1 (2)`。本次为共享架构迁移和试用构建，未发布应用商店版本。
+- 共享实现：12 项状态与多指交互测试在 Google Flutter 和 Flutter OH 下均通过，静态分析通过；已检查共享渲染器的首页与结果画面。
+- Android：真实编译 Release APK，下载后通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35；系统权限仅震动，内部广播权限保持 signature 级。
+- iOS：macOS / Xcode 16.4 真实编译模拟器 Debug 与真机 Release；下载后回读包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单。真机包无本地网络调试声明。
+- 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致。保留旧产物并故意制造 Dart 编译错误的负测已确认构建失败退出，恢复源码后重建成功。
 - 三端真机安装、多指上限、显示与震动均待设备验收。编译通过不等于设备验证通过。
 
 ## 隐私
