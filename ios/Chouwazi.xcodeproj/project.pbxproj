@@ -1,0 +1,38 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+000000000000000000000001 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chouwazi/AppDelegate.swift"; sourceTree = "<group>"; };
+000000000000000000000002 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chouwazi/GameView.swift"; sourceTree = "<group>"; };
+000000000000000000000003 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sources/DrawCore/DrawRound.swift"; sourceTree = "<group>"; };
+000000000000000000000004 = { isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Chouwazi/Assets.xcassets"; sourceTree = "<group>"; };
+000000000000000000000005 = { isa = PBXFileReference; lastKnownFileType = text.xml; path = "Chouwazi/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+000000000000000000000006 = { isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en"; path = "Chouwazi/en.lproj/Localizable.strings"; sourceTree = "<group>"; };
+000000000000000000000007 = { isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Chouwazi/zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+000000000000000000000008 = { isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "Chouwazi/zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+000000000000000000000009 = { isa = PBXVariantGroup; children = (000000000000000000000006,000000000000000000000007,000000000000000000000008,); name = "Localizable.strings"; sourceTree = "<group>"; };
+00000000000000000000000A = { isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en"; path = "Chouwazi/en.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+00000000000000000000000B = { isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Chouwazi/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+00000000000000000000000C = { isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "Chouwazi/zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+00000000000000000000000D = { isa = PBXVariantGroup; children = (00000000000000000000000A,00000000000000000000000B,00000000000000000000000C,); name = "InfoPlist.strings"; sourceTree = "<group>"; };
+00000000000000000000000E = { isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Chouwazi/Info.plist"; sourceTree = "<group>"; };
+00000000000000000000000F = { isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = chouwazi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+000000000000000000000010 = { isa = PBXGroup; children = (00000000000000000000000F,); name = Products; sourceTree = "<group>"; };
+000000000000000000000011 = { isa = PBXGroup; children = (000000000000000000000001,000000000000000000000002,000000000000000000000003,000000000000000000000004,000000000000000000000005,000000000000000000000009,00000000000000000000000D,00000000000000000000000E,000000000000000000000010,); sourceTree = "<group>"; };
+000000000000000000000012 = { isa = PBXBuildFile; fileRef = 000000000000000000000001; };
+000000000000000000000013 = { isa = PBXBuildFile; fileRef = 000000000000000000000002; };
+000000000000000000000014 = { isa = PBXBuildFile; fileRef = 000000000000000000000003; };
+000000000000000000000015 = { isa = PBXBuildFile; fileRef = 000000000000000000000004; };
+000000000000000000000016 = { isa = PBXBuildFile; fileRef = 000000000000000000000005; };
+000000000000000000000017 = { isa = PBXBuildFile; fileRef = 000000000000000000000009; };
+000000000000000000000018 = { isa = PBXBuildFile; fileRef = 00000000000000000000000D; };
+000000000000000000000019 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000012,000000000000000000000013,000000000000000000000014,); runOnlyForDeploymentPostprocessing = 0; };
+00000000000000000000001A = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000015,000000000000000000000016,000000000000000000000017,000000000000000000000018,); runOnlyForDeploymentPostprocessing = 0; };
+00000000000000000000001B = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+00000000000000000000001C = { isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SWIFT_VERSION = 5.0; ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = Chouwazi/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.alex.chouwazi; PRODUCT_NAME = chouwazi; TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTS_MACCATALYST = NO; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;  }; name = Debug; };
+00000000000000000000001D = { isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SWIFT_VERSION = 5.0; ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = Chouwazi/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.alex.chouwazi; PRODUCT_NAME = chouwazi; TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTS_MACCATALYST = NO; SWIFT_OPTIMIZATION_LEVEL = "-O";  }; name = Release; };
+00000000000000000000001E = { isa = XCConfigurationList; buildConfigurations = (00000000000000000000001C,00000000000000000000001D,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+00000000000000000000001F = { isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SWIFT_VERSION = 5.0; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;  }; name = Debug; };
+000000000000000000000020 = { isa = XCBuildConfiguration; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SWIFT_VERSION = 5.0; SWIFT_OPTIMIZATION_LEVEL = "-O";  }; name = Release; };
+000000000000000000000021 = { isa = XCConfigurationList; buildConfigurations = (00000000000000000000001F,000000000000000000000020,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+000000000000000000000022 = { isa = PBXNativeTarget; buildConfigurationList = 00000000000000000000001E; buildPhases = (000000000000000000000019,00000000000000000000001B,00000000000000000000001A,); buildRules = (); dependencies = (); name = Chouwazi; productName = chouwazi; productReference = 00000000000000000000000F; productType = "com.apple.product-type.application"; };
+000000000000000000000023 = { isa = PBXProject; attributes = { LastUpgradeCheck = 1600; }; buildConfigurationList = 000000000000000000000021; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, "zh-Hans", "zh-Hant", Base); mainGroup = 000000000000000000000011; productRefGroup = 000000000000000000000010; projectDirPath = ""; projectRoot = ""; targets = (000000000000000000000022,); };
+}; rootObject = 000000000000000000000023; }

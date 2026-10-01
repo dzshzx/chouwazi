@@ -1,0 +1,16 @@
+"app_name" = "chouwazi";
+"tagline" = "Let this moment decide";
+"again" = "Another round";
+"release" = "Lift all fingers to continue";
+"haptics_on" = "Haptics on";
+"haptics_off" = "Haptics off";
+"winner" = "No. %d · You are chosen!";
+"joined" = "%d / 10 fingers joined";
+"place" = "Place your fingers together";
+"one_more" = "One more finger";
+"range" = "At least 2 · Up to 10";
+"ready" = "Ready";
+"hold" = "Keep holding. Choosing one of you…";
+"you" = "It’s you!";
+"restart_hint" = "Joining or leaving restarts the countdown";
+"footer" = "Offline draw · Touch limit depends on your device";

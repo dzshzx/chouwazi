@@ -1,0 +1,17 @@
+.DS_Store
+.gradle/
+**/build/
+**/.build/
+**/DerivedData/
+**/xcuserdata/
+*.xcuserstate
+local.properties
+*.apk
+*.aab
+*.ipa
+*.p12
+*.p8
+*.jks
+*.keystore
+*.mobileprovision
+.env
