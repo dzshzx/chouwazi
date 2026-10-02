@@ -2,7 +2,7 @@
 set -euo pipefail
 source "$(dirname "$0")/ohos-env.sh"
 cd "$CHOUWAZI_ROOT"
-python3 scripts/setup-ohos.py
+uv run --locked --script scripts/setup-ohos.py
 flutter --suppress-analytics precache --ohos
 flutter --suppress-analytics pub get --enforce-lockfile
 
@@ -51,7 +51,7 @@ if grep -q 'flutter assemble: Command failed:' build/ohos/hvigor.log; then
   echo 'The Hvigor plugin swallowed a Flutter compiler failure.' >&2
   exit 1
 fi
-python3 scripts/check-hap.py \
+uv run --locked --script scripts/check-hap.py \
   ohos/entry/build/default/outputs/default/entry-default-unsigned.hap \
   build/ohos/intermediates/flutter/defaultRelease/arm64-v8a/app.so
 python3 - <<'PY'

@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --locked --quiet --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+#
+# [tool.uv]
+# exclude-newer = "3 days"
+# ///
 """Check the compiled APK, not just the source manifest."""
 import re
 import subprocess

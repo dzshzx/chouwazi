@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --locked --quiet --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+#
+# [tool.uv]
+# exclude-newer = "3 days"
+# ///
 """Install the pinned project-local Harmony toolchain; never alter global SDKs."""
 import hashlib
 import os

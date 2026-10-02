@@ -9,6 +9,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: '0.12.19'
+          enable-cache: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -37,7 +41,7 @@ jobs:
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
-          python3 scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
+          uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@v4
         with:
           name: chouwazi-android-apk
@@ -50,6 +54,10 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: '0.12.19'
+          enable-cache: false
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.4'
@@ -66,7 +74,7 @@ jobs:
         run: flutter build ios --release --no-codesign --no-pub
       - name: Package build artifacts
         run: |
-          python3 scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
+          uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
           ditto -c -k --sequesterRsrc --keepParent build/ios/iphonesimulator/Runner.app build/chouwazi-simulator.zip
           ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app build/chouwazi-device-unsigned.zip
       - uses: actions/upload-artifact@v4
@@ -81,6 +89,10 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: '0.12.19'
+          enable-cache: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

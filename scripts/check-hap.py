@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --locked --quiet --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+#
+# [tool.uv]
+# exclude-newer = "3 days"
+# ///
 """Validate a HAP against the independently compiled AOT code, even after strip."""
 import hashlib
 import json

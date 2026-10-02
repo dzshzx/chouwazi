@@ -4,6 +4,10 @@
 
 ## 工具链
 
+Python 构建辅助脚本经 uv 按各自的 PEP 723 声明和 `*.py.lock` 运行。
+本机先准备 uv；CI 安装固定版本 uv。调用使用 `uv run --locked --script`，
+脚本依赖声明更新后用 `uv lock --script <脚本>` 更新并提交对应锁文件。
+
 | 平台 | 固定工具 | 说明 |
 | --- | --- | --- |
 | Android | Google Flutter 3.27.4 / Dart 3.6.2、Java 17、SDK 35、build-tools 35.0.0、NDK 26.3.11579264 | Gradle 8.9、AGP 8.7.3；最低 API 23 |
@@ -18,7 +22,7 @@ Android/iOS 使用 Flutter 官方工具链；鸿蒙使用 CPF-Flutter 的适配�
 - [Flutter OH 3.27.5-ohos-1.0.0](https://gitcode.com/CPF-Flutter/flutter_flutter/tree/3.27.5-ohos-1.0.0)，提交 `c8a0f037e39856cdac07bfa31d59d3ea78549b1b`。
 - [华为 HarmonyOS 命令行工具 5.1.0.840](https://repo.huaweicloud.com/harmonyos/ohpm/5.1.0/)，下载 zip 的 SHA-256 为 `1dcefa4741dc289277560b2802040e0c45b433898d8db453d711d5376e0478f1`，来自同目录官方 `.sha256` 文件。
 
-鸿蒙适配 SDK 是项目构建依赖，官方 Flutter SDK 不提供 `hap` 目标，故由项目脚本在 `.tooling/` 下载固定上游源码并验证提交。SDK zip 验证官方校验值后解压，不修改用户全局 Flutter、Node 或 Java。需要 Python 3.11+、Git、unzip、Java 17；自动配置当前支持 Linux x86_64。工具包下载约 2 GB，解压后约 6.5 GB，另需 Flutter 引擎和构建缓存空间。
+鸿蒙适配 SDK 是项目构建依赖，官方 Flutter SDK 不提供 `hap` 目标，故由项目脚本在 `.tooling/` 下载固定上游源码并验证提交。SDK zip 验证官方校验值后解压，不修改用户全局 Flutter、Node 或 Java。需要 uv、Python 3.11+、Git、unzip、Java 17；自动配置当前支持 Linux x86_64。工具包下载约 2 GB，解压后约 6.5 GB，另需 Flutter 引擎和构建缓存空间。
 
 `CHOUWAZI_TOOLCHAINS=/绝对目录` 可以指定独立缓存位置。macOS/Windows 的鸿蒙开发可安装相同配套 DevEco SDK 与 Flutter OH，参考[上游环境说明](https://gitcode.com/CPF-Flutter/flutter_flutter/tree/3.27.5-ohos-1.0.0)；自动 SDK 下载脚本不声称支持这些宿主。
 
@@ -39,7 +43,7 @@ flutter test --no-pub
 
 ```sh
 flutter build apk --release --no-pub
-python3 scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
+uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
 "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
 ```
 
@@ -54,7 +58,7 @@ flutter precache --ios
 (cd ios && pod install)
 flutter build ios --simulator --debug --no-codesign --no-pub
 flutter build ios --release --no-codesign --no-pub
-python3 scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
+uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
 ```
 
 必须在 macOS 上执行。使用 Xcode 运行时打开 `ios/Runner.xcworkspace`，选择 Runner scheme。CI 分别打包 `chouwazi-simulator.zip` 与 `chouwazi-device-unsigned.zip`；两者都含 `Runner.app`，只能在匹配的平台使用。真机包未签名，不是可直接安装的 IPA。签名与验收见 [iOS 真机试用指南](../ios/DEVICE-TESTING.md)。
