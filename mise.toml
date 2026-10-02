@@ -1,0 +1,3 @@
+[tools]
+# Android/iOS 构建与共享测试使用的 Google Flutter；鸿蒙工具链由 scripts/setup-ohos.py 管理。
+flutter = "3.27.4"

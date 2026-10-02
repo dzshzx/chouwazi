@@ -18,7 +18,7 @@ Android/iOS 使用 Flutter 官方工具链；鸿蒙使用 CPF-Flutter 的适配�
 
 工具链来源：
 
-- [Google Flutter 3.27.4](https://github.com/flutter/flutter/tree/3.27.4)。本机 Flutter 由 mise 管理；使用与项目一致的版本，不修改全局默认版本。CI 使用 `subosito/flutter-action` 安装固定版本。
+- [Google Flutter 3.27.4](https://github.com/flutter/flutter/tree/3.27.4)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它钉到同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本；升级时两处与本表一起改。CI 使用 `subosito/flutter-action` 安装固定版本。
 - [Flutter OH 3.27.5-ohos-1.0.0](https://gitcode.com/CPF-Flutter/flutter_flutter/tree/3.27.5-ohos-1.0.0)，提交 `c8a0f037e39856cdac07bfa31d59d3ea78549b1b`。
 - [华为 HarmonyOS 命令行工具 5.1.0.840](https://repo.huaweicloud.com/harmonyos/ohpm/5.1.0/)，下载 zip 的 SHA-256 为 `1dcefa4741dc289277560b2802040e0c45b433898d8db453d711d5376e0478f1`，来自同目录官方 `.sha256` 文件。
 
