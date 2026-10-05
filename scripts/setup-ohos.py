@@ -4,7 +4,7 @@
 # dependencies = []
 #
 # [tool.uv]
-# exclude-newer = "3 days"
+# exclude-newer = "1 day"
 # ///
 """Install the pinned project-local Harmony toolchain; never alter global SDKs."""
 import hashlib

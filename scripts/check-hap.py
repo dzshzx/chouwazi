@@ -4,7 +4,7 @@
 # dependencies = []
 #
 # [tool.uv]
-# exclude-newer = "3 days"
+# exclude-newer = "1 day"
 # ///
 """Validate a HAP against the independently compiled AOT code, even after strip."""
 import hashlib
