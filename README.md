@@ -52,16 +52,19 @@ bash scripts/build-ohos.sh
 
 进入 GitHub Actions → **Build Android, iOS and HarmonyOS** → Run workflow，一次构建三端。工作流仅手动触发，私有仓库会消耗 Actions 额度。产物为试用 APK、iOS 模拟器与未签名真机 app、未签名鸿蒙 HAP，不执行应用商店发布。
 
+TestFlight 使用独立的 **Upload iOS to TestFlight** 手动工作流，从 `main` 签名并上传。账号、签名材料和受保护环境的配置见 [TestFlight 上传指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
+
 Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi`。Android Release 构建暂用调试签名供试用，不能保证覆盖原本地签名或其他 CI 运行的安装包。iOS 与鸿蒙未签名产物不能直接安装到普通真机，需自己的开发者签名；模拟器要求与真机不同，详见[构建指南](docs/BUILDING.md)。iOS 操作见 [真机试用指南](ios/DEVICE-TESTING.md)。仓库不保存签名私钥、证书或描述文件。
 
 ## 验证状态
 
-- 2026-10-01，[同一提交的三端 Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/36864698238)全部成功，源码为 `f63ab79`，应用版本为 `1.0.1 (2)`。本次为共享架构迁移和试用构建，未发布应用商店版本。
+- 2026-10-08，[同一提交的三端 Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/37746484272)全部成功，源码为 `820fecc`，应用版本为 `1.0.2 (3)`。本次精简三语界面的口号、常驻规则和离线/设备说明，已检查新版首页与结果画面。
 - 共享实现：12 项状态与多指交互测试在 Google Flutter 和 Flutter OH 下均通过，静态分析通过；已检查共享渲染器的首页与结果画面。
 - Android：真实编译 Release APK，下载后通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35；系统权限仅震动，内部广播权限保持 signature 级。
-- iOS：macOS / Xcode 16.4 真实编译模拟器 Debug 与真机 Release；下载后回读包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单。真机包无本地网络调试声明。
+- iOS：macOS / Xcode 26.3、iOS 26.2 SDK 真实编译模拟器 Debug 与真机 Release；下载后回读版本、包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单及非豁免加密声明。真机包无本地网络调试声明。
 - 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致；编译失败传播的负测通过。
 - 三端真机安装、多指上限、显示与震动均待设备验收。编译通过不等于设备验证通过。
+- TestFlight：签名上传流程已通过独立代码检查和无凭据负测；GitHub `testflight` 环境已限制为 `main`。Apple 账号、签名材料与上传尚待完成，当前未在 TestFlight 或 App Store 上线。
 
 ## 隐私
 

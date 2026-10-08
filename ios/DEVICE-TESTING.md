@@ -4,7 +4,7 @@
 
 ## 准备与安装
 
-准备一台装有 Xcode 的 Mac、Apple 账号和 iOS / iPadOS 15.0+ 设备。首次验证使用连接线。已验证的构建工具为 Xcode 16.4；设备系统较新时，需使用支持该设备系统的 Xcode。
+准备一台装有 Xcode 的 Mac、Apple 账号和 iOS / iPadOS 15.0+ 设备。首次验证使用连接线。已验证的构建工具为 Xcode 26.3；设备系统较新时，需使用支持该设备系统的 Xcode。通过 TestFlight 分发使用[签名上传指南](../docs/TESTFLIGHT.md)，安装时不需要连接 Mac。
 
 1. 在 Mac 获取源码并安装 Flutter 3.27.4，在根目录执行 `flutter pub get --enforce-lockfile`、`flutter precache --ios`、`(cd ios && pod install)`、`flutter build ios --config-only --no-codesign`，再打开 `ios/Runner.xcworkspace`，选择 `Runner` scheme。工具链说明见[构建指南](../docs/BUILDING.md)。
 2. 在 Xcode 设置中的 Apple Accounts（部分版本称 Accounts）登录自己的 Apple 账号。个人设备开发试用可选择 Personal Team；分发给其他人另行准备签名与分发方案。
