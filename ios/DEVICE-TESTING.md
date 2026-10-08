@@ -1,6 +1,6 @@
 # iOS 真机试用指南
 
-当前使用三端共用的 Flutter 源码，通过 Xcode 签名安装。最新编译证据统一见[根 README](../README.md#验证状态)，真机安装和下列验收项目均待执行。
+当前使用三端共用的 Flutter 源码。已获内部测试邀请的用户可通过 [TestFlight](../docs/TESTFLIGHT.md#testflight-安装) 安装，无需自备 Mac；本地开发也可通过下述 Xcode 流程签名安装。最新编译与分发证据统一见[根 README](../README.md#验证状态)，真机安装和下列验收项目均待执行。
 
 ## 准备与安装
 

@@ -1,7 +1,7 @@
 # TestFlight 上传
 
 `.github/workflows/testflight.yml` 从已合入的 `main` 构建、手动签名并上传 iOS 包。
-Google Flutter 固定为 3.27.4，Xcode 固定为 26.3；2026-10-08 已通过真实 macOS CI 的模拟器与未签名真机编译，签名上传仍须单独验证。
+Google Flutter 固定为 3.27.4，Xcode 固定为 26.3。2026-10-08 已通过真实 macOS CI 的编译、分发签名、IPA 校验和 Apple 上传验证；当前分发状态统一见 [README 验证状态](../README.md#验证状态)。
 Apple 自 2026-04-28 起要求上传的 iOS 包使用 Xcode 26 与 iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。
 
 ## 账号与签名前提
@@ -16,6 +16,21 @@ Apple 自 2026-04-28 起要求上传的 iOS 包使用 Xcode 26 与 iOS 26 SDK �
 
 证书和描述文件须属于同一开发者团队。脚本从描述文件读取 Team ID，不把账号标识写死在工程里。
 App ID 若已被别的账号占用，先解决所属关系，不通过改变项目包名绕开。
+
+从 Linux 导出供当前 macOS CI 使用的 `.p12` 时，已验证以下封装参数可被钥匙串导入。`SIGNING_DIR` 应指向权限为 0700 的受保护目录，密码通过环境变量安全注入；证书、私钥和输出文件不放进仓库。
+
+```sh
+openssl pkcs12 -export \
+  -inkey "$SIGNING_DIR/distribution-key.pem" \
+  -in "$SIGNING_DIR/distribution.pem" \
+  -out "$SIGNING_DIR/distribution.p12" \
+  -passout env:IOS_DISTRIBUTION_P12_PASSWORD \
+  -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1
+```
+
+这只改变 `.p12` 的封装，保留同一证书和私钥。本次 OpenSSL 4.0.3 默认导出文件可被云端 OpenSSL 解密，但 `security import` 报 MAC 校验失败；使用以上封装后，macOS 15.7.9 已成功完成签名归档和导出。遇到同类问题先对同一文件和同一密码核对 OpenSSL 校验与钥匙串导入结果，避免重建或撤销证书。
+
+恢复资料保存在 Bitwarden 的 `chouwazi Apple Signing` 独立条目。当前 CI 使用附件 `distribution-compatible.p12` 和 `app-store.mobileprovision`，密码及 API 身份位于同条目的隐藏字段；`distribution.p12` 保留原始封装，恢复时使用已验证的兼容附件。签名材料变更后，须同步受保护环境并验证备份可读。
 
 ## 配置 GitHub secrets
 
@@ -40,7 +55,7 @@ base64 只是编码，具有与原始签名文件相同的保密要求。GitHub 
 1. 核对 `pubspec.yaml` 的版本和 build number，并同步鸿蒙 `ohos/AppScope/app.json5`。上传使用该版本，不自动改号；同一版本的后续新包须增加 build number。
 2. 先完成 `Build Android, iOS and HarmonyOS` 的三端构建与共享测试，再在 Actions 中手动运行 `Upload iOS to TestFlight`，分支选择 `main`。
 3. 流程复跑共享检查，在独立临时 keychain 中导入分发身份，仅对 Runner 的 Release 配置设置手动签名，然后执行 `xcodebuild archive` 和 `-exportArchive`，导出方式为 `app-store-connect`。
-4. 从实际 IPA 检查 Bundle ID、版本、构建号、iOS SDK、应用与 Flutter 隐私清单、分发描述文件、签名证书和 entitlement，再由 Apple `altool` 验证并上传。
+4. 从本次导出目录中定位唯一的 IPA 并规范化文件名，再检查 Bundle ID、版本、构建号、iOS SDK、应用与 Flutter 隐私清单、分发描述文件、签名证书和 entitlement，最后由 Apple `altool` 验证并上传。
 5. 由 Account Holder 到 App Store Connect 网页查看构建处理结果，处理完成后把构建加入测试组。外部测试可能需要 Beta App Review；App Store 上架还需补齐商店资料并单独提交审核。
 
 工作流只有手动入口、读取仓库权限和固定源码 SHA；没有自定义 ref 或外部 artifact 输入，并发上传串行执行。
@@ -50,6 +65,10 @@ secrets 只交给签名上传步骤。正常结束、失败或取消时恢复 Ru
 “上传被 Apple 接受”与“处理完成、TestFlight 可安装”是不同状态。[Apple 上传说明](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds)明确要求构建先完成处理。
 上传出错或取消后先查看 App Store Connect 的实际状态，再决定是否重跑，避免重复上传同一构建。
 仍须按 [iOS 真机试用指南](../ios/DEVICE-TESTING.md) 验收多指、画面与震动。
+
+## TestFlight 安装
+
+在 iPhone 或 iPad 上安装 Apple 的 [TestFlight](https://testflight.apple.com/)，打开测试邀请邮件并接受邀请，即可安装对应构建。用户不需要自备 Mac，也不需要为 TestFlight 安装开启开发者模式。内部测试组使用手动添加构建，后续成功上传并处理的新构建仍需在网页加入该组。
 
 本游戏离线运行且没有自有加密，因此 Info.plist 声明 `ITSAppUsesNonExemptEncryption=false`，并在 IPA 检查该字段。
 声明含义见 [Apple 字段文档](https://developer.apple.com/documentation/bundleresources/information-property-list/itsappusesnonexemptencryption)；若将来引入新的加密或联网能力，须重新核对声明和隐私说明。

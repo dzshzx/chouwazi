@@ -64,7 +64,7 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 - iOS：macOS / Xcode 26.3、iOS 26.2 SDK 真实编译模拟器 Debug 与真机 Release；下载后回读版本、包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单及非豁免加密声明。真机包无本地网络调试声明。
 - 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致；编译失败传播的负测通过。
 - 三端真机安装、多指上限、显示与震动均待设备验收。编译通过不等于设备验证通过。
-- TestFlight：签名上传流程已通过独立代码检查和无凭据负测；GitHub `testflight` 环境已限制为 `main`。Apple 账号、签名材料与上传尚待完成，当前未在 TestFlight 或 App Store 上线。
+- TestFlight：2026-10-08，[签名上传运行](https://github.com/dzshzx/chouwazi/actions/runs/37776372831)通过，源码 `e761c0b`，版本 `1.0.2 (3)`。Apple 已处理为 `VALID`，内部测试状态为 `IN_BETA_TESTING`；「本人测试」组关联该构建并已邀请账号本人。当前分发方式为 TestFlight 内部测试，真机安装与体验验收仍待执行。
 
 ## 隐私
 
