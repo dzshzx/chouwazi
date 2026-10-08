@@ -137,10 +137,22 @@ def install(state):
     (state / "ExportOptions.plist").write_bytes(plistlib.dumps(options))
 
 
+def exported_ipa(state):
+    export = state / "export"
+    require(not export.is_symlink(), "IPA export directory cannot be a symlink")
+    ipas = [ipa for ipa in export.glob("*.ipa") if ipa.is_file() and not ipa.is_symlink()]
+    require(bool(ipas), "Xcode did not export a regular IPA file")
+    require(len(ipas) == 1, "Xcode exported multiple IPA files")
+    ipa = export / "Runner.ipa"
+    if ipas[0] != ipa:
+        require(not ipa.exists() and not ipa.is_symlink(), "Cannot normalize IPA name over an existing export")
+        ipas[0].rename(ipa)
+    return ipa
+
+
 def verify(state):
     data = settings(state)
-    ipa = state / "export/Runner.ipa"
-    require(ipa.is_file(), "Xcode did not export Runner.ipa")
+    ipa = exported_ipa(state)
     unpacked = state / "verified-ipa"
     # Apple's extractor preserves framework symlinks and executable modes.
     run("ditto", "-x", "-k", str(ipa), str(unpacked))
