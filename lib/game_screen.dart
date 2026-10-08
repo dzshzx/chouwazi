@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'game_session.dart';
+import 'privacy_screen.dart';
 import 'strings.dart';
 
 const _background = Color(0xFF0D111B);
@@ -42,6 +43,7 @@ class _GameScreenState extends State<GameScreen>
   Duration? _lastDeadline;
   int? _lastSecond;
   bool _active = true;
+  bool _showPrivacy = false;
   Duration get _now => widget.clock?.call() ?? _clock.elapsed;
 
   GameStrings get _strings => GameStrings(
@@ -59,6 +61,23 @@ class _GameScreenState extends State<GameScreen>
   void didChangeLocales(List<Locale>? locales) => setState(() {});
 
   @override
+  Future<bool> didPopRoute() async {
+    if (!_showPrivacy) return false;
+    _closePrivacy();
+    return true;
+  }
+
+  void _handleControl(Control? control) {
+    if (control == Control.privacy) _showPrivacy = true;
+    _refresh();
+  }
+
+  void _closePrivacy() {
+    _showPrivacy = false;
+    _refresh();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _active = state == AppLifecycleState.resumed;
     if (!_active) {
@@ -71,7 +90,8 @@ class _GameScreenState extends State<GameScreen>
 
   void _refresh() {
     if (!mounted) return;
-    final animate = _active && _session.round.players.isNotEmpty;
+    final animate =
+        _active && !_showPrivacy && _session.round.players.isNotEmpty;
     if (animate && !_ticker.isActive) _ticker.start();
     if (!animate && _ticker.isActive) _ticker.stop();
     setState(() {});
@@ -121,6 +141,8 @@ class _GameScreenState extends State<GameScreen>
           builder: (context, constraints) {
             final layout = GameLayout(constraints.biggest);
             Control? controlAt(Offset position) {
+              if (_showPrivacy) return null;
+              if (layout.privacy.contains(position)) return Control.privacy;
               if (layout.vibration.contains(position)) return Control.vibration;
               if (round.isFinished && layout.retry.contains(position)) {
                 return Control.retry;
@@ -133,6 +155,11 @@ class _GameScreenState extends State<GameScreen>
               behavior: HitTestBehavior.opaque,
               onPointerDown: (event) {
                 if (!_active || event.kind != PointerDeviceKind.touch) return;
+                if (_showPrivacy) {
+                  _session.overlayDown(event.pointer);
+                  _refresh();
+                  return;
+                }
                 final joined = _session.down(
                   event.pointer,
                   event.localPosition.dx,
@@ -157,82 +184,103 @@ class _GameScreenState extends State<GameScreen>
               },
               onPointerUp: (event) {
                 if (!_active || event.kind != PointerDeviceKind.touch) return;
-                _session.up(
+                final control = _session.up(
                   event.pointer,
                   _now,
                   control: controlAt(event.localPosition),
                 );
-                _refresh();
+                _handleControl(control);
               },
               onPointerCancel: (event) {
                 _session.cancel(event.pointer);
                 _refresh();
               },
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: _GamePainter(
-                        session: _session,
-                        strings: strings,
-                        layout: layout,
-                        now: _now,
-                        reduceMotion: MediaQuery.disableAnimationsOf(context),
-                        fontFamily:
-                            DefaultTextStyle.of(context).style.fontFamily,
-                      ),
-                    ),
-                  ),
-                  Positioned.fromRect(
-                    rect: Rect.fromLTWH(
-                      12,
-                      layout.scale * 75,
-                      layout.size.width - 24,
-                      56,
-                    ),
-                    child: Semantics(
-                      label: status,
-                      liveRegion: true,
-                      child: const IgnorePointer(child: SizedBox.expand()),
-                    ),
-                  ),
-                  Positioned.fromRect(
-                    rect: layout.vibration,
-                    child: Semantics(
-                      label: strings.text(
-                        _session.haptics ? 'haptics_on' : 'haptics_off',
-                      ),
-                      button: true,
-                      enabled: _session.allReleased,
-                      onTap: _session.allReleased
-                          ? () {
-                              _session.toggleHaptics();
-                              _refresh();
-                            }
-                          : null,
-                      child: const IgnorePointer(child: SizedBox.expand()),
-                    ),
-                  ),
-                  if (round.isFinished)
-                    Positioned.fromRect(
-                      rect: layout.retry,
-                      child: Semantics(
-                        label: strings.text(
-                          _session.canRetry ? 'again' : 'release',
+              child: _showPrivacy
+                  ? PrivacyScreen(strings: strings, onBack: _closePrivacy)
+                  : Stack(
+                      children: [
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: _GamePainter(
+                              session: _session,
+                              strings: strings,
+                              layout: layout,
+                              now: _now,
+                              reduceMotion:
+                                  MediaQuery.disableAnimationsOf(context),
+                              fontFamily:
+                                  DefaultTextStyle.of(context).style.fontFamily,
+                            ),
+                          ),
                         ),
-                        button: true,
-                        enabled: _session.canRetry,
-                        onTap: _session.canRetry
-                            ? () {
-                                _session.retry();
-                                _refresh();
-                              }
-                            : null,
-                        child: const IgnorePointer(child: SizedBox.expand()),
-                      ),
+                        Positioned.fromRect(
+                          rect: Rect.fromLTWH(
+                            12,
+                            layout.scale * 75,
+                            layout.size.width - 24,
+                            56,
+                          ),
+                          child: Semantics(
+                            label: status,
+                            liveRegion: true,
+                            child:
+                                const IgnorePointer(child: SizedBox.expand()),
+                          ),
+                        ),
+                        Positioned.fromRect(
+                          rect: layout.privacy,
+                          child: Semantics(
+                            label: strings.text('privacy'),
+                            button: true,
+                            enabled: _session.canOpenPrivacy,
+                            onTap: _session.canOpenPrivacy
+                                ? () => _handleControl(
+                                      _session.activateControl(Control.privacy),
+                                    )
+                                : null,
+                            child:
+                                const IgnorePointer(child: SizedBox.expand()),
+                          ),
+                        ),
+                        Positioned.fromRect(
+                          rect: layout.vibration,
+                          child: Semantics(
+                            label: strings.text(
+                              _session.haptics ? 'haptics_on' : 'haptics_off',
+                            ),
+                            button: true,
+                            enabled: _session.allReleased,
+                            onTap: _session.allReleased
+                                ? () {
+                                    _session.toggleHaptics();
+                                    _refresh();
+                                  }
+                                : null,
+                            child:
+                                const IgnorePointer(child: SizedBox.expand()),
+                          ),
+                        ),
+                        if (round.isFinished)
+                          Positioned.fromRect(
+                            rect: layout.retry,
+                            child: Semantics(
+                              label: strings.text(
+                                _session.canRetry ? 'again' : 'release',
+                              ),
+                              button: true,
+                              enabled: _session.canRetry,
+                              onTap: _session.canRetry
+                                  ? () {
+                                      _session.retry();
+                                      _refresh();
+                                    }
+                                  : null,
+                              child:
+                                  const IgnorePointer(child: SizedBox.expand()),
+                            ),
+                          ),
+                      ],
                     ),
-                ],
-              ),
             );
           },
         ),
@@ -247,6 +295,7 @@ class GameLayout {
       : scale = math.min(1.0, math.min(size.width / 360, size.height / 600));
   final Size size;
   final double scale;
+  Rect get privacy => Rect.fromLTWH(0, 0, math.min(88, size.width / 3), 44);
   Rect get vibration =>
       Rect.fromLTWH(math.max(0, size.width - 112), 0, 112, 44);
   Rect get retry => Rect.fromLTWH(
@@ -336,6 +385,14 @@ class _GamePainter extends CustomPainter {
       }
     }
     _text(canvas, 'CHOUWAZI', Offset(cx, 21 * s), 10 * s, _muted, bold: true);
+    _text(
+      canvas,
+      strings.text('privacy'),
+      layout.privacy.center,
+      11,
+      _muted,
+      width: layout.privacy.width,
+    );
     _text(
       canvas,
       strings.text('app_name'),

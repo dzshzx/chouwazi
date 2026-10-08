@@ -29,6 +29,29 @@ class GameStrings {
       'ready': 'Ready',
       'hold': 'Keep holding. Choosing one of you…',
       'you': 'It’s you!',
+      'privacy': 'Privacy',
+      'privacy_title': 'Privacy Policy',
+      'back': 'Back',
+      'privacy_summary':
+          'chouwazi runs offline. It has no accounts, ads or analytics SDKs.',
+      'privacy_data_title': 'Data on your device',
+      'privacy_data':
+          'Finger positions and the random selection are processed temporarily '
+              'in your device’s memory. The app does not save game history or '
+              'collect or store personal information.',
+      'privacy_network_title': 'Network and uploads',
+      'privacy_network':
+          'The app does not initiate network connections or upload touch data '
+              'or game results.',
+      'privacy_system_title': 'System and store diagnostics',
+      'privacy_system':
+          'Your operating system or app distribution platform may process '
+              'diagnostic or usage data under its own settings and privacy '
+              'policy. This is separate from the app’s game logic.',
+      'privacy_contact_title': 'Contact',
+      'privacy_contact':
+          'For privacy questions, use the developer support link on this app’s '
+              'store page.',
     },
     'zh-Hans': {
       'app_name': '抽袜子',
@@ -44,6 +67,20 @@ class GameStrings {
       'ready': '准备',
       'hold': '保持按住，即将随机选出一位',
       'you': '就是你！',
+      'privacy': '隐私',
+      'privacy_title': '隐私政策',
+      'back': '返回',
+      'privacy_summary': '抽袜子离线运行，无账号、广告或分析 SDK。',
+      'privacy_data_title': '设备上的数据',
+      'privacy_data': '手指位置与随机抽签仅在设备内存中临时处理。'
+          '应用不保存游戏记录，也不收集或存储个人信息。',
+      'privacy_network_title': '联网与上传',
+      'privacy_network': '应用不主动发起网络连接，不上传触点数据或抽签结果。',
+      'privacy_system_title': '系统与商店诊断',
+      'privacy_system': '操作系统或应用分发平台可能按照各自的设置和隐私政策处理诊断或使用数据。'
+          '这些处理与应用的游戏逻辑相互独立。',
+      'privacy_contact_title': '联系',
+      'privacy_contact': '如有隐私问题，请通过本应用商店页面的开发者支持入口联系。',
     },
     'zh-Hant': {
       'app_name': '抽袜子',
@@ -59,6 +96,20 @@ class GameStrings {
       'ready': '準備',
       'hold': '保持按住，即將隨機選出一位',
       'you': '就是你！',
+      'privacy': '隱私',
+      'privacy_title': '隱私政策',
+      'back': '返回',
+      'privacy_summary': '抽袜子離線執行，無帳號、廣告或分析 SDK。',
+      'privacy_data_title': '裝置上的資料',
+      'privacy_data': '手指位置與隨機抽籤僅在裝置記憶體中暫時處理。'
+          '應用程式不儲存遊戲紀錄，也不收集或儲存個人資訊。',
+      'privacy_network_title': '連線與上傳',
+      'privacy_network': '應用程式不主動發起網路連線，不上傳觸點資料或抽籤結果。',
+      'privacy_system_title': '系統與商店診斷',
+      'privacy_system': '作業系統或應用程式分發平台可能依照各自的設定和隱私政策處理診斷或使用資料。'
+          '這些處理與應用程式的遊戲邏輯相互獨立。',
+      'privacy_contact_title': '聯絡',
+      'privacy_contact': '如有隱私問題，請透過本應用程式商店頁面的開發者支援入口聯絡。',
     },
   };
 }

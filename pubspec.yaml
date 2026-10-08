@@ -1,7 +1,7 @@
 name: chouwazi
 description: Offline multi-touch drawing game for Android, iOS and HarmonyOS.
 publish_to: none
-version: 1.0.2+3
+version: 1.0.3+4
 environment:
   sdk: '>=3.6.2 <4.0.0'
 dependencies:

@@ -1,6 +1,6 @@
 import 'draw_round.dart';
 
-enum Control { vibration, retry }
+enum Control { vibration, retry, privacy }
 
 /// Owns physical contacts, including overflow fingers and touches after a result.
 /// A control gesture excludes gameplay until every contact is released.
@@ -14,18 +14,32 @@ class GameSession {
   bool haptics = true;
 
   bool get allReleased => _contacts.isEmpty;
-  bool get canRetry => round.isFinished && allReleased;
+  bool get canRetry => canActivate(Control.retry);
+  bool get canOpenPrivacy => canActivate(Control.privacy);
+
+  bool canActivate(Control control) =>
+      allReleased && (control != Control.retry || round.isFinished);
+
+  /// Overlay contacts cannot join or activate a game control, even if the
+  /// overlay closes while they are held. Gameplay resumes after every release.
+  void overlayDown(int id) {
+    if (!_contacts.add(id)) return;
+    _armedControl = null;
+    _controlGesture = true;
+  }
 
   bool down(int id, double x, double y, Duration now, {Control? control}) {
     if (_contacts.contains(id)) return false;
-    final wasEmpty = allReleased;
+    final canArm = control != null && canActivate(control);
     _contacts.add(id);
-    if (wasEmpty &&
-        control != null &&
-        (control != Control.retry || round.isFinished)) {
-      _controlGesture = true;
-      _controlPointer = id;
-      _armedControl = control;
+    if (control != null) {
+      if (canArm) {
+        _controlGesture = true;
+        _controlPointer = id;
+        _armedControl = control;
+      } else {
+        _armedControl = null;
+      }
       return false;
     }
     _armedControl = null;
@@ -38,14 +52,15 @@ class GameSession {
     if (!_controlGesture) round.move(id, x, y);
   }
 
-  void up(int id, Duration now, {Control? control}) {
-    if (!_contacts.remove(id)) return;
+  Control? up(int id, Duration now, {Control? control}) {
+    if (!_contacts.remove(id)) return null;
     if (!_controlGesture) round.leave(id, now);
+    Control? activated;
     if (id == _controlPointer && allReleased && control == _armedControl) {
-      if (_armedControl == Control.retry) round.reset();
-      if (_armedControl == Control.vibration) haptics = !haptics;
+      if (_armedControl != null) activated = activateControl(_armedControl!);
     }
     if (allReleased) _clearControl();
+    return activated;
   }
 
   // Platform cancellations invalidate the unfinished round as a whole. The
@@ -65,11 +80,20 @@ class GameSession {
   }
 
   void retry() {
-    if (canRetry) round.reset();
+    activateControl(Control.retry);
   }
 
   void toggleHaptics() {
-    if (allReleased) haptics = !haptics;
+    activateControl(Control.vibration);
+  }
+
+  /// Semantics and completed physical taps use the same availability rule.
+  /// Navigation stays with the UI; privacy activation leaves the round intact.
+  Control? activateControl(Control control) {
+    if (!canActivate(control)) return null;
+    if (control == Control.retry) round.reset();
+    if (control == Control.vibration) haptics = !haptics;
+    return control;
   }
 
   void _clearControl() {
