@@ -6,11 +6,12 @@
 
 - 个人 Apple 开发者会员已验证有效；1.0.4 (5) 已进入 TestFlight 内部测试。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
 - 应用在设备内完成多指随机选择；没有账号、广告、内购、分析 SDK 或业务服务器。触点和结果只在运行时内存中处理。
-- 用户表示已有备案域名；具体域名、原备案接入商及公开支持邮箱待确认。网站备案与 App 备案需分别核对。
+- 已核对现有备案站点 `https://www.646598.xyz/`，支持与隐私页使用其 `/chouwazi/` 路径。站点源码和公网页脚一致展示皖ICP备2026016852号-1、皖公网安备34011102004072号；本 App 尚未办理 App 备案。
 - [三语商店文案](../store/metadata.json)、[审核备注](../store/review-notes.txt)、[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)已准备。未确认字段保留 `null`，不能直接按完整申报资料提交。
 - 准备版本为 1.0.4 (5)，从 1.0.3 (4) 按 patch 更新三语说明，统一为离线随机选择工具。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
-- App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网隐私与支持页面为草稿，待部署到用户确认的域名。当前正式商店版本仍为 Prepare for Submission。
+- App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网隐私与支持页面仍为草稿，待专用公开邮箱完成注册后部署。当前正式商店版本仍为 Prepare for Submission。
 - App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存用户提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。上述状态不代表版本已提交审核。
+- 用户确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆；当前大陆状态为 `Available on App Release`，尚不是已上线或备案适用性获批。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
 
 ## 个人离线 App 的通常流程
 
@@ -28,7 +29,7 @@ Apple 的[必填属性表](https://developer.apple.com/help/app-store-connect/re
 
 ## 现有备案域名能用于什么
 
-它可以承载本 App 的支持与隐私页面，也便于向原接入商询问新增 App 备案。建议预留 `/chouwazi/`，三语页面位于 `zh-Hans/`、`zh-Hant/`、`en/` 子目录下的 `privacy.html` 和 `support.html`；最终绝对 URL 以确认的域名为准。
+已选用 `https://www.646598.xyz/chouwazi/`，三语页面位于 `zh-Hans/`、`zh-Hant/`、`en/` 子目录下的 `privacy.html` 和 `support.html`。这些是已确定的发布路径；公开邮箱注册、正式生成和部署完成前，不将计划地址当成已经可访问的商店 URL。
 
 工信部通知要求在境内从事 App 互联网信息服务的主办者备案，已有网站备案主体可补充 App 信息；网站备案号不能直接当成本 App 已备案的证明。官方通知未直接给出本项目这种纯本地随机选择应用的个案判定。[工信部通知](https://www.gov.cn/zhengce/zhengceku/202308/content_6897341.htm)、[工信部解读](https://wap.miit.gov.cn/zwgk/zcjd/art/2023/art_39b4f1acc36745b98478e0ec3e07128d.html)
 
@@ -49,11 +50,11 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 | --- | --- | --- |
 | 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 | 已填后台草稿，与 metadata.json 三语内容逐项核对 |
 | 类别、年龄分级、内容权利 | Utilities（工具）；按随机选择功能完成问卷 | 类目、年龄问卷与内容权利声明已保存 |
-| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；网页待域名/邮箱 |
-| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 版权与专用审核联系人已保存；公开域名与支持邮箱待确认 |
+| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；网页待专用邮箱注册后部署 |
+| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 版权、域名与专用审核联系人已确定；独立支持邮箱正在注册 |
 | iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已回读核对 |
 | 审核备注与演示 | 清楚说明至少两根手指同时按住；建议补真人多指演示 | 备注已保存到后台；真机视频待录 |
-| 价格、全球供应与发布方式 | 当前按免费草拟，最终选择应与用户商业意图一致 | 待确认 |
+| 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 | 价格与供应范围已保存；待审核通过及版本发布后生效 |
 | App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
 | Product page Header / Search Results 创意素材 | 与截图独立，Apple 明确列为可选 | 暂不制作 |
 
@@ -72,6 +73,8 @@ uv run --locked --script scripts/render-store-site.py
 
 输出为 `build/store-site/`，入口 `index.html`。把整个目录部署到确定的 HTTPS 子路径后，验证匿名访问、语言切换和联系链接；另核对实际托管层是否注入 Cookie、统计脚本或其他日志处理，并据实调整政策。草稿预览地址不能填写为正式商店 URL。
 
+现有站点由 `zero-notes` 源码维护。正式渲染后通过该站点的 `npm run import:chouwazi -- <完整输出目录>` 导入源码管理的页面，构建时使用现役站点配置补齐备案页脚，再按该站部署契约发布。公开邮箱尚未完成注册时保持 `support_email: null`，生成器和站点导入器都会阻止把草稿作为正式页面发布。
+
 ### 当前截图规格
 
 截至核对日，官方页面顶部要求至少一张 **iPhone 灵动岛中尺寸**截图；本项目也支持 iPad，所以还要至少一张 **iPad 13 英寸**截图。每种尺寸允许 1–10 张，无透明度。
@@ -88,11 +91,11 @@ uv run --locked --script scripts/render-store-site.py
 
 旧文章中的“只准备 6.5/6.9 英寸”清单不能直接套用新页面。Header/Search Results 是可选素材；新 iPhone Duo 截图到 2027 年 4 月才成为必需项。提交当天仍须以后台实际提示和[截图规格](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)、[素材说明](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-your-app-store-assets)、[发布说明](https://developer.apple.com/help/app-store-connect/release-notes/)核对。
 
-## 全球供应需要用户确认的事实
+## 全球供应的当前事实与待办
 
-1. 已备案域名及原接入商、公开支持邮箱。
-2. 是否为非商业业余项目，是否永久免费，是否有未来商业推广或收入安排。
-3. 本 App 的备案材料，以及是否已有 Apple 或办理部门的适用性答复。
+1. 域名已确认，专用公开支持邮箱正在注册。原备案接入商尚未通过备案控制台独立核对。
+2. 用户确认免费身份，已保存免费价格和 DSA 非商家声明；未来商业活动变化时须重新评估。
+3. 用户确认本 App 尚未正式备案；当前后台允许选中大陆供应，提审与实际上线仍须核对 Apple 的最终要求。
 
 个人会员、免费发布都不自动等于欧盟 DSA 的 non-trader。Apple 以实际商业活动和意图自评；trader 的个人联系资料会公开。若 Business 页面出现中国国务院第 810 号令身份信息提示，也须按实际情况处理，这与应用收集用户数据是不同事项。[DSA 自评](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements)、[中国开发者信息](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-information-for-state-council-decree-no-810)
 
