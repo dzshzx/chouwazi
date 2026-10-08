@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --locked --quiet --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pillow==12.0.0", "websocket-client==1.9.0"]
+# dependencies = ["pillow==12.3.0", "websocket-client==1.9.0"]
 #
 # [tool.uv]
 # exclude-newer = "1 day"
@@ -109,16 +109,29 @@ class PrivateProcess:
 
     def wait_for(self, parser, description, timeout=180):
         deadline = time.monotonic() + timeout
+        lines = 0
+        vm_marker = error_marker = False
+
+        def failure(reason):
+            return ScreenshotError(
+                f"{description}: {reason} (lines={lines}, vm_marker={vm_marker}, "
+                f"error_marker={error_marker}, process_running={self.process.poll() is None}); "
+                "debug output was kept private")
+
         while time.monotonic() < deadline:
             try:
                 line = self.lines.get(timeout=min(1, max(0.01, deadline - time.monotonic())))
             except queue.Empty:
                 continue
-            require(line is not None, f"{description}: process exited before it was ready")
+            if line is None:
+                raise failure("process exited before it was ready")
+            lines += 1
+            vm_marker |= "The Dart VM service is listening on " in line
+            error_marker |= any(marker in line for marker in ("[ERROR:", "Unhandled Exception", "FATAL"))
             parsed = parser(line)
             if parsed is not None:
                 return parsed
-        raise ScreenshotError(f"{description}: timed out; debug output was kept private")
+        raise failure("timed out")
 
     def close(self):
         if self.process.poll() is None:
@@ -251,13 +264,22 @@ def vm_url(line):
 def capture_language(udid, label, size, language, region, privacy_text, privacy_title):
     folder = OUTPUT / label / language
     folder.mkdir(parents=True)
-    launch = attach = vm = None
+    logs = attach = vm = None
     try:
-        launch = PrivateProcess("xcrun", "simctl", "launch", "--console-pty", udid, BUNDLE_ID,
-                                "--enable-checked-mode", "--verify-entry-points",
-                                "--disable-vm-service-publication", "-AppleLanguages", f"({language})",
-                                "-AppleLocale", region)
-        uri = launch.wait_for(vm_url, "Simulator debug service startup")
+        # Flutter 3.27.4 discovers iOS >= 11 VM announcements through unified
+        # logging. Listen before launching so the startup message is not missed.
+        logs = PrivateProcess("xcrun", "simctl", "spawn", udid, "log", "stream",
+                              "--style", "compact", "--predicate",
+                              'eventType = logEvent AND processImagePath ENDSWITH "/Runner"')
+        logs.wait_for(lambda line: True if line.startswith("Filtering the log data using ") else None,
+                      "Simulator unified log startup", timeout=30)
+        run("xcrun", "simctl", "launch", udid, BUNDLE_ID,
+            "--enable-checked-mode", "--verify-entry-points",
+            "--disable-vm-service-publication", "-AppleLanguages", f"({language})",
+            "-AppleLocale", region)
+        print("Simulator launch acknowledged; waiting for private unified log VM announcement", flush=True)
+        uri = logs.wait_for(vm_url, "Simulator debug service startup")
+        print("Simulator loopback VM service discovered; attaching Flutter", flush=True)
         attach = PrivateProcess("flutter", "attach", "--machine", "--debug",
                                 "--no-dds", "--no-devtools", "-d", udid, "--debug-url", uri)
         connection = {}
@@ -323,9 +345,9 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
         return {"language": language, "actual_locale": actual_locale, "screenshots": screenshots}
     finally:
         steps = [(label, resource.close) for label, resource in (
-            ("VM connection", vm), ("Flutter attach", attach), ("Simulator launcher", launch),
+            ("VM connection", vm), ("Flutter attach", attach), ("Simulator unified log", logs),
         ) if resource is not None]
-        # Flutter or the console launcher may already have terminated the app.
+        # Flutter may already have terminated the app.
         steps.append(("Simulator app termination", lambda: subprocess.run(
             ("xcrun", "simctl", "terminate", udid, BUNDLE_ID),
             capture_output=True, timeout=30, check=False)))
