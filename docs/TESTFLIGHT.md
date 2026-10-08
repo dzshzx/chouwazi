@@ -9,7 +9,10 @@ Apple 自 2026-04-28 起要求上传的 iOS 包使用 Xcode 26 与 iOS 26 SDK �
 - Apple Developer Program 会员有效，相关协议已接受。
 - 开发者账号中有显式 App ID `com.alex.chouwazi`，App Store Connect 已创建使用同一 Bundle ID 的 iOS App 记录。
 - Apple Distribution 证书及其私钥已导出为带密码的 `.p12`；App Store 分发描述文件选择此证书和此 App ID，且均未过期。
-- 有可上传构建的 App Store Connect **团队 API key**：`.p8`、Key ID、Issuer ID。该 key 只认证上传，不能代替证书私钥签名；本流程不申请证书或描述文件。个人 API key 不适用于本流程的 issuer 认证。
+- 有 Access 设为 **Developer** 的 App Store Connect **团队 API key**：`.p8`、Key ID、Issuer ID。CI 用该 key 认证上传，签名使用证书私钥。个人 API key 不适用于本流程的 issuer 认证。[Apple 上传说明](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/)列出的可上传角色包含 Developer。
+
+本流程由 Account Holder 在 Apple Developer 和 App Store Connect 网页处理 App ID、分发证书、描述文件、App 记录与测试组，并创建上述 Developer 团队 key。CI 使用现有材料完成签名和上传，不通过该 key 申请证书或描述文件。
+团队 key 的角色权限作用于团队的所有 App，不能仅限定为「抽袜子」；创建团队 key 的账号角色与 key 的 Access 角色不同，见 [Apple API key 说明](https://developer.apple.com/help/app-store-connect/get-started/app-store-connect-api/)。
 
 证书和描述文件须属于同一开发者团队。脚本从描述文件读取 Team ID，不把账号标识写死在工程里。
 App ID 若已被别的账号占用，先解决所属关系，不通过改变项目包名绕开。
@@ -38,7 +41,7 @@ base64 只是编码，具有与原始签名文件相同的保密要求。GitHub 
 2. 先完成 `Build Android, iOS and HarmonyOS` 的三端构建与共享测试，再在 Actions 中手动运行 `Upload iOS to TestFlight`，分支选择 `main`。
 3. 流程复跑共享检查，在独立临时 keychain 中导入分发身份，仅对 Runner 的 Release 配置设置手动签名，然后执行 `xcodebuild archive` 和 `-exportArchive`，导出方式为 `app-store-connect`。
 4. 从实际 IPA 检查 Bundle ID、版本、构建号、iOS SDK、应用与 Flutter 隐私清单、分发描述文件、签名证书和 entitlement，再由 Apple `altool` 验证并上传。
-5. 到 App Store Connect 查看构建处理结果，处理完成后把构建加入测试组。外部测试可能需要 Beta App Review；App Store 上架还需补齐商店资料并单独提交审核。
+5. 由 Account Holder 到 App Store Connect 网页查看构建处理结果，处理完成后把构建加入测试组。外部测试可能需要 Beta App Review；App Store 上架还需补齐商店资料并单独提交审核。
 
 工作流只有手动入口、读取仓库权限和固定源码 SHA；没有自定义 ref 或外部 artifact 输入，并发上传串行执行。
 secrets 只交给签名上传步骤。正常结束、失败或取消时恢复 Runner 工程与 keychain 搜索列表，清除临时 keychain、描述文件和 key；`always()` 步骤再次清理。
