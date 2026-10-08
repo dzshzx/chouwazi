@@ -26,9 +26,13 @@ BUNDLE_ID = "com.alex.chouwazi"
 PROJECT = Path("ios/Runner.xcodeproj/project.pbxproj")
 
 
+class SigningAssetValidationError(ValueError):
+    """A validation failure with an audited, secret-free public message."""
+
+
 def require(condition, message):
     if not condition:
-        raise ValueError(message)
+        raise SigningAssetValidationError(message)
 
 
 def run(*args):
@@ -224,7 +228,11 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except (ValueError, KeyError, OSError, plistlib.InvalidFileException):
-        # Exceptions can carry binary or key material. Use a fixed public error.
+    except SigningAssetValidationError as error:
+        # require() messages contain only fixed text, command names or cleanup actions.
+        print(f"TestFlight asset operation failed: {error}", file=sys.stderr)
+        sys.exit(1)
+    except Exception:
+        # External exceptions can carry binary or key material. Never print them.
         print("TestFlight asset operation failed; check secrets, signing assets and workflow prerequisites.", file=sys.stderr)
         sys.exit(1)
