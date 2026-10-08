@@ -22,8 +22,30 @@ keychain_password="$(< "$state_dir/keychain-password")"
 security create-keychain -p "$keychain_password" "$keychain_path" >/dev/null 2>&1
 security set-keychain-settings -lut 21600 "$keychain_path" >/dev/null 2>&1
 security unlock-keychain -p "$keychain_password" "$keychain_path" >/dev/null 2>&1
-if ! security import "$state_dir/distribution.p12" -k "$keychain_path" -P "$IOS_DISTRIBUTION_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security >/dev/null 2>&1; then
-  echo 'Cannot import the distribution certificate and its private key.' >&2
+sw_vers
+openssl version
+if openssl pkcs12 -in "$state_dir/distribution.p12" \
+  -passin env:IOS_DISTRIBUTION_P12_PASSWORD -noout >/dev/null 2>&1; then
+  echo 'OpenSSL PKCS#12 validation succeeded.'
+else
+  echo 'OpenSSL PKCS#12 validation failed.' >&2
+fi
+# The protected state directory is removed by cleanup. Never print raw import
+# errors: they may contain signing metadata or paths to private material.
+if security import "$state_dir/distribution.p12" -k "$keychain_path" -P "$IOS_DISTRIBUTION_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security >/dev/null 2>"$state_dir/import.log"; then
+  :
+else
+  import_status=$?
+  if LC_ALL=C grep -Eiq 'MAC verification failed|mac verify failure' "$state_dir/import.log"; then
+    import_error='MAC verification failed'
+  elif LC_ALL=C grep -Eiq 'unknown format|unsupported (format|algorithm)|format (is )?not supported' "$state_dir/import.log"; then
+    import_error='unsupported or unknown format'
+  elif LC_ALL=C grep -Eiq 'user interaction is not allowed|interaction not allowed|permission denied|authorization denied|not unlocked|keychain is locked|errSecInteractionNotAllowed|errSecAuthFailed' "$state_dir/import.log"; then
+    import_error='permission, interaction, or keychain unlock failure'
+  else
+    import_error='unclassified import error'
+  fi
+  printf 'Distribution certificate import failed (exit code %s): %s.\n' "$import_status" "$import_error" >&2
   exit 1
 fi
 security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$keychain_password" "$keychain_path" >/dev/null 2>&1
