@@ -37,6 +37,41 @@ def require(condition, message):
 
 def run(*args):
     result = subprocess.run(args, capture_output=True, check=False)
+    if args[0] == "codesign" and result.returncode != 0:
+        operations = (("--verify", "verify"), ("--entitlements", "display-entitlements"),
+                      ("--extract-certificates", "extract-certificates"))
+        operation = next((name for flag, name in operations
+                          if any(arg == flag or arg.startswith(flag + "=") for arg in args[1:])), "unknown")
+        stderr = result.stderr.decode("utf-8", errors="replace")
+        lowered_stderr = stderr.lower()
+        reasons = (
+            ("unsigned", ("code object is not signed at all",)),
+            ("sealed-resource-missing-or-invalid", ("sealed resource is missing or invalid",)),
+            ("main-executable-strict-validation", ("main executable failed strict validation",)),
+            ("unrecognized-or-ambiguous-bundle", ("bundle format unrecognized", "bundle format is ambiguous")),
+            ("invalid-signature", ("invalid signature", "signature invalid", "code or signature have been modified",
+                                   "cssmerr_csp_verify_failed")),
+            ("trust-or-certificate-expiry", ("cssmerr_tp_cert_expired", "cssmerr_tp_not_trusted",
+                                             "cssmerr_tp_cert_not_valid_yet", "errseccertificateexpired",
+                                             "certificate has expired", "certificate is not trusted",
+                                             "unable to build chain to self-signed root")),
+            ("unsupported-syntax-or-argument", ("invalid argument", "unknown option", "unrecognized option",
+                                                "unsupported option", "invalid option", "illegal option",
+                                                "requires an argument", "usage: codesign")),
+            ("file-or-path-not-found", ("no such file", "file not found", "path not found")),
+        )
+        reason = next((name for name, patterns in reasons
+                       if any(pattern in lowered_stderr for pattern in patterns)), "unknown")
+        subcomponents = re.findall(r"^In subcomponent:[ \t]*([^\r\n]+)", stderr, re.MULTILINE)
+        component = "none" if not subcomponents else "unknown"
+        if subcomponents:
+            match = re.search(r"(?:^|/)(Runner\.app|Flutter\.framework|App\.framework)/?$",
+                              subcomponents[0].strip())
+            if match:
+                component = match[1]
+        # stderr is untrusted; only fixed operation/reason/component tokens are public.
+        require(False, f"codesign {operation} failed while handling signing assets "
+                       f"(exit={result.returncode}, reason={reason}, subcomponent={component})")
     require(result.returncode == 0, f"{args[0]} failed while handling signing assets")
     return result.stdout
 
@@ -183,7 +218,8 @@ def verify(state):
     embedded = profile_data(app / "embedded.mobileprovision")
     require(embedded["UUID"] == data["profile_uuid"], "IPA uses a different provisioning profile")
     certificate_prefix = str(state / "signer-")
-    run("codesign", "-d", "--extract-certificates", certificate_prefix, str(app))
+    # This optional argument must share an argv item with the option.
+    run("codesign", "-d", f"--extract-certificates={certificate_prefix}", str(app))
     leaf_sha1 = hashlib.sha1(Path(certificate_prefix + "0").read_bytes()).hexdigest().upper()
     require(leaf_sha1 == data["certificate_sha1"], "IPA signing certificate mismatch")
     print(f"Verified distribution IPA: {BUNDLE_ID} {data['version']} ({data['build']}); SHA-256 {hashlib.sha256(ipa.read_bytes()).hexdigest()}")
@@ -241,7 +277,7 @@ if __name__ == "__main__":
     try:
         main()
     except SigningAssetValidationError as error:
-        # require() messages contain only fixed text, command names or cleanup actions.
+        # require() messages contain only fixed text/tokens, command names and exit codes.
         print(f"TestFlight asset operation failed: {error}", file=sys.stderr)
         sys.exit(1)
     except Exception:
