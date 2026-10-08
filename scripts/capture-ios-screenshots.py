@@ -238,7 +238,9 @@ class VM:
             f"position: Offset({float(x)}, {float(y)})));"
             for pointer, x, y in positions
         )
-        self.evaluate("(() { " + events + " return true; })()", operation=operation)
+        # VM evaluation can interrupt build/layout/paint; dispatch on the next
+        # ordinary event-loop turn so pointer handlers can safely schedule frames.
+        self.evaluate("(() { Future<void>(() { " + events + " }); return true; })()", operation=operation)
 
     def close(self):
         self.connection.close(timeout=3)
@@ -344,7 +346,10 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
             require(time.monotonic() < deadline, "The normal game clock did not produce a result")
             time.sleep(.2)
         vm.touches("Up", positions, operation="players-up")
-        time.sleep(.3)
+        deadline = time.monotonic() + 10
+        while not vm.snapshot(operation="players-up")["all_released"]:
+            require(time.monotonic() < deadline, "The normal pointer releases did not finish")
+            time.sleep(.2)
         capture(vm, udid, folder, "02-result", size,
                 lambda state: not state["privacy"] and state["players"] == 4 and
                 state["winner_slot"] in range(4) and state["all_released"], screenshots)
@@ -352,15 +357,17 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
         privacy_position = [(20, 30, top + 22)]
         vm.touches("Down", privacy_position, operation="privacy-down")
         vm.touches("Up", privacy_position, operation="privacy-up")
-        time.sleep(.4)
         title_expression = """
           (context as Element).toStringDeep().contains('PrivacyScreen') &&
           (context as Element).toStringDeep().contains(_strings.text('privacy_title')) &&
           (context as Element).toStringDeep().contains(_strings.text('privacy_summary'))
         """
-        require(vm.string(title_expression, operation="privacy-rendered") == "true" and
-                vm.string("_strings.text('privacy_title')", operation="privacy-title") == privacy_title,
-                "The real localized privacy screen did not render")
+        deadline = time.monotonic() + 15
+        while not (vm.snapshot(operation="privacy-rendered")["privacy"] and
+                   vm.string(title_expression, operation="privacy-rendered") == "true" and
+                   vm.string("_strings.text('privacy_title')", operation="privacy-title") == privacy_title):
+            require(time.monotonic() < deadline, "The real localized privacy screen did not render")
+            time.sleep(.2)
         capture(vm, udid, folder, "03-privacy", size,
                 lambda state: state["privacy"] and state["all_released"], screenshots)
         return {"language": language, "actual_locale": actual_locale, "screenshots": screenshots}
