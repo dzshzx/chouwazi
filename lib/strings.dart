@@ -17,7 +17,6 @@ class GameStrings {
   static const _translations = {
     'en': {
       'app_name': 'chouwazi',
-      'tagline': 'Let this moment decide',
       'again': 'Another round',
       'release': 'Lift all fingers to continue',
       'haptics_on': 'Haptics on',
@@ -30,12 +29,9 @@ class GameStrings {
       'ready': 'Ready',
       'hold': 'Keep holding. Choosing one of you…',
       'you': 'It’s you!',
-      'restart_hint': 'Joining or leaving restarts the countdown',
-      'footer': 'Offline draw · Touch limit depends on your device',
     },
     'zh-Hans': {
       'app_name': '抽袜子',
-      'tagline': '把选择，交给这一刻',
       'again': '再来一轮',
       'release': '松开所有手指后再来一轮',
       'haptics_on': '震动 开',
@@ -48,12 +44,9 @@ class GameStrings {
       'ready': '准备',
       'hold': '保持按住，即将随机选出一位',
       'you': '就是你！',
-      'restart_hint': '新增或移开手指，会重新倒计时',
-      'footer': '离线随机抽选 · 实际触点数取决于设备',
     },
     'zh-Hant': {
       'app_name': '抽袜子',
-      'tagline': '把選擇，交給這一刻',
       'again': '再來一輪',
       'release': '鬆開所有手指後再來一輪',
       'haptics_on': '震動 開',
@@ -66,8 +59,6 @@ class GameStrings {
       'ready': '準備',
       'hold': '保持按住，即將隨機選出一位',
       'you': '就是你！',
-      'restart_hint': '新增或移開手指，會重新倒數',
-      'footer': '離線隨機抽選 · 實際觸點數取決於裝置',
     },
   };
 }

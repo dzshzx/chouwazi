@@ -51,7 +51,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 30
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
@@ -63,6 +63,10 @@ jobs:
           flutter-version: '3.27.4'
           channel: stable
           cache: true
+      - name: Verify selected Apple toolchain
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
       - run: flutter pub get --enforce-lockfile
       - run: flutter precache --ios
       - name: Install iOS engine integration

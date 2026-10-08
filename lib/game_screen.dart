@@ -186,7 +186,7 @@ class _GameScreenState extends State<GameScreen>
                   Positioned.fromRect(
                     rect: Rect.fromLTWH(
                       12,
-                      layout.scale * 105,
+                      layout.scale * 75,
                       layout.size.width - 24,
                       56,
                     ),
@@ -251,7 +251,7 @@ class GameLayout {
       Rect.fromLTWH(math.max(0, size.width - 112), 0, 112, 44);
   Rect get retry => Rect.fromLTWH(
         24 * scale,
-        size.height - 90 * scale,
+        size.height - math.max(44, 54 * scale) - 24 * scale,
         size.width - 48 * scale,
         math.max(44, 54 * scale),
       );
@@ -327,7 +327,7 @@ class _GamePainter extends CustomPainter {
     final round = session.round;
     final s = layout.scale, cx = size.width / 2, mid = layout.middle;
     for (double x = 20; x < size.width; x += 28) {
-      for (double y = 155 * s; y < size.height - 115 * s; y += 28) {
+      for (double y = 125 * s; y < size.height - 36 * s; y += 28) {
         canvas.drawCircle(
           Offset(x, y),
           .8,
@@ -344,14 +344,13 @@ class _GamePainter extends CustomPainter {
       const Color(0xFFFFFFFF),
       bold: true,
     );
-    _text(canvas, strings.text('tagline'), Offset(cx, 96 * s), 12 * s, _muted);
     final winner = round.winner;
     _text(
       canvas,
       winner == null
           ? strings.joined(round.players.length)
           : strings.winner(winner.slot + 1),
-      Offset(cx, 137 * s),
+      Offset(cx, 107 * s),
       15 * s,
       winner == null ? _colors[0] : _colors[winner.slot],
       bold: true,
@@ -442,7 +441,7 @@ class _GamePainter extends CustomPainter {
         _text(
           canvas,
           strings.text('you'),
-          Offset(center.dx, math.max(159 * s, center.dy - radius - 26 * s)),
+          Offset(center.dx, math.max(129 * s, center.dy - radius - 26 * s)),
           19 * s,
           color,
           bold: true,
@@ -473,22 +472,7 @@ class _GamePainter extends CustomPainter {
         bold: true,
         width: layout.retry.width - 16,
       );
-    } else {
-      _text(
-        canvas,
-        strings.text('restart_hint'),
-        Offset(cx, size.height - 66 * s),
-        12 * s,
-        _muted,
-      );
     }
-    _text(
-      canvas,
-      strings.text('footer'),
-      Offset(cx, size.height - 18 * s),
-      10 * s,
-      const Color(0xFF687488),
-    );
   }
 
   @override
