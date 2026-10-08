@@ -1,15 +1,16 @@
 # 抽袜子：个人离线 App 的正式上架准备
 
-核对日期：2026-10-08。目标为全球供应，包含中国大陆。本文把官方规则、开发者自述和本项目的待办分别记录；社区成功经历不构成审核或备案豁免保证。
+核对日期：2026-10-09。目标为全球供应，包含中国大陆。本文把官方规则、开发者自述和本项目的待办分别记录；社区成功经历不构成审核或备案豁免保证。
 
 ## 当前基础与材料入口
 
-- 个人 Apple 开发者会员已验证有效；1.0.3 (4) 已进入 TestFlight 内部测试。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
+- 个人 Apple 开发者会员已验证有效；1.0.4 (5) 已进入 TestFlight 内部测试。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
 - 应用在设备内完成多指随机选择；没有账号、广告、内购、分析 SDK 或业务服务器。触点和结果只在运行时内存中处理。
-- 已有备案域名由用户提供，具体域名、原备案接入商及公开联系邮箱待确认。网站备案与 App 备案需分别核对。
+- 用户表示已有备案域名；具体域名、原备案接入商及公开支持邮箱待确认。网站备案与 App 备案需分别核对。
 - [三语商店文案](../store/metadata.json)、[审核备注](../store/review-notes.txt)、[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)已准备。未确认字段保留 `null`，不能直接按完整申报资料提交。
 - 准备版本为 1.0.4 (5)，从 1.0.3 (4) 按 patch 更新三语说明，统一为离线随机选择工具。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
-- App 内三语本地隐私页已实现，25 项测试与 [1.0.3 (4) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37797281913)通过；官网隐私与支持页面为草稿，待部署到用户确认的域名。当前正式商店版本仍为 Prepare for Submission。
+- App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网隐私与支持页面为草稿，待部署到用户确认的域名。当前正式商店版本仍为 Prepare for Submission。
+- App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存用户提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。上述状态不代表版本已提交审核。
 
 ## 个人离线 App 的通常流程
 
@@ -46,12 +47,12 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 
 | 材料 | 本项目准备方式 | 当前状态 |
 | --- | --- | --- |
-| 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 | 草稿见 metadata.json |
-| 类别、年龄分级、内容权利 | 主类目 Utilities（工具）；按随机选择功能填写问卷 | 类目已确定；后台问卷与内容权利声明待完成 |
-| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现；网页草稿已检查，域名/邮箱待确认 |
-| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 版权已确认；域名、邮箱与审核联系人待确认 |
-| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | 云端截图入口已实现，待修订版本运行并检查 |
-| 审核备注与演示 | 清楚说明至少两根手指同时按住；建议补真人多指演示 | 备注已拟；真机视频待录 |
+| 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 | 已填后台草稿，与 metadata.json 三语内容逐项核对 |
+| 类别、年龄分级、内容权利 | Utilities（工具）；按随机选择功能完成问卷 | 类目、年龄问卷与内容权利声明已保存 |
+| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；网页待域名/邮箱 |
+| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 版权与专用审核联系人已保存；公开域名与支持邮箱待确认 |
+| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已回读核对 |
+| 审核备注与演示 | 清楚说明至少两根手指同时按住；建议补真人多指演示 | 备注已保存到后台；真机视频待录 |
 | 价格、全球供应与发布方式 | 当前按免费草拟，最终选择应与用户商业意图一致 | 待确认 |
 | App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
 | Product page Header / Search Results 创意素材 | 与截图独立，Apple 明确列为可选 | 暂不制作 |
@@ -78,6 +79,12 @@ uv run --locked --script scripts/render-store-site.py
 - iPhone：1179 × 2556 或 1206 × 2622；本项目准备 1206 × 2622。
 - iPad：2064 × 2752 或 2048 × 2732；本项目准备 2064 × 2752。
 - 截图与用户将安装的版本和语言一致，保留来源 SHA、设备、运行时、尺寸和画面状态记录。模拟器截图不等于真机触控、震动验收。
+
+自动入口是 Actions 的 `Capture iOS App Store screenshots`。2026-10-09 已生成并检查 1.0.4 (5) 的 18 张实际截图：两种设备、三种语言、首页/抽选结果/隐私页各一张。产物 `chouwazi-ios-app-store-screenshots` 包含原始尺寸 PNG 与 manifest；本次截图源码 `3666b60` 的应用代码与 TestFlight 构建 `3f85685` 一致。
+
+18 张图片已进入 App Store Connect 的三语版本草稿，图片状态均为 `PREPARE_FOR_SUBMISSION`，截图位置均为 `ACTIVE`。每种语言分别有 iPhone medium 和 iPad 13 两组，各按首页、结果、隐私排序；已核对上传文件大小、服务端尺寸与本地产物一致。
+
+上传时使用当前 App Asset Library，在版本本地化下分别建立 iPhone medium 与 iPad 13 的截图位置。Apple 已将旧截图集 API 标记为弃用；程序化上传应从 `appAssetLibraryRefData` 读取当前规格与位置组，核对图片处理完成和各语言的顺序，不硬编码旧屏幕枚举。[Apple 资产库迁移说明](https://developer.apple.com/documentation/appstoreconnectapi/migrating-to-the-app-asset-library)
 
 旧文章中的“只准备 6.5/6.9 英寸”清单不能直接套用新页面。Header/Search Results 是可选素材；新 iPhone Duo 截图到 2027 年 4 月才成为必需项。提交当天仍须以后台实际提示和[截图规格](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)、[素材说明](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-your-app-store-assets)、[发布说明](https://developer.apple.com/help/app-store-connect/release-notes/)核对。
 

@@ -16,7 +16,9 @@
   "publicContactEmail": null,
   "dsaTraderStatus": null,
   "mainlandFilingDecision": null,
-  "ageRatingQuestionnaire": "pending owner and applicability review",
+  "ageRatingQuestionnaire": "completed: 4+ with regional ratings assigned by Apple",
+  "contentRightsDeclaration": "DOES_NOT_USE_THIRD_PARTY_CONTENT",
+  "appPrivacy": "Data Not Collected: published",
   "localizations": {
     "zh-Hans": {
       "name": "抽袜子",

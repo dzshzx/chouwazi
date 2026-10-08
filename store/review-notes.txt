@@ -1,4 +1,4 @@
-Chouwazi is a local multi-touch random selector. It does not require an account, a server or an internet connection. No review credentials are needed.
+Chouwazi is an offline random selection tool for people using the same device. It does not require an account, a server or an internet connection. No review credentials are needed.
 
 How to test on an iPhone or iPad:
 1. Place at least two fingers on the screen and keep holding.
