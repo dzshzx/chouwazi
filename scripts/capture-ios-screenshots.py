@@ -311,21 +311,15 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
         content_height = height - top - bottom
         positions = [(index + 1, width * x, top + content_height * y)
                      for index, (x, y) in enumerate(((.24, .28), (.76, .28), (.24, .73), (.76, .73)))]
-        # Compilation warms up before the 3.8-second round; the VM never changes time or the winner.
-        vm.string(SNAPSHOT)
         vm.touches("Down", positions)
-        time.sleep(1.05)
-        capture(vm, udid, folder, "02-countdown", size,
-                lambda state: not state["privacy"] and state["players"] == 4 and
-                state["winner_slot"] is None and state["remaining_ms"] is not None and
-                0 < state["remaining_ms"] <= 3000, screenshots)
+        # Wait for the ordinary 3.8-second round and its random draw to finish.
         deadline = time.monotonic() + 10
         while vm.snapshot()["winner_slot"] is None:
             require(time.monotonic() < deadline, "The normal game clock did not produce a result")
             time.sleep(.2)
         vm.touches("Up", positions)
         time.sleep(.3)
-        capture(vm, udid, folder, "03-result", size,
+        capture(vm, udid, folder, "02-result", size,
                 lambda state: not state["privacy"] and state["players"] == 4 and
                 state["winner_slot"] in range(4) and state["all_released"], screenshots)
         # Complete an ordinary touch on the existing privacy button, including its release.
@@ -340,7 +334,7 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
         """
         require(vm.string(title_expression) == "true" and vm.string("_strings.text('privacy_title')") == privacy_title,
                 "The real localized privacy screen did not render")
-        capture(vm, udid, folder, "04-privacy", size,
+        capture(vm, udid, folder, "03-privacy", size,
                 lambda state: state["privacy"] and state["all_released"], screenshots)
         return {"language": language, "actual_locale": actual_locale, "screenshots": screenshots}
     finally:
@@ -364,6 +358,7 @@ def main():
                 "version": info["CFBundleShortVersionString"], "build": info["CFBundleVersion"],
                 "bundle_id": BUNDLE_ID, "build_mode": "debug", "capture": "simctl native screen",
                 "interaction": "Flutter touch events via loopback debug VM; normal game clock and random draw",
+                "screens": ["01-home", "02-result", "03-privacy"],
                 "xcode": run("xcodebuild", "-version").strip(),
                 "flutter": json.loads(run("flutter", "--version", "--machine")), "devices": []}
     # The installed inventory decides the identifiers. A missing model is a failure, never a fallback.
@@ -406,9 +401,9 @@ def main():
                     capture_output=True, timeout=60, check=False)),
                 ("Simulator deletion", lambda: run("xcrun", "simctl", "delete", udid)),
             ))
-    require(len(list(OUTPUT.rglob("*.png"))) == 24, "Expected all four screens in three languages on both devices")
+    require(len(list(OUTPUT.rglob("*.png"))) == 18, "Expected all three stable screens in three languages on both devices")
     (OUTPUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
-    print("Verified 24 native RGB PNG screenshots and a public manifest.", flush=True)
+    print("Verified 18 native RGB PNG screenshots and a public manifest.", flush=True)
 
 
 if __name__ == "__main__":
