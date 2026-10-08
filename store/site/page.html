@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="$language">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="$description">
+  $head_extra
+  <title>$title</title>
+  <link rel="stylesheet" href="$stylesheet">
+</head>
+<body>
+  <a class="skip-link" href="#main">$skip</a>
+  $draft_notice
+  <div class="page">
+    <header class="site-header">
+      <a class="wordmark" href="$home">$app_name</a>
+      <nav class="languages" aria-label="$language_label">$language_links</nav>
+    </header>
+    <main id="main">
+      $content
+    </main>
+    <footer class="site-footer">
+      <nav aria-label="$footer_label">$footer_links</nav>
+      <p>$copyright</p>
+    </footer>
+  </div>
+</body>
+</html>

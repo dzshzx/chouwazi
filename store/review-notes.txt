@@ -1,0 +1,12 @@
+Chouwazi is a local multi-touch random selector. It does not require an account, a server or an internet connection. No review credentials are needed.
+
+How to test on an iPhone or iPad:
+1. Place at least two fingers on the screen and keep holding.
+2. After preparation and the countdown, one participating finger is selected.
+3. Adding or lifting a participating finger restarts the countdown. Moving a finger does not.
+4. Lift every finger, then tap “Another round” to start again.
+5. The haptics control changes vibration feedback. The Privacy button opens the bundled policy and works offline.
+
+A single touch waits for another participant, so a single mouse pointer alone does not demonstrate the selection flow. The app has no wagers, payments, prizes, redemption, advertising or in-app purchases.
+
+The app supports English, Simplified Chinese and Traditional Chinese and follows the device language. It supports both iPhone and iPad.
