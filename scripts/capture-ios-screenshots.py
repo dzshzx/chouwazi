@@ -56,6 +56,20 @@ GEOMETRY = """(() {
     view.padding.top / ratio, view.padding.bottom / ratio].toString();
 })()"""
 NO_DEBUG_BANNER = "!context.findAncestorWidgetOfExactType<WidgetsApp>()!.debugShowCheckedModeBanner"
+VM_OPERATIONS = frozenset({
+    "evaluate", "string", "snapshot", "state-mounted", "locale", "privacy-label",
+    "debug-banner", "home-before", "home-after", "geometry", "players-down",
+    "winner-poll", "players-up", "result-before", "result-after", "privacy-down",
+    "privacy-up", "privacy-rendered", "privacy-title", "privacy-before", "privacy-after",
+})
+VM_RESULT_TYPES = frozenset({"@Instance", "@Error", "Error", "Sentinel"})
+VM_METHODS = frozenset({"getVM", "getIsolate", "getObject", "getInstances", "evaluate"})
+VM_FAILURE_KINDS = frozenset({
+    "UnhandledException", "LanguageError", "InternalError", "TerminationError",
+    "Collected", "Expired", "NotInitialized", "BeingInitialized", "OptimizedOut", "Free",
+})
+VM_ERROR_CODES = frozenset({-32700, -32600, -32601, -32602, -32603, -32010,
+                            *range(100, 115), 130, 131})
 
 
 class ScreenshotError(ValueError):
@@ -170,11 +184,14 @@ class VM:
         instances = instance_set.get("instances", instance_set.get("samples", []))
         require(instance_set["totalCount"] <= 10, "Unexpected number of GameScreen states")
         mounted = [instance for instance in instances
-                   if self.evaluate("mounted", target=instance["id"]).get("valueAsString") == "true"]
+                   if self.evaluate("mounted", target=instance["id"], operation="state-mounted").get("valueAsString") == "true"]
         require(len(mounted) == 1, "Expected exactly one mounted real GameScreen state")
         self.state = mounted[0]["id"]
 
-    def call(self, method, **params):
+    def call(self, method, *, operation=None, **params):
+        require(isinstance(method, str) and method in VM_METHODS, "Unsupported VM service method")
+        require(operation is None or isinstance(operation, str) and operation in VM_OPERATIONS,
+                "Unsupported VM operation label")
         self.sequence += 1
         request_id = self.sequence
         self.connection.send(json.dumps({"jsonrpc": "2.0", "id": request_id, "method": method, "params": params}))
@@ -184,28 +201,36 @@ class VM:
                 continue
             if "error" in response:
                 code = response["error"].get("code")
-                require(False, f"VM {method} failed (code={code if isinstance(code, int) else 'unknown'})")
+                code = code if type(code) is int and code in VM_ERROR_CODES else "unknown"
+                stage = f", operation={operation}" if operation else ""
+                require(False, f"VM {method} failed (code={code}{stage}); debug details kept private")
             return response["result"]
 
-    def evaluate(self, expression, target=None):
+    def evaluate(self, expression, target=None, *, operation="evaluate"):
         # Flutter 3.27's compile-expression stdin protocol accepts one line.
         expression = " ".join(expression.splitlines()).strip()
         result = self.call("evaluate", isolateId=self.isolate,
                            targetId=target or self.state, expression=expression,
-                           disableBreakpoints=True)
-        require(result.get("type") == "@Instance", "Debug expression failed to evaluate")
+                           disableBreakpoints=True, operation=operation)
+        result_type = result.get("type")
+        kind = result.get("kind")
+        result_type = result_type if isinstance(result_type, str) and result_type in VM_RESULT_TYPES else "unknown"
+        kind = kind if isinstance(kind, str) and kind in VM_FAILURE_KINDS else "unknown"
+        require(result.get("type") == "@Instance",
+                f"Debug expression failed to evaluate (operation={operation}, type={result_type}, kind={kind}); "
+                "debug details kept private")
         return result
 
-    def string(self, expression):
-        result = self.evaluate(expression)
-        require(not result.get("valueAsStringIsTruncated"), "Debug expression result was truncated")
+    def string(self, expression, *, operation="string"):
+        result = self.evaluate(expression, operation=operation)
+        require(not result.get("valueAsStringIsTruncated"), f"Debug expression result was truncated (operation={operation})")
         return result["valueAsString"]
 
-    def snapshot(self):
-        values = json.loads(self.string(SNAPSHOT))
+    def snapshot(self, *, operation="snapshot"):
+        values = json.loads(self.string(SNAPSHOT, operation=operation))
         return dict(zip(("privacy", "players", "winner_slot", "all_released", "remaining_ms"), values))
 
-    def touches(self, action, positions):
+    def touches(self, action, positions, *, operation="evaluate"):
         require(action in {"Down", "Up"}, "Unsupported pointer event")
         events = "\n".join(
             "GestureBinding.instance.handlePointerEvent("
@@ -213,7 +238,7 @@ class VM:
             f"position: Offset({float(x)}, {float(y)})));"
             for pointer, x, y in positions
         )
-        self.evaluate("(() { " + events + " return true; })()")
+        self.evaluate("(() { " + events + " return true; })()", operation=operation)
 
     def close(self):
         self.connection.close(timeout=3)
@@ -244,11 +269,12 @@ def opaque_png(path, expected_size):
 
 
 def capture(vm, udid, folder, name, size, expected, screenshots):
-    before = vm.snapshot()
+    operation = {"01-home": "home", "02-result": "result", "03-privacy": "privacy"}[name]
+    before = vm.snapshot(operation=f"{operation}-before")
     require(expected(before), f"Unexpected game state before {name}")
     path = folder / f"{name}.png"
     run("xcrun", "simctl", "io", udid, "screenshot", "--type=png", "--mask=ignored", str(path))
-    after = vm.snapshot()
+    after = vm.snapshot(operation=f"{operation}-after")
     require(expected(after), f"Game state changed during {name}; refusing to label this screenshot")
     digest = opaque_png(path, size)
     screenshots.append({"file": str(path.relative_to(OUTPUT)), "width": size[0], "height": size[1],
@@ -301,38 +327,39 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
         debug_uri = attach.wait_for(ready, "Flutter debug attach")
         time.sleep(1)
         vm = VM(debug_uri)
-        actual_locale = vm.string("WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag()")
-        require(vm.string("_strings.text('privacy')") == privacy_text, f"System locale did not select {language}")
-        require(vm.string(NO_DEBUG_BANNER) == "true", "The app is displaying its debug banner")
+        actual_locale = vm.string("WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag()", operation="locale")
+        require(vm.string("_strings.text('privacy')", operation="privacy-label") == privacy_text, f"System locale did not select {language}")
+        require(vm.string(NO_DEBUG_BANNER, operation="debug-banner") == "true", "The app is displaying its debug banner")
         screenshots = []
         capture(vm, udid, folder, "01-home", size,
                 lambda state: not state["privacy"] and state["players"] == 0, screenshots)
-        width, height, top, bottom = json.loads(vm.string(GEOMETRY))
+        width, height, top, bottom = json.loads(vm.string(GEOMETRY, operation="geometry"))
         content_height = height - top - bottom
         positions = [(index + 1, width * x, top + content_height * y)
                      for index, (x, y) in enumerate(((.24, .28), (.76, .28), (.24, .73), (.76, .73)))]
-        vm.touches("Down", positions)
+        vm.touches("Down", positions, operation="players-down")
         # Wait for the ordinary 3.8-second round and its random draw to finish.
         deadline = time.monotonic() + 10
-        while vm.snapshot()["winner_slot"] is None:
+        while vm.snapshot(operation="winner-poll")["winner_slot"] is None:
             require(time.monotonic() < deadline, "The normal game clock did not produce a result")
             time.sleep(.2)
-        vm.touches("Up", positions)
+        vm.touches("Up", positions, operation="players-up")
         time.sleep(.3)
         capture(vm, udid, folder, "02-result", size,
                 lambda state: not state["privacy"] and state["players"] == 4 and
                 state["winner_slot"] in range(4) and state["all_released"], screenshots)
         # Complete an ordinary touch on the existing privacy button, including its release.
         privacy_position = [(20, 30, top + 22)]
-        vm.touches("Down", privacy_position)
-        vm.touches("Up", privacy_position)
+        vm.touches("Down", privacy_position, operation="privacy-down")
+        vm.touches("Up", privacy_position, operation="privacy-up")
         time.sleep(.4)
         title_expression = """
           (context as Element).toStringDeep().contains('PrivacyScreen') &&
           (context as Element).toStringDeep().contains(_strings.text('privacy_title')) &&
           (context as Element).toStringDeep().contains(_strings.text('privacy_summary'))
         """
-        require(vm.string(title_expression) == "true" and vm.string("_strings.text('privacy_title')") == privacy_title,
+        require(vm.string(title_expression, operation="privacy-rendered") == "true" and
+                vm.string("_strings.text('privacy_title')", operation="privacy-title") == privacy_title,
                 "The real localized privacy screen did not render")
         capture(vm, udid, folder, "03-privacy", size,
                 lambda state: state["privacy"] and state["all_released"], screenshots)
