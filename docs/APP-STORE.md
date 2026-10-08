@@ -4,11 +4,11 @@
 
 ## 当前基础与材料入口
 
-- 个人 Apple 开发者会员已验证有效；1.0.2 (3) 已进入 TestFlight 内部测试。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
+- 个人 Apple 开发者会员已验证有效；1.0.3 (4) 已进入 TestFlight 内部测试。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
 - 应用在设备内完成多指随机选择；没有账号、广告、内购、分析 SDK 或业务服务器。触点和结果只在运行时内存中处理。
 - 已有备案域名由用户提供，具体域名、原备案接入商及公开联系邮箱待确认。网站备案与 App 备案需分别核对。
 - [三语商店文案](../store/metadata.json)、[审核备注](../store/review-notes.txt)、[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)已准备。未确认字段保留 `null`，不能直接按完整申报资料提交。
-- 准备版本为 1.0.3 (4)，从 1.0.2 (3) 按 patch 更新，用于补齐隐私说明并修复跨页面触点释放门槛。下列审核备注适用于包含隐私入口的新构建。
+- 准备版本为 1.0.4 (5)，从 1.0.3 (4) 按 patch 更新三语说明，统一为离线随机选择工具。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
 - App 内三语本地隐私页已实现，25 项测试与 [1.0.3 (4) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37797281913)通过；官网隐私与支持页面为草稿，待部署到用户确认的域名。当前正式商店版本仍为 Prepare for Submission。
 
 ## 个人离线 App 的通常流程
@@ -16,7 +16,7 @@
 | 顺序 | 工作 | 完成证据 |
 | --- | --- | --- |
 | 1 | 确定真实核心用途、免费/收费安排、发布地区与发布主体 | 与实际功能一致的类目；用户确认商业身份和地区 |
-| 2 | 核对地区要求，尤其中国大陆备案/游戏审批、欧盟 DSA | 对本 App 适用的资质或 Apple/接入商的明确答复；不沿用别人的个案结论 |
+| 2 | 核对地区要求，尤其中国大陆 App 备案、欧盟 DSA | 对本 App 适用的资质或 Apple/接入商的明确答复；不沿用别人的个案结论 |
 | 3 | 准备隐私政策、支持与联系方式 | 公开 HTTPS 页面可匿名访问，App 内容易找到隐私政策 |
 | 4 | 真机与自动验证、生成商店截图 | iPhone/iPad 实测记录；构建/测试回执；当前版本实际截图 |
 | 5 | 填写商店资料、隐私标签、年龄分级、审核联系人 | 各必填字段完整；无账号应用关闭审核登录要求 |
@@ -31,9 +31,9 @@ Apple 的[必填属性表](https://developer.apple.com/help/app-store-connect/re
 
 工信部通知要求在境内从事 App 互联网信息服务的主办者备案，已有网站备案主体可补充 App 信息；网站备案号不能直接当成本 App 已备案的证明。官方通知未直接给出本项目这种纯本地随机选择应用的个案判定。[工信部通知](https://www.gov.cn/zhengce/zhengceku/202308/content_6897341.htm)、[工信部解读](https://wap.miit.gov.cn/zwgk/zcjd/art/2023/art_39b4f1acc36745b98478e0ec3e07128d.html)
 
-Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 则明确把上应用商店的单机离线 App 纳入办理口径。应向 Apple 确认本 App 的大陆供应要求，再向原接入商或所在地管局核对真实填报方式。备案表的后台域名应反映真实接入，不能把隐私政策网站虚构成游戏服务器，也不能从某篇经历推导出必须先买服务器。[Apple App 信息](https://developer.apple.com/cn/help/app-store-connect/reference/app-information/app-information/)、[腾讯 FAQ](https://cloud.tencent.cn/document/product/243/97691)、[阿里 FAQ](https://help.aliyun.com/zh/icp-filing/basic-icp-service/support/basics-about-icp-filling-for-apps)
+Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 则明确把上应用商店的单机离线 App 纳入办理口径。应向 Apple 确认本 App 的大陆供应要求，再向原接入商或所在地管局核对真实填报方式。备案表的后台域名应反映真实接入；本 App 没有业务服务器，隐私政策网站仅提供网页。[Apple App 信息](https://developer.apple.com/cn/help/app-store-connect/reference/app-information/app-information/)、[腾讯 FAQ](https://cloud.tencent.cn/document/product/243/97691)、[阿里 FAQ](https://help.aliyun.com/zh/icp-filing/basic-icp-service/support/basics-about-icp-filling-for-apps)
 
-如果实际产品被认定为游戏，Apple 的中国大陆规则要求游戏出版物号等材料，越南也有游戏许可证要求。类目应描述真实核心功能，不能用换类目代替适用性确认。本项目目前可准确描述为“多人同时触屏后随机选出一个参与触点”，最终类目与资质结论仍待确认。[Apple 类目说明](https://developer.apple.com/app-store/categories/)、[国家新闻出版署移动游戏通知](https://www.nppa.gov.cn/xxgk/fdzdgknr/zcfg_210/gfxwj_215/201606/t20160602_4684.html)
+本 App 的核心用途是多人同时触屏后随机选出一位。产品定位为离线随机选择工具，商店主类目采用 Utilities（工具）；按这一真实用途准备描述、截图及审核说明。[Apple 类目说明](https://developer.apple.com/app-store/categories/)
 
 若需 App 备案，可先整理下列资料，不把不适用字段编造完整：
 
@@ -47,10 +47,10 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 | 材料 | 本项目准备方式 | 当前状态 |
 | --- | --- | --- |
 | 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 | 草稿见 metadata.json |
-| 类别、年龄分级、内容权利 | 按真实核心用途作答；随机选人没有下注、奖品或兑换机制 | 待最终声明 |
+| 类别、年龄分级、内容权利 | 主类目 Utilities（工具）；按随机选择功能填写问卷 | 类目已确定；后台问卷与内容权利声明待完成 |
 | 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现；网页草稿已检查，域名/邮箱待确认 |
-| 支持 URL、版权、审核联系人 | 有可实际联系的支持方式；审核联系人与公开邮箱用途分开 | 用户资料待确认 |
-| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、倒计时、结果与隐私页 | 云端截图入口已实现，首次运行启动调试服务超时，正在排查 |
+| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 版权已确认；域名、邮箱与审核联系人待确认 |
+| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | 云端截图入口已实现，待修订版本运行并检查 |
 | 审核备注与演示 | 清楚说明至少两根手指同时按住；建议补真人多指演示 | 备注已拟；真机视频待录 |
 | 价格、全球供应与发布方式 | 当前按免费草拟，最终选择应与用户商业意图一致 | 待确认 |
 | App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
@@ -83,13 +83,13 @@ uv run --locked --script scripts/render-store-site.py
 
 ## 全球供应需要用户确认的事实
 
-1. 已备案域名及原接入商、公开支持邮箱、版权署名。
+1. 已备案域名及原接入商、公开支持邮箱。
 2. 是否为非商业业余项目，是否永久免费，是否有未来商业推广或收入安排。
-3. 本 App 的备案/出版等已有材料，以及是否已有 Apple 或办理部门的适用性答复。
+3. 本 App 的备案材料，以及是否已有 Apple 或办理部门的适用性答复。
 
 个人会员、免费发布都不自动等于欧盟 DSA 的 non-trader。Apple 以实际商业活动和意图自评；trader 的个人联系资料会公开。若 Business 页面出现中国国务院第 810 号令身份信息提示，也须按实际情况处理，这与应用收集用户数据是不同事项。[DSA 自评](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements)、[中国开发者信息](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-information-for-state-council-decree-no-810)
 
-全球目标还需按真实类目、年龄与后台提示核对当地要求，例如游戏在越南的许可，以及适用地区的年龄保障义务。不会自行删除中国大陆或其他地区来把全球目标改成较小范围，也不会为没有账号的应用凭空增加身份数据收集。[Apple 年龄保障说明](https://developer.apple.com/support/age-assurance)
+全球供应继续覆盖中国大陆，按工具类目的实际功能、年龄问卷和后台提示核对地区要求。应用没有账号，适用义务应结合实际功能判断。[Apple 年龄保障说明](https://developer.apple.com/support/age-assurance)
 
 ## 社区一手经验：可借鉴与不能推断的部分
 
@@ -106,4 +106,4 @@ uv run --locked --script scripts/render-store-site.py
 | 2024-06-23博客、2025-04-24补充，Kyra：[完整经历](https://www.simplykyra.com/blog/steps-needed-to-get-into-the-apple-app-store/)、[隐私入口补充](https://www.reddit.com/r/iOSProgramming/comments/1k6so1m/comment/mot0y65/) | 处理截图、权限和审核说明后上线；曾因审核员找不到隐私入口被拒 | 隐私入口与审核备注要容易找到；旧文的截图规格不照搬 |
 | 2026-01-14，Reddit steve_s0：[Linux 与云端 iOS 构建](https://www.reddit.com/r/FlutterDev/comments/1qbmcf9/comment/nzkysto/) | 日常 Linux，用 Codemagic 构建发布，再找家人朋友用 TestFlight 真机测试 | 无 Mac 有实际交付路径；云端成功不能替代触控/震动实测 |
 
-本项目据此准备明确的玩法步骤、可找到的隐私入口、当前规格截图和针对性的审核备注。若被拒，按真实拒绝条款补证据或修复，不用虚假类目、虚构接入或隐藏功能争取通过。
+本项目据此准备明确的使用步骤、可找到的隐私入口、当前规格截图和针对性的审核备注。若收到审核反馈，按实际条款补充证据或修复。

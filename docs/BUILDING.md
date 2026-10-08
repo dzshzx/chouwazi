@@ -35,7 +35,7 @@ flutter analyze --no-pub
 flutter test --no-pub
 ```
 
-依赖锁文件由 Dart 3.6.2 生成，包源为 pub.dev。应用仅依赖 Flutter SDK，测试与 lint 依赖不进入游戏运行包。工具链下载与依赖安装会联网；应用运行完全离线。
+依赖锁文件由 Dart 3.6.2 生成，包源为 pub.dev。应用仅依赖 Flutter SDK，测试与 lint 依赖不进入应用运行包。工具链下载与依赖安装会联网；应用运行完全离线。
 
 测试覆盖倒计时边界、增减/移动、槽位复用、十指与重复 ID、每个随机索引、结果冻结、超限及结果后物理触点、按钮手势隔离、取消、应用失活、语言选择和真实 Flutter 多指事件路由。
 
@@ -70,7 +70,7 @@ CI 明确选择 Xcode 26.3 并打印实际 Xcode 和 iPhoneOS SDK 版本，Flutt
 
 Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。签名、IPA 校验与商店上传见 [TestFlight 上传指南](TESTFLIGHT.md)；上传成功须继续等待 Apple 处理并核对测试分发状态。
 
-Runner 保持 Flutter 标准构建 scheme，CLI 通过 `--debug` 或 `--release` 选择模式。Xcode 真机试用时在 Edit Scheme → Run → Build Configuration 选择 Release。CI 的 Debug 模拟器包仅供开发；Debug/Profile 调试时 Flutter 可能请求本地网络访问以支持 DevTools，不属于 Release 游戏功能。CI 检查真机 Release 的 Info.plist 不包含这类声明。
+Runner 保持 Flutter 标准构建 scheme，CLI 通过 `--debug` 或 `--release` 选择模式。Xcode 真机试用时在 Edit Scheme → Run → Build Configuration 选择 Release。CI 的 Debug 模拟器包仅供开发；Debug/Profile 调试时 Flutter 可能请求本地网络访问以支持 DevTools，不属于 Release 应用功能。CI 检查真机 Release 的 Info.plist 不包含这类声明。
 
 ## 原生鸿蒙
 
@@ -88,7 +88,7 @@ bash scripts/build-ohos.sh
 
 **普通鸿蒙真机要求 HAP 签名，开启开发者模式也不能省略。** 模拟器调试可不配置签名，但本项目当前 CI 产物是 arm64 真机目标，不能据此保证兼容任意模拟器的架构和系统版本；模拟器需选择匹配的构建目标。签名要求见[华为官方入门说明](https://developer.huawei.com/consumer/cn/develop-novice-guide/)。
 
-鸿蒙验收沿用 [iOS 指南中的游戏验收清单](../ios/DEVICE-TESTING.md#真机验收清单)，另记录 HarmonyOS 版本、设备型号、HAP 签名与安装结果。未签名编译通过不代表商用鸿蒙真机已验证。
+鸿蒙验收沿用 [iOS 指南中的应用验收清单](../ios/DEVICE-TESTING.md#真机验收清单)，另记录 HarmonyOS 版本、设备型号、HAP 签名与安装结果。未签名编译通过不代表商用鸿蒙真机已验证。
 
 ## CI 产物
 

@@ -1,10 +1,10 @@
 # AGENTS.md
 
-「抽袜子 / chouwazi」通过一套 Flutter/Dart 游戏源码编译 Android、iOS 和原生鸿蒙 HAP。使用与验证状态见 [README.md](README.md)，工具链和产物见 [docs/BUILDING.md](docs/BUILDING.md)。
+「抽袜子 / chouwazi」是离线随机选择工具，通过一套 Flutter/Dart 源码编译 Android、iOS 和原生鸿蒙 HAP。使用与验证状态见 [README.md](README.md)，工具链和产物见 [docs/BUILDING.md](docs/BUILDING.md)。
 
 ## 共享实现
 
-- 游戏规则只改 `lib/draw_round.dart`，物理触点、按钮与生命周期规则只改 `lib/game_session.dart`，并更新 `test/`。平台壳不复制游戏状态机或界面。
+- 抽选规则只改 `lib/draw_round.dart`，物理触点、按钮与生命周期规则只改 `lib/game_session.dart`，并更新 `test/`。平台壳不复制状态机或界面。
 - 上限 10 指；触点用稳定 pointer ID；增减参与者重置唯一的 3.8 秒截止时间（0.8 秒准备 + 3 秒倒计时），移动不重置；结果冻结；空缺槽位复用；随机索引等概率。
 - 倒计时源是单调 `Stopwatch`。所有物理触点（含超限和结果后的新增触点）松开才允许重开；控制按钮手势不参与抽签。系统取消触控或失活清理未完成轮次，保留已产生结果。
 - 简体、繁体、英文界面统一在 `lib/strings.dart`。桌面应用名属于各端原生资源，改名时同步三端资源。

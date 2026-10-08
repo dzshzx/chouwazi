@@ -10,16 +10,16 @@
     "draft_title": "预览草稿",
     "pending_label": "待确认：",
     "index_title": "支持与隐私",
-    "index_lead": "选择语言，查看玩法帮助或隐私政策。",
+    "index_lead": "选择语言，查看使用帮助或隐私政策。",
     "missing": {"public_base_url": "公开站点地址", "support_email": "公开支持邮箱", "copyright_holder": "版权署名"},
     "contact_pending": "公开支持邮箱尚未确认，此草稿暂不提供联系链接。",
     "copyright_pending": "版权署名待确认。",
     "support": {
       "title": "支持",
-      "description": "抽袜子的玩法、常见问题和开发者支持。",
-      "lead": "大家在同一台设备上按住屏幕，抽袜子会随机选出一根手指。至少 2 根、最多 10 根，全程可离线游玩。",
+      "description": "抽袜子的使用方式、常见问题和开发者支持。",
+      "lead": "抽袜子是离线随机选择工具。大家在同一台设备上按住屏幕，应用会从至少 2 根、最多 10 根手指中随机选出一根。",
       "sections": [
-        {"id": "play", "title": "怎么玩", "steps": ["每位参与者在游戏区域按住一根手指，避开控制按钮。", "至少 2 根手指加入后，保持按住。应用先准备 0.8 秒，再倒计时 3 秒。", "倒计时结束时，应用从本轮参与的手指中等概率随机选出一根，并保留结果。", "大家松开所有手指，再点击“再来一轮”，开始下一轮。"]},
+        {"id": "play", "title": "使用方式", "steps": ["每位参与者在抽选区域按住一根手指，避开控制按钮。", "至少 2 根手指加入后，保持按住。应用先准备 0.8 秒，再倒计时 3 秒。", "倒计时结束时，应用从本轮参与的手指中等概率随机选出一根，并保留结果。", "大家松开所有手指，再点击“再来一轮”，开始下一轮。"]},
         {"id": "questions", "title": "常见问题", "questions": [
           {"title": "为什么只有一根手指时不抽选？", "text": "需要至少 2 根手指才能开始。只有一根时，应用会提示“再来一根手指”。"},
           {"title": "为什么倒计时重新开始？", "text": "抽选完成前，每次增加或减少参与手指，都会重新开始 0.8 秒准备和 3 秒倒计时。这样新加入的人也有时间准备。移动已按住的手指不会重置计时。"},
@@ -33,13 +33,13 @@
     },
     "privacy": {
       "title": "隐私政策",
-      "description": "抽袜子如何在设备上处理游戏数据，以及支持联系和平台诊断的说明。",
-      "lead": "抽袜子离线运行。应用无账号、广告、内购或分析 SDK，不主动发起网络连接，也不上传触点数据或抽签结果。",
+      "description": "抽袜子的本地抽选处理、支持联系和平台诊断说明。",
+      "lead": "抽袜子是离线随机选择工具。应用无账号、广告、内购、服务器或分析 SDK，不主动发起网络连接，也不上传触点数据或抽选结果。",
       "sections": [
-        {"id": "local", "title": "设备上的游戏数据", "paragraphs": ["手指位置、参与顺序、倒计时和随机选择仅在设备内存中临时处理，用于完成当前轮次。应用不持久保存触点、抽签结果或游戏历史，也不收集或存储个人信息。", "振动开关仅控制本机的触觉反馈。应用不需要注册，也不需要提供姓名、邮箱或其他个人资料才能游玩。"]},
-        {"id": "platform", "title": "操作系统与应用商店", "paragraphs": ["操作系统或应用分发平台可能按照各自的设置和隐私政策处理诊断、崩溃或使用数据。这些处理与应用的游戏逻辑相互独立。", "你可以在系统或应用商店的相关设置中查看诊断与数据共享选项。应用本身不嵌入分析 SDK，也不主动上传游戏数据。"]},
+        {"id": "local", "title": "本地抽选处理", "paragraphs": ["触点、参与顺序、倒计时和当前抽选结果仅在设备内存中用于本次抽选。应用不持久保存触点或抽选结果，不保存抽选历史，也不收集或存储个人信息。", "振动开关仅控制本机的触觉反馈。使用应用无需注册，也无需提供姓名、邮箱或其他个人资料。"]},
+        {"id": "platform", "title": "操作系统与应用商店", "paragraphs": ["操作系统或应用分发平台可能按照各自的设置和隐私政策处理诊断、崩溃或使用数据。这些处理与应用的本地抽选过程相互独立。", "你可以在系统或应用商店的相关设置中查看诊断与数据共享选项。应用本身不嵌入分析 SDK，也不主动上传触点或抽选结果。"]},
         {"id": "support-data", "title": "主动联系支持", "paragraphs": ["如果你向支持邮箱发送邮件，我们会收到你提供的邮箱地址、邮件内容和附件，并将其用于回复、排查问题和处理你的请求。请只提供解决问题所必需的信息。", "邮件服务商也会按其服务规则处理邮件。若希望询问、更正或删除你主动提供的信息，请通过同一支持邮箱联系；我们会根据实际持有的信息和适用要求处理。"]},
-        {"id": "website", "title": "本网站", "paragraphs": ["本页不设置 Cookie，不含追踪脚本，不加载第三方字体或外部资源。打开页面不需要账号。", "浏览网页时，托管服务可能处理提供页面所需的 IP 地址和请求日志。这属于网站托管过程，与应用内的离线游戏处理相互独立。"]},
+        {"id": "website", "title": "本网站", "paragraphs": ["本页不设置 Cookie，不含追踪脚本，不加载第三方字体或外部资源。打开页面不需要账号。", "浏览网页时，托管服务可能处理提供页面所需的 IP 地址和请求日志。这属于网站托管过程，与应用内的本地抽选处理相互独立。"]},
         {"id": "changes", "title": "政策更新", "paragraphs": ["应用的数据处理方式如有变化，我们会更新本页及应用内的相关隐私说明。"]},
         {"id": "contact", "title": "隐私联系", "paragraphs": ["关于本政策或你主动提供的信息，可联系开发者支持邮箱。"], "contact": true}
       ]
@@ -56,16 +56,16 @@
     "draft_title": "預覽草稿",
     "pending_label": "待確認：",
     "index_title": "支援與隱私",
-    "index_lead": "選擇語言，查看玩法說明或隱私政策。",
+    "index_lead": "選擇語言，查看使用說明或隱私政策。",
     "missing": {"public_base_url": "公開網站地址", "support_email": "公開支援信箱", "copyright_holder": "版權署名"},
     "contact_pending": "公開支援信箱尚未確認，此草稿暫不提供聯絡連結。",
     "copyright_pending": "版權署名待確認。",
     "support": {
       "title": "支援",
-      "description": "抽袜子的玩法、常見問題和開發者支援。",
-      "lead": "大家在同一台裝置上按住螢幕，抽袜子會隨機選出一根手指。至少 2 根、最多 10 根，全程可離線遊玩。",
+      "description": "抽袜子的使用方式、常見問題和開發者支援。",
+      "lead": "抽袜子是離線隨機選擇工具。大家在同一台裝置上按住螢幕，應用程式會從至少 2 根、最多 10 根手指中隨機選出一根。",
       "sections": [
-        {"id": "play", "title": "怎麼玩", "steps": ["每位參與者在遊戲區域按住一根手指，避開控制按鈕。", "至少 2 根手指加入後，保持按住。應用程式先準備 0.8 秒，再倒數 3 秒。", "倒數結束時，應用程式從本輪參與的手指中以相同機率隨機選出一根，並保留結果。", "大家鬆開所有手指，再點擊「再來一輪」，開始下一輪。"]},
+        {"id": "play", "title": "使用方式", "steps": ["每位參與者在抽選區域按住一根手指，避開控制按鈕。", "至少 2 根手指加入後，保持按住。應用程式先準備 0.8 秒，再倒數 3 秒。", "倒數結束時，應用程式從本輪參與的手指中以相同機率隨機選出一根，並保留結果。", "大家鬆開所有手指，再點擊「再來一輪」，開始下一輪。"]},
         {"id": "questions", "title": "常見問題", "questions": [
           {"title": "為什麼只有一根手指時不抽選？", "text": "需要至少 2 根手指才能開始。只有一根時，應用程式會提示「再來一根手指」。"},
           {"title": "為什麼倒數重新開始？", "text": "抽選完成前，每次增加或減少參與手指，都會重新開始 0.8 秒準備和 3 秒倒數。這樣新加入的人也有時間準備。移動已按住的手指不會重設計時。"},
@@ -79,13 +79,13 @@
     },
     "privacy": {
       "title": "隱私政策",
-      "description": "抽袜子如何在裝置上處理遊戲資料，以及支援聯絡和平台診斷的說明。",
-      "lead": "抽袜子離線執行。應用程式無帳號、廣告、App 內購買或分析 SDK，不主動發起網路連線，也不上傳觸點資料或抽籤結果。",
+      "description": "抽袜子的本機抽選處理、支援聯絡和平台診斷說明。",
+      "lead": "抽袜子是離線隨機選擇工具。應用程式無帳號、廣告、App 內購買、伺服器或分析 SDK，不主動發起網路連線，也不上傳觸點資料或抽選結果。",
       "sections": [
-        {"id": "local", "title": "裝置上的遊戲資料", "paragraphs": ["手指位置、參與順序、倒數和隨機選擇僅在裝置記憶體中暫時處理，用於完成目前輪次。應用程式不持久儲存觸點、抽籤結果或遊戲歷史，也不收集或儲存個人資訊。", "震動開關僅控制本機的觸覺回饋。應用程式不需要註冊，也不需要提供姓名、信箱或其他個人資料才能遊玩。"]},
-        {"id": "platform", "title": "作業系統與應用程式商店", "paragraphs": ["作業系統或應用程式分發平台可能依照各自的設定和隱私政策處理診斷、當機或使用資料。這些處理與應用程式的遊戲邏輯相互獨立。", "你可以在系統或應用程式商店的相關設定中查看診斷與資料分享選項。應用程式本身不嵌入分析 SDK，也不主動上傳遊戲資料。"]},
+        {"id": "local", "title": "本機抽選處理", "paragraphs": ["觸點、參與順序、倒數和目前抽選結果僅在裝置記憶體中用於本次抽選。應用程式不持久儲存觸點或抽選結果，不儲存抽選歷史，也不收集或儲存個人資訊。", "震動開關僅控制本機的觸覺回饋。使用應用程式無需註冊，也無需提供姓名、信箱或其他個人資料。"]},
+        {"id": "platform", "title": "作業系統與應用程式商店", "paragraphs": ["作業系統或應用程式分發平台可能依照各自的設定和隱私政策處理診斷、當機或使用資料。這些處理與應用程式的本機抽選過程相互獨立。", "你可以在系統或應用程式商店的相關設定中查看診斷與資料分享選項。應用程式本身不嵌入分析 SDK，也不主動上傳觸點或抽選結果。"]},
         {"id": "support-data", "title": "主動聯絡支援", "paragraphs": ["如果你向支援信箱寄送電子郵件，我們會收到你提供的信箱地址、郵件內容和附件，並將其用於回覆、排查問題和處理你的請求。請只提供解決問題所必需的資訊。", "郵件服務商也會依照其服務規則處理郵件。若希望詢問、更正或刪除你主動提供的資訊，請透過同一支援信箱聯絡；我們會根據實際持有的資訊和適用要求處理。"]},
-        {"id": "website", "title": "本網站", "paragraphs": ["本頁不設定 Cookie，不含追蹤指令碼，不載入第三方字型或外部資源。開啟頁面不需要帳號。", "瀏覽網頁時，託管服務可能處理提供頁面所需的 IP 地址和請求紀錄。這屬於網站託管過程，與應用程式內的離線遊戲處理相互獨立。"]},
+        {"id": "website", "title": "本網站", "paragraphs": ["本頁不設定 Cookie，不含追蹤指令碼，不載入第三方字型或外部資源。開啟頁面不需要帳號。", "瀏覽網頁時，託管服務可能處理提供頁面所需的 IP 地址和請求紀錄。這屬於網站託管過程，與應用程式內的本機抽選處理相互獨立。"]},
         {"id": "changes", "title": "政策更新", "paragraphs": ["應用程式的資料處理方式如有變化，我們會更新本頁及應用程式內的相關隱私說明。"]},
         {"id": "contact", "title": "隱私聯絡", "paragraphs": ["關於本政策或你主動提供的資訊，可聯絡開發者支援信箱。"], "contact": true}
       ]
@@ -102,16 +102,16 @@
     "draft_title": "Preview draft",
     "pending_label": "Still to confirm: ",
     "index_title": "Support and privacy",
-    "index_lead": "Choose a language to read the playing instructions or privacy policy.",
+    "index_lead": "Choose a language to read the usage instructions or privacy policy.",
     "missing": {"public_base_url": "public website URL", "support_email": "public support email", "copyright_holder": "copyright attribution"},
     "contact_pending": "The public support email has not been confirmed. This draft has no contact link.",
     "copyright_pending": "Copyright attribution to be confirmed.",
     "support": {
       "title": "Support",
-      "description": "How to play chouwazi, common questions and developer support.",
-      "lead": "Hold your fingers on one device together. chouwazi randomly chooses one finger from a group of 2 to 10. You can play entirely offline.",
+      "description": "How to use chouwazi, common questions and developer support.",
+      "lead": "chouwazi is an offline random selection tool. Hold your fingers on one device together, and the app randomly chooses one finger from a group of 2 to 10.",
       "sections": [
-        {"id": "play", "title": "How to play", "steps": ["Each participant holds one finger in the game area, away from the control buttons.", "When at least 2 fingers have joined, keep holding. There is a 0.8-second preparation period, followed by a 3-second countdown.", "At the end of the countdown, the app randomly chooses one participating finger. Every participating finger has an equal chance. The result stays on screen.", "Lift every finger, then tap “Another round” to start again."]},
+        {"id": "play", "title": "How to use it", "steps": ["Each participant holds one finger in the selection area, away from the control buttons.", "When at least 2 fingers have joined, keep holding. There is a 0.8-second preparation period, followed by a 3-second countdown.", "At the end of the countdown, the app randomly chooses one participating finger. Every participating finger has an equal chance. The result stays on screen.", "Lift every finger, then tap “Another round” to start again."]},
         {"id": "questions", "title": "Common questions", "questions": [
           {"title": "Why does nothing happen with just one finger?", "text": "At least 2 fingers are needed to start. With one finger, the app displays “One more finger”."},
           {"title": "Why did the countdown restart?", "text": "Before a result is chosen, adding or removing a participating finger restarts the 0.8-second preparation period and 3-second countdown. This gives anyone who has just joined time to get ready. Moving a finger that is already held down does not restart the timer."},
@@ -125,13 +125,13 @@
     },
     "privacy": {
       "title": "Privacy policy",
-      "description": "How chouwazi processes game data on your device, with information about support requests and platform diagnostics.",
-      "lead": "chouwazi runs offline. The app has no accounts, ads, in-app purchases or analytics SDKs. It does not initiate network connections or upload touch data or draw results.",
+      "description": "How chouwazi handles selections locally, with information about support requests and platform diagnostics.",
+      "lead": "chouwazi is an offline random selection tool. The app has no accounts, ads, in-app purchases, servers or analytics SDKs. It does not initiate network connections or upload touch data or selection results.",
       "sections": [
-        {"id": "local", "title": "Game data on your device", "paragraphs": ["Finger positions, join order, the countdown and random selection are processed temporarily in your device’s memory to run the current round. The app does not persist touch data, draw results or game history, and does not collect or store personal information.", "The haptics switch only controls feedback on your device. You do not need to register or provide a name, email address or other personal information to play."]},
-        {"id": "platform", "title": "Operating systems and app stores", "paragraphs": ["Your operating system or app distribution platform may process diagnostic, crash or usage data under its own settings and privacy policy. This is separate from the app’s game logic.", "You can review diagnostic and data-sharing options in the relevant system or store settings. The app itself does not embed analytics SDKs or actively upload game data."]},
+        {"id": "local", "title": "Local selection processing", "paragraphs": ["Touch points, join order, the countdown and the current selection result are processed only in your device’s memory for the current draw. The app does not persist touch points or selection results, save selection history, or collect or store personal information.", "The haptics switch only controls feedback on your device. You do not need to register or provide a name, email address or other personal information to use the app."]},
+        {"id": "platform", "title": "Operating systems and app stores", "paragraphs": ["Your operating system or app distribution platform may process diagnostic, crash or usage data under its own settings and privacy policy. This is separate from the app’s local selection process.", "You can review diagnostic and data-sharing options in the relevant system or store settings. The app itself does not embed analytics SDKs or actively upload touch points or selection results."]},
         {"id": "support-data", "title": "When you contact support", "paragraphs": ["If you email support, we receive the email address, message and attachments you provide. We use them to reply, investigate the issue and handle your request. Please include only information needed to resolve it.", "Email service providers also process messages under their service terms. To ask about, correct or request deletion of information you voluntarily provided, contact the same support email. We will handle the request according to the information we hold and applicable requirements."]},
-        {"id": "website", "title": "This website", "paragraphs": ["This page does not set cookies, contain tracking scripts or load third-party fonts or external resources. You do not need an account to view it.", "When you visit the website, its hosting service may process your IP address and request logs to serve the page. Website hosting is separate from the app’s offline game processing."]},
+        {"id": "website", "title": "This website", "paragraphs": ["This page does not set cookies, contain tracking scripts or load third-party fonts or external resources. You do not need an account to view it.", "When you visit the website, its hosting service may process your IP address and request logs to serve the page. Website hosting is separate from the app’s local selection processing."]},
         {"id": "changes", "title": "Policy changes", "paragraphs": ["If the app’s data processing changes, we will update this page and the relevant privacy information in the app."]},
         {"id": "contact", "title": "Privacy contact", "paragraphs": ["For questions about this policy or information you voluntarily provided, contact the developer’s support email."], "contact": true}
       ]

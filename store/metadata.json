@@ -1,16 +1,16 @@
 {
   "status": "draft",
-  "preparedVersion": "1.0.3",
-  "preparedBuild": "4",
+  "preparedVersion": "1.0.4",
+  "preparedBuild": "5",
   "appId": "6820500660",
   "bundleId": "com.alex.chouwazi",
   "sku": "chouwazi-ios",
   "primaryLocale": "zh-Hans",
   "distributionGoal": "worldwide-including-china-mainland",
   "proposedPrice": "free",
-  "primaryCategory": null,
+  "primaryCategory": "UTILITIES",
   "secondaryCategory": null,
-  "copyright": null,
+  "copyright": "2026 dzshzx",
   "supportUrl": null,
   "privacyPolicyUrl": null,
   "publicContactEmail": null,
@@ -21,21 +21,21 @@
     "zh-Hans": {
       "name": "抽袜子",
       "subtitle": "一起按住，随机选出一位",
-      "description": "需要决定下一位是谁时，让大家一起按住屏幕。\n\n抽袜子会在倒计时结束后，从参与的手指中随机选出一根。新增或移开手指会重新倒计时，移动位置不会重置。选中结果会保持，全部松开后即可再来一轮。\n\n支持多点触控、震动开关，以及简体中文、繁体中文和英文。应用离线运行，无需注册，没有广告和内购。",
+      "description": "抽袜子是离线随机选择工具。需要决定下一位是谁时，让大家一起按住屏幕。\n\n应用会在倒计时结束后，从参与的手指中随机选出一根。新增或移开手指会重新倒计时，移动位置不会重置。选中结果会保持，全部松开后即可再来一轮。\n\n支持多点触控、震动开关，以及简体中文、繁体中文和英文。使用时无需注册，没有广告和内购。",
       "keywords": "抽签,随机,选人,聚会,轮流,指尖,决定",
       "promotionalText": ""
     },
     "zh-Hant": {
       "name": "抽袜子",
       "subtitle": "一起按住，隨機選出一位",
-      "description": "需要決定下一位是誰時，讓大家一起按住螢幕。\n\n抽袜子會在倒數結束後，從參與的手指中隨機選出一根。新增或移開手指會重新倒數，移動位置不會重置。選中結果會保留，全部放開後即可再來一輪。\n\n支援多點觸控、震動開關，以及簡體中文、繁體中文和英文。應用程式離線執行，無需註冊，沒有廣告和內購。",
+      "description": "抽袜子是離線隨機選擇工具。需要決定下一位是誰時，讓大家一起按住螢幕。\n\n應用程式會在倒數結束後，從參與的手指中隨機選出一根。新增或移開手指會重新倒數，移動位置不會重置。選中結果會保留，全部放開後即可再來一輪。\n\n支援多點觸控、震動開關，以及簡體中文、繁體中文和英文。使用時無需註冊，沒有廣告和 App 內購買。",
       "keywords": "抽籤,隨機,選人,聚會,輪流,指尖,決定",
       "promotionalText": ""
     },
     "en-US": {
       "name": "Chouwazi",
       "subtitle": "Pick someone together",
-      "description": "Deciding who goes next? Place your fingers on the screen together.\n\nChouwazi randomly chooses one participating finger after a countdown. Adding or lifting a finger restarts the countdown; moving a finger does not. The result stays on screen until everyone lifts their fingers and starts another round.\n\nIncludes multi-touch selection, optional haptics, and English, Simplified Chinese and Traditional Chinese interfaces. The app works offline with no account, ads or in-app purchases.",
+      "description": "Chouwazi is an offline random selection tool. To decide who goes next, place your fingers on the screen together.\n\nThe app randomly chooses one participating finger after a countdown. Adding or lifting a finger restarts the countdown; moving a finger does not. The result stays on screen until everyone lifts their fingers and starts another round.\n\nIncludes multi-touch selection, optional haptics, and English, Simplified Chinese and Traditional Chinese interfaces. No account, ads or in-app purchases.",
       "keywords": "random,picker,choose,fingers,group,party,turn,decision",
       "promotionalText": ""
     }
