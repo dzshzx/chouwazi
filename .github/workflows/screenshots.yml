@@ -1,0 +1,53 @@
+name: Capture iOS App Store screenshots
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  screenshots:
+    runs-on: macos-15
+    timeout-minutes: 35
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: stable
+          cache: true
+      - name: Verify Apple toolchain and available simulators
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphonesimulator --show-sdk-version
+          xcrun simctl list devicetypes
+          xcrun simctl list runtimes
+      - name: Check shared source and build the actual simulator app
+        run: |
+          flutter pub get --enforce-lockfile
+          dart format --output=none --set-exit-if-changed lib test
+          flutter analyze --no-pub
+          flutter test --no-pub
+          flutter precache --ios
+          cd ios
+          pod install
+          cd ..
+          flutter build ios --simulator --debug --no-codesign --no-pub
+          uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app
+      - name: Capture real UI in English, Simplified and Traditional Chinese
+        run: uv run --locked --script scripts/capture-ios-screenshots.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chouwazi-ios-app-store-screenshots
+          path: |
+            build/app-store-screenshots/**/*.png
+            build/app-store-screenshots/manifest.json
+          if-no-files-found: error
+          retention-days: 30

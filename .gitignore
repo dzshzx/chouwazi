@@ -16,6 +16,7 @@ local.properties
 *.mobileprovision
 .env
 .dart_tool/
+__pycache__/
 .flutter-plugins
 .flutter-plugins-dependencies
 .tooling/
