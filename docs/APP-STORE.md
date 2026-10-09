@@ -11,7 +11,8 @@
 - 已提交版本为 1.0.4 (5)，从 1.0.3 (4) 按 patch 更新三语说明，统一为离线随机选择工具。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
 - App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项回读。
 - App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存用户提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
-- 2026-10-09 08:47（Asia/Shanghai）回读版本状态为 `WAITING_FOR_REVIEW`，页面确认 `1 Item Submitted`。当天 12:45 收到 `Rejected`，具体为 `Guideline 2.1 - Information Needed - New App Submission`：账号审核历史较少，须补充真机录屏及五项说明。第 2–6 项用途、操作、外部服务、地区差异和资质说明已由用户确认，待视频后在审核回复及 Notes 中一同补交。发布方式为 `AFTER_APPROVAL`，尚未审核通过或正式上架；大陆供应仍以实际审核及发布结果为准。
+- 2026-10-09 14:02（Asia/Shanghai）已补交真机录屏和完整六项说明，重新提交 1.0.4 (5)；版本与提交记录均为 `WAITING_FOR_REVIEW`。此前当天 12:45 的 `Guideline 2.1 - Information Needed - New App Submission` 要求已逐项回复，并同步至 App Review Information 的 Notes 与附件。发布方式为 `AFTER_APPROVAL`，获批后自动发布；大陆供应以实际审核及发布结果为准。
+- 录屏来自 iPhone 18 Pro / iOS 27.0.1，时长 47.74 秒，展示 TestFlight 首次启动流程、应用多指抽选、结果、再次抽选和隐私页。录屏分别附于审核资料和审核回复，消息附件下载后 SHA256 与用户原始视频一致；正文与 Notes 均与[仓库审核备注](../store/review-notes.txt)对应的定稿一致。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
 - 为使用另一个 Apple 账号完成真机测试，已将 1.0.4 (5) 加入 TestFlight「公开测试」外部组，并创建[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)。2026-10-09 13:29（Asia/Shanghai）回读 Beta App Review 为 `Waiting for Review`；通过前公开链接暂不接受测试者。这与 App Store 正式上架审核是不同流程。
 - 用户确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆；当前大陆状态为 `Available on App Release`，尚不是已上线或备案适用性获批。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
 
@@ -55,7 +56,7 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 | 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；三语网页已上线，商店隐私链接已回读 |
 | 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 三语支持链接、版权与专用审核联系人已保存；公开邮箱已实测收信 |
 | iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已回读核对 |
-| 审核备注与演示 | 清楚说明至少两根手指同时按住；建议补真人多指演示 | 备注已保存到后台；真机视频待录 |
+| 审核备注与演示 | 完整六项说明，以及从启动到抽选、再次抽选和隐私页的真机录屏 | 2026-10-09 已保存 Notes、上传视频并回复审核；正文与附件均已读回核验 |
 | 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 | 价格与供应范围已保存，获批后自动发布；待实际审核结果 |
 | App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
 | Product page Header / Search Results 创意素材 | 与截图独立，Apple 明确列为可选 | 暂不制作 |

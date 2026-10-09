@@ -1,12 +1,41 @@
-Chouwazi is an offline random selection tool in the Utilities category for people using the same device. All selection processing takes place on the device. No account, internet connection or review credentials are needed. The app has no advertising or in-app purchases.
+1. Physical-device screen recording
 
-How to test on a physical iPhone or iPad with multi-touch input:
-1. Place 2 to 10 fingers in the selection area, away from the control buttons, and keep holding.
-2. After a 0.8-second preparation period and a 3-second countdown, one participating finger is selected at random. Each participating finger has an equal chance, and the result stays on screen.
-3. Before a result is selected, adding or lifting a participating finger restarts both preparation and the countdown. Moving a finger does not restart the timer.
-4. Lift every finger from the screen, including any fingers beyond the 10-finger limit or added after the result appeared, then tap “Another round” to start again.
-5. With all fingers lifted, the haptics control changes vibration feedback. The Privacy button opens the bundled policy and works offline.
+File: Chouwazi-1.0.4-5-iPhone18Pro-iOS27.0.1.mp4
+Device: iPhone 18 Pro running iOS 27.0.1, the current public iOS release. App version: 1.0.4 (5).
 
-A single touch waits for another participant, so a single mouse pointer alone does not demonstrate the selection flow. The device's supported simultaneous touch count and system gesture settings may limit the number of participants. Haptic feedback depends on device support and system settings.
+The attached recording begins with TestFlight's first-launch prompts and shows opening Chouwazi, simultaneous finger input, the countdown, random selection, another round, and the bundled privacy policy.
 
-The app supports English, Simplified Chinese and Traditional Chinese and follows the device language. It supports both iPhone and iPad.
+Five simultaneous touch points were verified on the recorded device. The app's software limit is ten, with the actual supported count determined by the device's input capabilities.
+
+2. App purpose and target audience
+
+Chouwazi is an offline random selection utility for friends, families, and groups meeting in person. It helps people decide who starts or who goes next in everyday activities. Each participant places one finger on the same iPhone or iPad. After a countdown, one participating finger is selected at random, with an equal chance for each. This gives the group a quick, shared, visible way to make a selection.
+
+3. Setup and access to the main features
+
+All features are available immediately after installation. Review credentials and sample files are not required.
+
+- Open the app on a physical iPhone or iPad.
+- Hold at least two fingers in the selection area, away from the control buttons. The software supports up to ten participants, subject to the device's simultaneous touch capacity.
+- Keep holding through the 0.8-second preparation period and 3-second countdown. One participating finger is selected, and the result remains visible.
+- Before selection, adding or lifting a participating finger restarts preparation and the countdown. Moving a finger preserves the existing countdown.
+- Lift every finger, then tap "Another round" to start again.
+- With all fingers lifted, use the haptics control to switch vibration feedback, or tap "Privacy" to read the bundled offline privacy policy.
+
+4. External services, tools, and platforms
+
+Flutter and Dart provide the app framework and local random selection. iOS system capabilities provide touch input, display, and haptic feedback. The complete selection process runs on the device.
+
+External online service dependencies: none.
+
+The public support and privacy website provides explanatory information and contact details. The in-app privacy policy is bundled with the app and available offline.
+
+5. Regional differences
+
+The app provides the same selection features and user flow in all territories where it is offered. The interface follows the device language and supports English, Simplified Chinese, and Traditional Chinese. English is used for other device languages. Selection rules and functionality remain consistent across these localizations.
+
+6. Industry credentials and content authorization
+
+The app is a general-purpose offline utility for everyday random selection. Its content consists of the selection interface and bundled explanatory text.
+
+Industry-specific credentials and third-party content authorization documents: not applicable.

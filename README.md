@@ -66,9 +66,9 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 - Android：真实编译 Release APK，CI 通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35；系统权限仅震动，内部广播权限保持 signature 级。
 - iOS：macOS / Xcode 26.3、iOS 26.2 SDK 真实编译模拟器 Debug 与真机 Release；CI 回读版本、包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单及非豁免加密声明。真机包无本地网络调试声明。
 - 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致；编译失败传播的负测通过。
-- 三端真机安装、多指上限、显示与震动均待设备验收。编译通过不等于设备验证通过。
-- TestFlight：2026-10-08，[签名上传运行](https://github.com/dzshzx/chouwazi/actions/runs/37802819518)通过，源码 `3f85685`，版本 `1.0.4 (5)`，构建 ID `a22f5a2e-3f9d-43c7-8f42-1c9c39de3e38`。Apple 已处理为 `VALID`，内部测试状态为 `IN_BETA_TESTING`，构建未过期；「本人测试」组关联该构建，组内已有账号本人 1 名测试者。2026-10-09 已创建「公开测试」外部组及[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)，并提交同一构建的 Beta App Review；13:29（Asia/Shanghai）状态为 `Waiting for Review`，通过前暂不能通过公开链接加入。真机安装与体验验收仍待执行。
-- App Store：1.0.4 (5) 于 2026-10-09 收到 `Rejected`，具体为 Guideline 2.1 新应用需补充信息；要求真机录屏及用途、操作、外部服务、地区差异和资质说明。第 2–6 项说明已确认，待真机视频后一同补交。发布方式仍为获批后自动发布；目标为 175 个国家和地区免费供应，包含中国大陆，最终以审核和实际供应结果为准。
+- 真机：2026-10-09 已确认 iPhone 18 Pro / iOS 27.0.1 安装 1.0.4 (5)，录屏展示多指抽选、结果、再次抽选与隐私页；该机在应用和独立 Safari 触点测试中均报告最多 5 点。用户确认 Xiaomi 17 的 Android 版支持 10 点。完整设备验收、震动手感及其他机型覆盖见 [iOS 真机记录](ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
+- TestFlight：2026-10-08，[签名上传运行](https://github.com/dzshzx/chouwazi/actions/runs/37802819518)通过，源码 `3f85685`，版本 `1.0.4 (5)`，构建 ID `a22f5a2e-3f9d-43c7-8f42-1c9c39de3e38`。Apple 已处理为 `VALID`，内部测试状态为 `IN_BETA_TESTING`，构建未过期；「本人测试」组的账号本人已安装该构建。2026-10-09 已创建「公开测试」外部组及[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)，并提交同一构建的 Beta App Review；13:29（Asia/Shanghai）状态为 `Waiting for Review`，通过前暂不能通过公开链接加入。
+- App Store：1.0.4 (5) 已于 2026-10-09 14:02（Asia/Shanghai）补交真机录屏和完整六项说明并重新提交，版本与提交记录均为 `WAITING_FOR_REVIEW`。此次补交对应当天 Guideline 2.1 的信息要求，正文与 Notes 已读回，消息附件下载后与原始视频 SHA256 一致。发布方式为获批后自动发布；目标为 175 个国家和地区免费供应，包含中国大陆，最终以审核和实际供应结果为准。
 
 ## 隐私
 

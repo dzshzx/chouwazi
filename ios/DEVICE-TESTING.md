@@ -1,6 +1,6 @@
 # iOS 真机试用指南
 
-当前使用三端共用的 Flutter 源码。已获内部测试邀请的用户可通过 [TestFlight](../docs/TESTFLIGHT.md#testflight-安装) 安装，无需自备 Mac；本地开发也可通过下述 Xcode 流程签名安装。最新编译与分发证据统一见[根 README](../README.md#验证状态)，真机安装和下列验收项目均待执行。
+当前使用三端共用的 Flutter 源码。已获内部测试邀请的用户可通过 [TestFlight](../docs/TESTFLIGHT.md#testflight-安装) 安装，无需自备 Mac；本地开发也可通过下述 Xcode 流程签名安装。最新编译与分发证据统一见[根 README](../README.md#验证状态)，已完成的设备验证见下方实测记录，完整验收范围按清单逐项记录。
 
 ## 准备与安装
 
@@ -27,6 +27,16 @@
 
 Bundle Identifier 保持 `com.alex.chouwazi`，最低系统为 iOS 15。CI 检查真实 bundle 中的 Flutter 引擎、共享 Dart 资源、应用隐私清单、图标和三语言桌面名称。源码 SHA、版本与构建结论以对应 Actions 运行及根 README 为准。
 
+## 2026-10-09 实测记录
+
+- iPhone 18 Pro / iOS 27.0.1，应用 1.0.4 (5)，源码 `3f85685`。TestFlight 后台确认已安装；47.74 秒录屏展示首次启动、多指输入、倒计时、随机结果、再次抽选及简体中文隐私页。
+- 该机实际最多识别 5 个同时触点。用户确认第六指是在倒计时结束前、抽选区域内加入；在同机 Safari 的[独立触点测试](https://patrickhlauke.github.io/touch/tracker/multi-touch-tracker.html)中也最多出现 5 个圆圈。该测试读取真实 `targetTouches` 列表。
+- Android 对照：用户确认 Xiaomi 17 的应用可同时识别 10 点；本次未记录该设备的系统版本和构建号。
+- 软件边界验证：在 Flutter 3.27.4 下向实际 `GameScreen` 触点监听器输入 6 点和 10 点，两项测试均通过，末位触点可被选中。当前共享应用与上述构建源码一致。此项验证覆盖应用事件处理与界面状态，设备实际触点能力由真机结果记录。
+- Flutter 3.27.4 对应引擎 `82bd5b7209295a5b7ff8cae0df96e7870171e3a5` 已在 [`FlutterViewController.loadView`](https://github.com/flutter/engine/blob/82bd5b7209295a5b7ff8cae0df96e7870171e3a5/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L499) 开启 `multipleTouchEnabled`，并逐个转发 UIKit 提供的触点；应用的软件上限为 10。综合源码、软件边界测试与 Safari 对照，五点限制定位于该设备的 iOS 输入能力。触控芯片、固件与系统内部各自的限制仍缺少公开规格依据。
+- 触点测试应记录实际事件数量。WebKit 当前 [`navigator.maxTouchPoints`](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Navigator.cpp#L456) 在 iOS 分支返回固定值 5，不能单独据此判定某款设备的硬件能力。
+- 录屏 SHA256：`6e8e91d9fe5ae424c5aa63af57d6d6fbc5533716364acae8bc2df6a66b67cc7f`。视频已用于 App Review 补充材料。iPad、其他语言、震动手感、飞行模式及完整生命周期验收仍待逐项完成。
+
 ## 真机验收清单
 
 尽可能覆盖一台 iPhone 和一台 iPad；未测设备和语言保留「待测」。每次记录设备型号、系统版本、源码提交、应用版本、语言与实际最大触点数。
@@ -35,11 +45,11 @@ Bundle Identifier 保持 `com.alex.chouwazi`，最低系统为 iOS 15。CI 检�
 | --- | --- | --- |
 | 启动与布局 | 冷启动、退出后再打开；标题、底部文字和按钮不被刘海或 Home 指示条遮挡；设备旋转后仍可正常操作 | 待测 |
 | 本地化 | 分别使用简体中文、繁体中文、英文；检查桌面名称、首页、结果和按钮是否完整显示 | 待测 |
-| 单指等待 | 仅一指按住，显示等待更多手指，不开始抽签 | 待测 |
+| 单指等待 | 仅一指按住，显示等待更多手指，不开始抽签 | iPhone 18 Pro 录屏已确认；iPad 待测 |
 | 两指抽签 | 第二指加入后先准备约 0.8 秒，再显示 3 秒倒计时，仅选出一个已有编号 | 待测 |
 | 移动与增减 | 倒计时中移动手指不重置；加入第三指或从三指减至两指重新准备；减至一指停止倒计时 | 待测 |
 | 身份与槽位 | 三指加入后移走中间编号，再加一指；原有手指编号保持，新指复用空缺编号 | 待测 |
-| 多指上限 | 逐步增加手指，记录设备真实报告的最大数量；应用最多收录 10 指，不能把硬件少报触点判作应用支持十指 | 待测 |
+| 多指上限 | 逐步增加手指，记录设备真实报告的最大数量；应用最多收录 10 指，实际数量由设备输入能力决定 | iPhone 18 Pro 实测 5 点；iPad 待测 |
 | 结果冻结 | 抽中后移动、移开或新增手指，中奖编号与结果位置不变；所有手指松开后才能点「再来一轮」 | 待测 |
 | 连续抽选 | 完成至少 10 轮，检查是否有残留编号、无法重开、重复结果事件或崩溃；这不构成随机分布统计检验 | 待测 |
 | 系统打断 | 准备中、倒计时中分别打开控制中心、切后台或锁屏，返回后无旧倒计时；已有结果在失活恢复后仍保留并可重开 | 待测 |
