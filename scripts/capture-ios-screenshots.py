@@ -2,9 +2,6 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = ["pillow==12.3.0", "websocket-client==1.9.0"]
-#
-# [tool.uv]
-# exclude-newer = "1 day"
 # ///
 """Capture the unmodified production UI from a debug iOS simulator build.
 

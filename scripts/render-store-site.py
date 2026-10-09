@@ -2,9 +2,6 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
-#
-# [tool.uv]
-# exclude-newer = "1 day"
 # ///
 """Render the fixed store/site sources; never deploy or fetch remote resources.
 

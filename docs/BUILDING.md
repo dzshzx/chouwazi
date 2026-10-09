@@ -47,7 +47,7 @@ uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/
 "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
 ```
 
-输出 `build/app/outputs/flutter-apk/app-release.apk`。包名仍为 `com.alex.fingerdraw`，Release 优化但使用调试签名供试用。持续分发或覆盖旧包须由用户提供匹配的稳定签名；不能把 CI 的临时调试签名当作原 APK 的签名。
+输出 `build/app/outputs/flutter-apk/app-release.apk`。包名为 `com.alex.fingerdraw`，Release 优化但使用调试签名供试用。持续分发或覆盖旧包须由用户提供匹配的稳定签名；不能把 CI 的临时调试签名当作原 APK 的签名。
 
 主清单只申请震动系统权限，debug/profile 也不追加网络权限。AndroidX 合并进应用内部的 `com.alex.fingerdraw.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`，用于限制广播接收器的调用方，构建检查要求它保持 signature 级；不授予联网或个人数据访问。网络调试服务不作为默认工作流。遇到手机不支持十指或系统三指手势拦截，按设备能力记录。
 
@@ -66,7 +66,7 @@ uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.a
 
 必须在 macOS 上执行。使用 Xcode 运行时打开 `ios/Runner.xcworkspace`，选择 Runner scheme。CI 分别打包 `chouwazi-simulator.zip` 与 `chouwazi-device-unsigned.zip`；两者都含 `Runner.app`，只能在匹配的平台使用。真机包未签名，不是可直接安装的 IPA。签名与验收见 [iOS 真机试用指南](../ios/DEVICE-TESTING.md)。
 
-CI 明确选择 Xcode 26.3 并打印实际 Xcode 和 iPhoneOS SDK 版本，Flutter 仍固定为 3.27.4。2026-10-08 的真实 CI 已编译模拟器与未签名真机包；下载读回真机包为 1.0.2 (3)，`DTXcode=2630`、`DTSDKName=iphoneos26.2`、最低 iOS 15，应用与引擎隐私清单均存在。签名上传须再由 TestFlight 流程验证。
+CI 明确选择 Xcode 26.3 并打印实际 Xcode 和 iPhoneOS SDK 版本，Flutter 固定为 3.27.4。2026-10-08 的真实 CI 已编译模拟器与未签名真机包；下载读回真机包为 1.0.2 (3)，`DTXcode=2630`、`DTSDKName=iphoneos26.2`、最低 iOS 15，应用与引擎隐私清单均存在。签名上传须再由 TestFlight 流程验证。
 
 Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。签名、IPA 校验与商店上传见 [TestFlight 上传指南](TESTFLIGHT.md)；上传成功须继续等待 Apple 处理并核对测试分发状态。
 

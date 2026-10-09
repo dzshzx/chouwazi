@@ -2,9 +2,6 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
-#
-# [tool.uv]
-# exclude-newer = "1 day"
 # ///
 """Check the compiled APK, not just the source manifest."""
 import re

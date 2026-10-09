@@ -8,7 +8,7 @@
 - 应用在设备内完成多指随机选择；没有账号、广告、内购、分析 SDK 或业务服务器。触点和结果只在运行时内存中处理。
 - 支持与隐私页已发布到独立站点 [chouwazi.646598.xyz](https://chouwazi.646598.xyz/)，公开支持邮箱为 `dzshzxdev@163.com`，已实测收信；本 App 尚未办理 App 备案。
 - [三语商店文案](../store/metadata.json)与[审核备注](../store/review-notes.txt)已提交；[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)保留，尚未发送。
-- 已提交版本为 1.0.4 (5)，从 1.0.3 (4) 按 patch 更新三语说明，统一为离线随机选择工具。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
+- 已提交版本为 1.0.4 (5)，三语说明按离线随机选择工具的实际功能撰写。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
 - App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项回读。
 - App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存用户提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
 - 2026-10-09 14:02（Asia/Shanghai）已补交真机录屏和完整六项说明，重新提交 1.0.4 (5)；版本与提交记录均为 `WAITING_FOR_REVIEW`。此前当天 12:45 的 `Guideline 2.1 - Information Needed - New App Submission` 要求已逐项回复，并同步至 App Review Information 的 Notes 与附件。发布方式为 `AFTER_APPROVAL`，获批后自动发布；大陆供应以实际审核及发布结果为准。
@@ -102,7 +102,7 @@ uv run --locked --script scripts/render-store-site.py
 
 个人会员、免费发布都不自动等于欧盟 DSA 的 non-trader。Apple 以实际商业活动和意图自评；trader 的个人联系资料会公开。若 Business 页面出现中国国务院第 810 号令身份信息提示，也须按实际情况处理，这与应用收集用户数据是不同事项。[DSA 自评](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements)、[中国开发者信息](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-information-for-state-council-decree-no-810)
 
-全球供应继续覆盖中国大陆，按工具类目的实际功能、年龄问卷和后台提示核对地区要求。应用没有账号，适用义务应结合实际功能判断。[Apple 年龄保障说明](https://developer.apple.com/support/age-assurance)
+全球供应目标包含中国大陆，按工具类目的实际功能、年龄问卷和后台提示核对地区要求。应用没有账号，适用义务应结合实际功能判断。[Apple 年龄保障说明](https://developer.apple.com/support/age-assurance)
 
 ## 社区一手经验：可借鉴与不能推断的部分
 

@@ -2,9 +2,6 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
-#
-# [tool.uv]
-# exclude-newer = "1 day"
 # ///
 """Install the pinned project-local Harmony toolchain; never alter global SDKs."""
 import hashlib

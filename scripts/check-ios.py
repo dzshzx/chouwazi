@@ -2,9 +2,6 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
-#
-# [tool.uv]
-# exclude-newer = "1 day"
 # ///
 """Check the actual app bundle has the shared app, privacy and localized names."""
 from pathlib import Path
