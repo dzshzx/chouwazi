@@ -1,6 +1,9 @@
 {
   "schema_version": 1,
-  "public_base_url": "https://www.646598.xyz/chouwazi/",
-  "support_email": null,
-  "copyright_holder": "dzshzx"
+  "public_base_url": "https://chouwazi.646598.xyz/",
+  "support_email": "dzshzxdev@163.com",
+  "copyright_holder": "dzshzx",
+  "website_icp_registration": "皖ICP备2026016852号-1",
+  "website_public_security_registration": "皖公网安备34011102004072号",
+  "website_public_security_code": "34011102004072"
 }

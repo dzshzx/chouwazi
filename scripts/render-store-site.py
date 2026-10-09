@@ -28,6 +28,8 @@ CONFIG = ROOT / "store" / "site-config.json"
 LANGUAGES = ("zh-Hans", "zh-Hant", "en")
 PAGE_KINDS = ("support", "privacy")
 REQUIRED = ("public_base_url", "support_email", "copyright_holder")
+REGISTRATION_FIELDS = ("website_icp_registration", "website_public_security_registration", "website_public_security_code")
+PUBLIC_SECURITY_ICON = "assets/public-security-beian.png"
 
 
 def require(condition, message):
@@ -62,6 +64,14 @@ def validate_config(config, preview):
         require(isinstance(value, str) and value.strip() == value and bool(value),
                 f"{field} must be a nonempty string without surrounding whitespace, or null")
         require(not any(ord(char) < 32 for char in value), f"{field} contains a control character")
+    for field in REGISTRATION_FIELDS:
+        value = config.get(field)
+        require(value is None or isinstance(value, str) and value.strip() == value
+                and bool(value) and not any(ord(char) < 32 for char in value),
+                f"{field} must be a nonempty string without surrounding whitespace or control characters, or null")
+    if config.get("website_public_security_registration"):
+        require(re.fullmatch(r"[0-9]{14}", config.get("website_public_security_code") or ""),
+                "website_public_security_code must contain the 14 digits of the website registration")
     if config.get("public_base_url"):
         url = urlsplit(config["public_base_url"])
         require(url.scheme == "https" and is_public_host(url.hostname)
@@ -98,6 +108,19 @@ def contact(config, translation):
     return paragraph(translation["contact_pending"], "pending")
 
 
+def website_registrations(config, translation, prefix):
+    links = []
+    if config.get("website_icp_registration"):
+        links.append(link("https://beian.miit.gov.cn/", config["website_icp_registration"]))
+    if config.get("website_public_security_registration"):
+        href = "https://beian.mps.gov.cn/#/query/webSearch?code=" + config["website_public_security_code"]
+        icon = f'<img src="{escape(prefix + PUBLIC_SECURITY_ICON, quote=True)}" alt="" width="16" height="16">'
+        links.append(f'<a href="{escape(href, quote=True)}">{icon}{escape(config["website_public_security_registration"])}</a>')
+    if not links:
+        return ""
+    return '<div class="website-registrations">' + paragraph(translation["website_registration_label"]) + "\n".join(links) + "</div>"
+
+
 def page_content(translation, kind, config):
     page = translation[kind]
     sections = page["sections"]
@@ -125,7 +148,7 @@ def render_page(template, translations, config, missing, preview, language, kind
     relative_path = "index.html" if is_index else f"{language}/{kind}.html"
     title = translation["index_title"] if is_index else translation[kind]["title"]
     title += " | " + translation["app_name"]
-    head_extra = ['<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'self\'; base-uri \'none\'; form-action \'none\'">']
+    head_extra = ['<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'self\'; img-src \'self\'; base-uri \'none\'; form-action \'none\'">']
     if preview:
         title = translation["draft_title"] + " | " + title
         head_extra.append('<meta name="robots" content="noindex, nofollow">')
@@ -169,7 +192,8 @@ def render_page(template, translations, config, missing, preview, language, kind
         language_label=escape(translation["language_label"]), language_links="\n".join(language_links),
         content=content, footer_label=escape(translation["footer_label"]),
         footer_links="\n".join(link(prefix + language + "/" + page + ".html", translation[page]["title"])
-                                for page in PAGE_KINDS), copyright=escape(copyright_text))
+                                for page in PAGE_KINDS), copyright=escape(copyright_text),
+        website_registrations=website_registrations(config, translation, prefix))
 
 
 def main(argv=None):
@@ -193,13 +217,14 @@ def main(argv=None):
         # Render and validate before creating any output, so missing details never
         # leave behind something that could be mistaken for a publishable build.
         styles = (SOURCE / "styles.css").read_text(encoding="utf-8")
+        assets = {PUBLIC_SECURITY_ICON: (SOURCE / PUBLIC_SECURITY_ICON).read_bytes()} if config.get("website_public_security_registration") else {}
         manifest = {
             "schema_version": 1,
             "status": "preview-draft" if args.preview else "ready-for-deployment",
             "preview": args.preview,
             "missing_public_details": missing,
             "public_base_url": config.get("public_base_url"),
-            "files": sorted([*pages, "styles.css"]),
+            "files": sorted([*pages, "styles.css", *assets]),
             "pages": {language: {kind: f"{language}/{kind}.html" for kind in PAGE_KINDS} for language in LANGUAGES},
         }
         output.mkdir(parents=True, exist_ok=True)
@@ -208,6 +233,10 @@ def main(argv=None):
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(html, encoding="utf-8")
         (output / "styles.css").write_text(styles, encoding="utf-8")
+        for relative, data in assets.items():
+            destination = output / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(data)
         (output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     except (ValueError, OSError, KeyError, TypeError) as error:
         print(f"Store site not generated: {error}", file=sys.stderr)

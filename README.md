@@ -55,7 +55,7 @@ bash scripts/build-ohos.sh
 
 TestFlight 使用独立的 **Upload iOS to TestFlight** 手动工作流，从 `main` 签名并上传。账号、签名材料和受保护环境的配置见 [TestFlight 上传指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
 
-正式 App Store 的全球上架准备、三语商店材料、隐私与支持网页、中国大陆与欧盟待确认事项见 [上架准备](docs/APP-STORE.md)。
+正式 App Store 的审核状态、三语商店材料、[支持与隐私网站](https://chouwazi.646598.xyz/)及地区要求见 [发布与审核](docs/APP-STORE.md)。
 
 Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi`。Android Release 构建暂用调试签名供试用，不能保证覆盖原本地签名或其他 CI 运行的安装包。iOS 与鸿蒙未签名产物不能直接安装到普通真机，需自己的开发者签名；模拟器要求与真机不同，详见[构建指南](docs/BUILDING.md)。iOS 操作见 [真机试用指南](ios/DEVICE-TESTING.md)。仓库不保存签名私钥、证书或描述文件。
 
@@ -68,6 +68,8 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 与鸿蒙为 `com.alex.chouwazi
 - 鸿蒙：从固定工具链自动构建 arm64 Release HAP，检查包名、版本、震动权限和包内 AOT 代码与本次编译结果一致；编译失败传播的负测通过。
 - 三端真机安装、多指上限、显示与震动均待设备验收。编译通过不等于设备验证通过。
 - TestFlight：2026-10-08，[签名上传运行](https://github.com/dzshzx/chouwazi/actions/runs/37802819518)通过，源码 `3f85685`，版本 `1.0.4 (5)`，构建 ID `a22f5a2e-3f9d-43c7-8f42-1c9c39de3e38`。Apple 已处理为 `VALID`，内部测试状态为 `IN_BETA_TESTING`，构建未过期；「本人测试」组关联该构建，组内已有账号本人 1 名测试者。当前分发方式为 TestFlight 内部测试，真机安装与体验验收仍待执行。
+
+- App Store：1.0.4 (5) 已于 2026-10-09 提交审核，状态为 `WAITING_FOR_REVIEW`；获批后自动发布。目标为 175 个国家和地区免费供应，包含中国大陆，最终以审核和实际供应结果为准。
 
 ## 隐私
 

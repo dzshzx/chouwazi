@@ -55,6 +55,9 @@ ol li::marker { color: var(--green); font-weight: 600; }
 .pending { color: var(--secondary); }
 .site-footer { border-top: 1px solid var(--line); padding: 1.5rem 0 2rem; color: var(--secondary); font-size: .875rem; }
 .site-footer p { margin-bottom: 0; }
+.website-registrations { margin-top: 1rem; }
+.website-registrations a { display: block; width: fit-content; overflow-wrap: anywhere; }
+.website-registrations img { width: 1rem; height: 1rem; margin-right: .35rem; vertical-align: -.12rem; }
 .draft-notice { color: var(--background); background: var(--green); padding: .8rem max(1.25rem, calc((100vw - 62rem) / 2)); font-size: .9375rem; line-height: 1.6; }
 .draft-notice p { margin: 0; }
 .skip-link { position: absolute; top: .5rem; left: 1rem; z-index: 1; padding: .5rem 1rem; background: var(--text); color: var(--background); transform: translateY(-200%); }
