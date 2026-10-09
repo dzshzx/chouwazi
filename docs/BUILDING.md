@@ -78,7 +78,7 @@ Runner 保持 Flutter 标准构建 scheme，CLI 通过 `--debug` 或 `--release`
 bash scripts/build-ohos.sh
 ```
 
-该命令自动配置并校验固定工具链，下载 Flutter OH 引擎、解析依赖，再通过该版本官方 Hvigor 插件真实编译 Dart、ArkTS 和原生 HAP。旧版 `flutter build hap` 在编译后强制检查签名，因此无签名构建直接调用同一 Hvigor 插件；所有编译错误保持失败退出，不忽略失败、不伪造签名。
+该命令自动配置并校验固定工具链，下载 Flutter OH 引擎、解析依赖，再通过该版本官方 Hvigor 插件真实编译 Dart、ArkTS 和原生 HAP。固定版本的 `flutter build hap` 在编译后强制检查签名，因此无签名构建直接调用同一 Hvigor 插件；所有编译错误保持失败退出，不忽略失败、不伪造签名。
 
 固定版本的 Hvigor 插件会捕获 Dart 编译异常而继续执行，所以入口先独立编译并检查退出码，再打包；`check-hap.py` 比对最终 HAP 与本次 AOT 输出的 `.text` / `.rodata`，防止旧产物被误判为新构建成功。修改此流程时需保留旧产物做编译错误负测，不能只检查 HAP 文件是否存在。
 
