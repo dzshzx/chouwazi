@@ -70,7 +70,7 @@ secrets 只交给签名上传步骤。正常结束、失败或取消时恢复 Ru
 
 在 iPhone 或 iPad 上安装 Apple 的 [TestFlight](https://testflight.apple.com/)，打开测试邀请邮件并接受邀请，即可安装对应构建。用户不需要自备 Mac，也不需要为 TestFlight 安装开启开发者模式。内部测试组使用手动添加构建，后续成功上传并处理的新构建仍需在网页加入该组。
 
-外部测试的[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)对应「公开测试」组，设为 Open to Anyone。2026-10-09 已关联 1.0.4 (5) 并提交 Beta App Review，启用获批后自动通知测试者。13:29（Asia/Shanghai）回读状态仍为 `Waiting for Review`，公开页面提示暂不接受新测试者；通过后才能使用另一个 Apple 账号加入并安装。首次外部构建需要审核，见 [Apple 外部测试说明](https://developer.apple.com/help/app-store-connect/test-a-beta-version/invite-external-testers/)。
+外部测试的[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)对应「公开测试」组，设为 Open to Anyone。2026-10-09 已关联 1.0.4 (5) 并提交 Beta App Review，启用获批后自动通知测试者。2026-10-14 匿名打开公开链接，页面已提供加入入口，可用另一个 Apple 账号加入并安装。首次外部构建需要审核，见 [Apple 外部测试说明](https://developer.apple.com/help/app-store-connect/test-a-beta-version/invite-external-testers/)。
 
 本应用离线运行且没有自有加密，因此 Info.plist 声明 `ITSAppUsesNonExemptEncryption=false`，并在 IPA 检查该字段。
 声明含义见 [Apple 字段文档](https://developer.apple.com/documentation/bundleresources/information-property-list/itsappusesnonexemptencryption)；若将来引入新的加密或联网能力，须重新核对声明和隐私说明。

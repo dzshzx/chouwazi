@@ -1,6 +1,6 @@
 # 抽袜子：App Store 发布与审核
 
-核对日期：2026-10-09。目标为全球供应，包含中国大陆。本文把官方规则、开发者自述和本项目的待办分别记录；社区成功经历不构成审核或备案豁免保证。
+核对日期：2026-10-09；上架与供应状态 2026-10-14 复核。目标为全球供应，包含中国大陆。本文把官方规则、开发者自述和本项目的待办分别记录；社区成功经历不构成审核或备案豁免保证。
 
 ## 当前基础与材料入口
 
@@ -8,13 +8,13 @@
 - 应用在设备内完成多指随机选择；没有账号、广告、内购、分析 SDK 或业务服务器。触点和结果只在运行时内存中处理。
 - 支持与隐私页已发布到独立站点 [chouwazi.646598.xyz](https://chouwazi.646598.xyz/)，公开支持邮箱为 `dzshzxdev@163.com`，已实测收信；本 App 尚未办理 App 备案。
 - [三语商店文案](../store/metadata.json)与[审核备注](../store/review-notes.txt)已提交；[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)保留，尚未发送。
-- 已提交版本为 1.0.4 (5)，三语说明按离线随机选择工具的实际功能撰写。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
+- 已上架版本为 1.0.4 (5)，三语说明按离线随机选择工具的实际功能撰写。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
 - App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项回读。
 - App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存用户提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
-- 2026-10-09 14:02（Asia/Shanghai）已补交真机录屏和完整六项说明，重新提交 1.0.4 (5)；版本与提交记录均为 `WAITING_FOR_REVIEW`。此前当天 12:45 的 `Guideline 2.1 - Information Needed - New App Submission` 要求已逐项回复，并同步至 App Review Information 的 Notes 与附件。发布方式为 `AFTER_APPROVAL`，获批后自动发布；大陆供应以实际审核及发布结果为准。
+- 1.0.4 (5) 已于 2026-10-11 22:46（Asia/Shanghai）获批，并按 `AFTER_APPROVAL` 自动发布。审核经过：2026-10-09 12:45 收到 `Guideline 2.1 - Information Needed - New App Submission`，逐项回复并同步至 App Review Information 的 Notes 与附件，14:02 补交真机录屏和完整六项说明后重新提交。
 - 录屏来自 iPhone 18 Pro / iOS 27.0.1，时长 47.74 秒，展示 TestFlight 首次启动流程、应用多指抽选、结果、再次抽选和隐私页。录屏分别附于审核资料和审核回复，消息附件下载后 SHA256 与用户原始视频一致；正文与 Notes 均与[仓库审核备注](../store/review-notes.txt)对应的定稿一致。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
-- 为使用另一个 Apple 账号完成真机测试，已将 1.0.4 (5) 加入 TestFlight「公开测试」外部组，并创建[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)。2026-10-09 13:29（Asia/Shanghai）回读 Beta App Review 为 `Waiting for Review`；通过前公开链接暂不接受测试者。这与 App Store 正式上架审核是不同流程。
-- 用户确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆；当前大陆状态为 `Available on App Release`，尚不是已上线或备案适用性获批。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
+- 为使用另一个 Apple 账号完成真机测试，已将 1.0.4 (5) 加入 TestFlight「公开测试」外部组，并创建[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)。2026-10-09 提交 Beta App Review；2026-10-14 匿名打开公开链接，页面已提供加入入口。这与 App Store 正式上架审核是不同流程。
+- 用户确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆。2026-10-14 公开查询在中国大陆等 30 个抽查地区均可查到 1.0.4，其余地区未逐一核对；大陆上架不等于备案适用性已获确认。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
 
 ## 个人离线 App 的通常流程
 
@@ -57,7 +57,7 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 | 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 三语支持链接、版权与专用审核联系人已保存；公开邮箱已实测收信 |
 | iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已回读核对 |
 | 审核备注与演示 | 完整六项说明，以及从启动到抽选、再次抽选和隐私页的真机录屏 | 2026-10-09 已保存 Notes、上传视频并回复审核；正文与附件均已读回核验 |
-| 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 | 价格与供应范围已保存，获批后自动发布；待实际审核结果 |
+| 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 | 价格与供应范围已保存；2026-10-11 获批后自动发布，30 个抽查地区可查到 1.0.4 |
 | App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
 | Product page Header / Search Results 创意素材 | 与截图独立，Apple 明确列为可选 | 暂不制作 |
 
@@ -98,7 +98,7 @@ uv run --locked --script scripts/render-store-site.py
 
 1. 独立支持站点已上线，专用邮箱已注册并实测收信；自动转发至用户指定 Gmail 已启用并保留原邮件。刷新设置后回读有效，Gmail 已实际收到转发邮件；两封网易安全提醒被 Gmail 归入垃圾邮件。凭据及转发配置说明保存在 Bitwarden，仓库不保存密码或验证码。
 2. 用户确认免费身份，已保存免费价格和 DSA 非商家声明；未来商业活动变化时须重新评估。
-3. 用户确认本 App 尚未正式备案；当前后台允许选中大陆供应，提审与实际上线仍须核对 Apple 的最终要求。
+3. 用户确认本 App 尚未正式备案；1.0.4 已于 2026-10-11 在中国大陆商店上架。上架不等于备案适用性已获确认，Apple 或主管部门后续提出要求时按实际处理。
 
 个人会员、免费发布都不自动等于欧盟 DSA 的 non-trader。Apple 以实际商业活动和意图自评；trader 的个人联系资料会公开。若 Business 页面出现中国国务院第 810 号令身份信息提示，也须按实际情况处理，这与应用收集用户数据是不同事项。[DSA 自评](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements)、[中国开发者信息](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-information-for-state-council-decree-no-810)
 
