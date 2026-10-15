@@ -32,7 +32,7 @@ Apple 的[必填属性表](https://developer.apple.com/help/app-store-connect/re
 
 ## 独立支持站点与备案
 
-三语页面位于 `https://chouwazi.646598.xyz/` 的 `zh-Hans/`、`zh-Hant/`、`en/` 子目录下，文件名为 `privacy.html` 和 `support.html`。公司 VPS 的独立静态目录为 `/var/www/chouwazi`；Caddy 路由片段由 fleet-state 的 `deploy/vps/chouwazi/chouwazi.caddy` 维护。网站页脚显示现有网站备案信息，其用途与 App 备案不同。
+三语页面位于 `https://chouwazi.646598.xyz/` 的 `zh-Hans/`、`zh-Hant/`、`en/` 子目录下，文件名为 `privacy.html` 和 `support.html`。站点部署在独立静态目录，路由配置与部署契约由内部运维仓维护。网站页脚显示现有网站备案信息，其用途与 App 备案不同。
 
 工信部通知要求在境内从事 App 互联网信息服务的主办者备案，已有网站备案主体可补充 App 信息；网站备案号不能直接当成本 App 已备案的证明。官方通知未直接给出本项目这种纯本地随机选择应用的个案判定。[工信部通知](https://www.gov.cn/zhengce/zhengceku/202308/content_6897341.htm)、[工信部解读](https://wap.miit.gov.cn/zwgk/zcjd/art/2023/art_39b4f1acc36745b98478e0ec3e07128d.html)
 
@@ -76,7 +76,7 @@ uv run --locked --script scripts/render-store-site.py
 
 输出为 `build/store-site/`，入口 `index.html`。发布 manifest 所列的九个公共文件，manifest 留在本地。2026-10-09 已逐文件核对线上 HTTPS 响应与本地产物字节一致，语言切换、联系链接和备案图标检查通过。页面无脚本、分析代码或登录要求；网站托管边界见网页隐私政策。草稿预览地址不能填写为正式商店 URL。
 
-网页源码与生成产物由本应用仓库维护，发布到上述独立站点目录。正式生成前核对 HTTPS 地址、公开邮箱与实际托管政策；生成器会拒绝缺少公开信息的正式构建。部署按 fleet-state 的 chouwazi 部署契约执行，保留源文件摘要和线上验收回执。
+网页源码与生成产物由本应用仓库维护，发布到上述独立站点目录。正式生成前核对 HTTPS 地址、公开邮箱与实际托管政策；生成器会拒绝缺少公开信息的正式构建。部署按内部运维仓的部署契约执行，保留源文件摘要和线上验收回执。
 
 ### 当前截图规格
 
@@ -96,7 +96,7 @@ uv run --locked --script scripts/render-store-site.py
 
 ## 全球供应的当前事实与待办
 
-1. 独立支持站点已上线，专用邮箱已注册并实测收信；自动转发至用户指定 Gmail 已启用并保留原邮件。刷新设置后回读有效，Gmail 已实际收到转发邮件；两封网易安全提醒被 Gmail 归入垃圾邮件。凭据及转发配置说明保存在 Bitwarden，仓库不保存密码或验证码。
+1. 独立支持站点已上线，专用邮箱已注册并实测收信，已设自动转发并保留原邮件。凭据与转发配置保存在私有凭据库，仓库不保存密码或验证码。
 2. 用户确认免费身份，已保存免费价格和 DSA 非商家声明；未来商业活动变化时须重新评估。
 3. 用户确认本 App 尚未正式备案；1.0.4 已于 2026-10-11 在中国大陆商店上架。上架不等于备案适用性已获确认，Apple 或主管部门后续提出要求时按实际处理。
 

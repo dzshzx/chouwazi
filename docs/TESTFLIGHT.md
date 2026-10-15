@@ -30,7 +30,7 @@ openssl pkcs12 -export \
 
 这只改变 `.p12` 的封装，保留同一证书和私钥。本次 OpenSSL 4.0.3 默认导出文件可被云端 OpenSSL 解密，但 `security import` 报 MAC 校验失败；使用以上封装后，macOS 15.7.9 已成功完成签名归档和导出。遇到同类问题先对同一文件和同一密码核对 OpenSSL 校验与钥匙串导入结果，避免重建或撤销证书。
 
-恢复资料保存在 Bitwarden 的 `chouwazi Apple Signing` 独立条目。当前 CI 使用附件 `distribution-compatible.p12` 和 `app-store.mobileprovision`，密码及 API 身份位于同条目的隐藏字段；`distribution.p12` 保留原始封装，恢复时使用已验证的兼容附件。签名材料变更后，须同步受保护环境并验证备份可读。
+恢复资料保存在私有凭据库的独立条目（条目与附件清单见内部 secret 清单）；当前 CI 使用兼容封装的 p12 与 provisioning profile，原始封装另行保留，恢复时使用已验证的兼容附件。签名材料变更后，须同步受保护环境并验证备份可读。
 
 ## 配置 GitHub secrets
 
