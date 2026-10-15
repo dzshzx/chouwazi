@@ -2,7 +2,7 @@
 
 主题：离线随机选择 App 的中国大陆供应与备案材料确认
 
-App「抽袜子」计划在全球（含中国大陆）正式分发，App Store Connect Apple ID 为 6820500660，iOS Bundle ID 为 com.alex.chouwazi。版本 1.0.4（构建 5）已于 2026 年 10 月 9 日提交 App Store 审核，TestFlight 内部测试已可用。
+App「抽袜子」已在 App Store 全球上架（含中国大陆），App Store Connect Apple ID 为 6820500660，iOS Bundle ID 为 com.alex.chouwazi。版本 1.0.4（构建 5）已于 2026 年 10 月 11 日上架，当前可在 App Store 下载，TestFlight 内部测试也可用。
 
 这是一款支持 iPhone 和 iPad 的离线随机选择工具，商店主类目为 Utilities。同一台设备上至少 2 根、最多 10 根手指同时按住屏幕，准备和倒计时后在参与触点中随机选出一个。应用在设备内完成处理，使用无需账号或互联网，没有广告或内购。应用支持震动开关，以及英文、简体中文和繁体中文界面，并提供离线可读的应用内隐私政策。
 
