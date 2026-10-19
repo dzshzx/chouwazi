@@ -1,6 +1,6 @@
-# 三端构建
+# 构建
 
-三端入口均为根目录 `lib/main.dart`。状态机、触控、绘制、本地化与测试共用；平台目录仅承载 Flutter 引擎和系统配置。三端构建工作流提供试用产物；iOS 商店签名与上传使用独立的 [TestFlight 流程](TESTFLIGHT.md)。
+Android 与 iOS 的入口均为根目录 `lib/main.dart`。状态机、触控、绘制、本地化与测试共用；平台目录仅承载 Flutter 引擎和系统配置。两端构建工作流提供试用产物；iOS 商店签名与上传使用独立的 [TestFlight 流程](TESTFLIGHT.md)。
 
 ## 工具链
 
@@ -12,19 +12,12 @@ Python 构建辅助脚本经 uv 按各自的 PEP 723 声明和 `*.py.lock` 运�
 | --- | --- | --- |
 | Android | Google Flutter 3.27.4 / Dart 3.6.2、Java 17、SDK 35、build-tools 35.0.0、NDK 26.3.11579264 | Gradle 8.9、AGP 8.7.3；最低 API 23 |
 | iOS | Google Flutter 3.27.4 / Dart 3.6.2、macOS、Xcode 26.3 | 最低 iOS 15；工程 Runner、产物 Runner.app；已通过真实 CI 编译 |
-| HarmonyOS | Flutter OH 3.27.5-ohos-1.0.0、Java 17、华为命令行工具 5.1.0.840 / SDK API 18 | 最低 API 12；输出原生 arm64 HAP |
 
-Android/iOS 使用 Flutter 官方工具链；鸿蒙使用 CPF-Flutter 的适配工具链，两者编译同一份 `lib/`。这一基线以可公开获取并真实构建的配套版本为准。升级 Flutter 或鸿蒙 SDK 时同时验证共享依赖、测试和三端编译。
+Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升级 Flutter 时同时验证共享依赖、测试和两端编译。鸿蒙端已于 2026-10-20 放弃，取舍见 [ADR 0001](adr/0001-drop-harmonyos.md)。
 
 工具链来源：
 
 - [Google Flutter 3.27.4](https://github.com/flutter/flutter/tree/3.27.4)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它钉到同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本；升级时两处与本表一起改。CI 使用 `subosito/flutter-action` 安装固定版本。
-- [Flutter OH 3.27.5-ohos-1.0.0](https://gitcode.com/CPF-Flutter/flutter_flutter/tree/3.27.5-ohos-1.0.0)，提交 `c8a0f037e39856cdac07bfa31d59d3ea78549b1b`。
-- [华为 HarmonyOS 命令行工具 5.1.0.840](https://repo.huaweicloud.com/harmonyos/ohpm/5.1.0/)，下载 zip 的 SHA-256 为 `1dcefa4741dc289277560b2802040e0c45b433898d8db453d711d5376e0478f1`，来自同目录官方 `.sha256` 文件。
-
-鸿蒙适配 SDK 是项目构建依赖，官方 Flutter SDK 不提供 `hap` 目标，故由项目脚本在 `.tooling/` 下载固定上游源码并验证提交。SDK zip 验证官方校验值后解压，不修改用户全局 Flutter、Node 或 Java。需要 uv、Python 3.11+、Git、unzip、Java 17；自动配置当前支持 Linux x86_64。工具包下载约 2 GB，解压后约 6.5 GB，另需 Flutter 引擎和构建缓存空间。
-
-`CHOUWAZI_TOOLCHAINS=/绝对目录` 可以指定独立缓存位置。macOS/Windows 的鸿蒙开发可安装相同配套 DevEco SDK 与 Flutter OH，参考[上游环境说明](https://gitcode.com/CPF-Flutter/flutter_flutter/tree/3.27.5-ohos-1.0.0)；自动 SDK 下载脚本不声称支持这些宿主。
 
 ## 共享验证
 
@@ -72,32 +65,13 @@ Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版
 
 Runner 保持 Flutter 标准构建 scheme，CLI 通过 `--debug` 或 `--release` 选择模式。Xcode 真机试用时在 Edit Scheme → Run → Build Configuration 选择 Release。CI 的 Debug 模拟器包仅供开发；Debug/Profile 调试时 Flutter 可能请求本地网络访问以支持 DevTools，不属于 Release 应用功能。CI 检查真机 Release 的 Info.plist 不包含这类声明。
 
-## 原生鸿蒙
-
-```sh
-bash scripts/build-ohos.sh
-```
-
-该命令自动配置并校验固定工具链，下载 Flutter OH 引擎、解析依赖，再通过该版本官方 Hvigor 插件真实编译 Dart、ArkTS 和原生 HAP。固定版本的 `flutter build hap` 在编译后强制检查签名，因此无签名构建直接调用同一 Hvigor 插件；所有编译错误保持失败退出，不忽略失败、不伪造签名。
-
-固定版本的 Hvigor 插件会捕获 Dart 编译异常而继续执行，所以入口先独立编译并检查退出码，再打包；`check-hap.py` 比对最终 HAP 与本次 AOT 输出的 `.text` / `.rodata`，防止旧产物被误判为新构建成功。修改此流程时需保留旧产物做编译错误负测，不能只检查 HAP 文件是否存在。
-
-输出 `build/ohos/chouwazi-unsigned.hap`。脚本校验包内 `module.json`、`pack.info`、`libapp.so` 和 `libflutter.so`，并拒绝震动以外的权限。版本在 `pubspec.yaml` 与 `ohos/AppScope/app.json5` 中须一致，不一致会停止构建。
-
-安装需要在 DevEco Studio 中打开 `ohos/`，使用自己的开发者账号和设备配置签名。完成签名后再通过该版本 Flutter OH 的 `flutter build hap --release` / `flutter run` 或 DevEco 运行；不要把证书、密码、私钥、描述文件或含个人签名的配置提交进仓库。
-
-**普通鸿蒙真机要求 HAP 签名，开启开发者模式也不能省略。** 模拟器调试可不配置签名，但本项目当前 CI 产物是 arm64 真机目标，不能据此保证兼容任意模拟器的架构和系统版本；模拟器需选择匹配的构建目标。签名要求见[华为官方入门说明](https://developer.huawei.com/consumer/cn/develop-novice-guide/)。
-
-鸿蒙验收沿用 [iOS 指南中的应用验收清单](../ios/DEVICE-TESTING.md#真机验收清单)，另记录 HarmonyOS 版本、设备型号、HAP 签名与安装结果。未签名编译通过不代表商用鸿蒙真机已验证。
-
 ## CI 产物
 
-`Build Android, iOS and HarmonyOS` 仅 `workflow_dispatch`，权限为 `contents: read`。Android/iOS 在 Google Flutter 下构建；鸿蒙在固定 Flutter OH 下构建并复跑共享测试，防止源码只兼容其中一个 SDK。
+`Build Android and iOS` 仅 `workflow_dispatch`，权限为 `contents: read`。Android 与 iOS 都在 Google Flutter 下构建，Android 任务同时执行共享测试。
 
 | Artifact | 内容 |
 | --- | --- |
 | `chouwazi-android-apk` | `app-release.apk`，调试签名试用包 |
 | `chouwazi-ios-builds` | 模拟器 zip、未签名真机 zip |
-| `chouwazi-harmony-hap` | `chouwazi-unsigned.hap` |
 
 产物受 Actions 保留期限限制。每轮交付以 Actions 的源码 SHA、任务结论和实际下载文件为准；根 README 维护当前验证状态。

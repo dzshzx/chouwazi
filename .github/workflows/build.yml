@@ -1,4 +1,4 @@
-name: Build Android, iOS and HarmonyOS
+name: Build Android and iOS
 on:
   workflow_dispatch:
 permissions:
@@ -87,34 +87,4 @@ jobs:
           path: |
             build/chouwazi-simulator.zip
             build/chouwazi-device-unsigned.zip
-          if-no-files-found: error
-  harmony:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
-        with:
-          version: '0.12.19'
-          enable-cache: false
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - uses: actions/cache@v4
-        with:
-          path: .tooling
-          key: harmony-linux-x64-sdk-5.1.0.840-flutter-c8a0f037-v1
-      - name: Build unsigned HarmonyOS HAP
-        run: bash scripts/build-ohos.sh
-      - name: Test shared code on Flutter OH
-        shell: bash
-        run: |
-          source scripts/ohos-env.sh
-          flutter test --no-pub
-          git diff --exit-code -- pubspec.lock
-      - uses: actions/upload-artifact@v4
-        with:
-          name: chouwazi-harmony-hap
-          path: build/ohos/chouwazi-unsigned.hap
           if-no-files-found: error
