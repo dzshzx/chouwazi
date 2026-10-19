@@ -47,8 +47,8 @@ class _GameScreenState extends State<GameScreen>
   Duration get _now => widget.clock?.call() ?? _clock.elapsed;
 
   GameStrings get _strings => GameStrings(
-        widget.locale ?? WidgetsBinding.instance.platformDispatcher.locale,
-      );
+    widget.locale ?? WidgetsBinding.instance.platformDispatcher.locale,
+  );
 
   @override
   void initState() {
@@ -206,10 +206,12 @@ class _GameScreenState extends State<GameScreen>
                               strings: strings,
                               layout: layout,
                               now: _now,
-                              reduceMotion:
-                                  MediaQuery.disableAnimationsOf(context),
-                              fontFamily:
-                                  DefaultTextStyle.of(context).style.fontFamily,
+                              reduceMotion: MediaQuery.disableAnimationsOf(
+                                context,
+                              ),
+                              fontFamily: DefaultTextStyle.of(context)
+                                  .style
+                                  .fontFamily,
                             ),
                           ),
                         ),
@@ -223,8 +225,9 @@ class _GameScreenState extends State<GameScreen>
                           child: Semantics(
                             label: status,
                             liveRegion: true,
-                            child:
-                                const IgnorePointer(child: SizedBox.expand()),
+                            child: const IgnorePointer(
+                              child: SizedBox.expand(),
+                            ),
                           ),
                         ),
                         Positioned.fromRect(
@@ -235,11 +238,12 @@ class _GameScreenState extends State<GameScreen>
                             enabled: _session.canOpenPrivacy,
                             onTap: _session.canOpenPrivacy
                                 ? () => _handleControl(
-                                      _session.activateControl(Control.privacy),
-                                    )
+                                    _session.activateControl(Control.privacy),
+                                  )
                                 : null,
-                            child:
-                                const IgnorePointer(child: SizedBox.expand()),
+                            child: const IgnorePointer(
+                              child: SizedBox.expand(),
+                            ),
                           ),
                         ),
                         Positioned.fromRect(
@@ -256,8 +260,9 @@ class _GameScreenState extends State<GameScreen>
                                     _refresh();
                                   }
                                 : null,
-                            child:
-                                const IgnorePointer(child: SizedBox.expand()),
+                            child: const IgnorePointer(
+                              child: SizedBox.expand(),
+                            ),
                           ),
                         ),
                         if (round.isFinished)
@@ -275,8 +280,9 @@ class _GameScreenState extends State<GameScreen>
                                       _refresh();
                                     }
                                   : null,
-                              child:
-                                  const IgnorePointer(child: SizedBox.expand()),
+                              child: const IgnorePointer(
+                                child: SizedBox.expand(),
+                              ),
                             ),
                           ),
                       ],
@@ -292,18 +298,18 @@ class _GameScreenState extends State<GameScreen>
 /// Drawing and hit testing share these bounds, including on small screens.
 class GameLayout {
   GameLayout(this.size)
-      : scale = math.min(1.0, math.min(size.width / 360, size.height / 600));
+    : scale = math.min(1.0, math.min(size.width / 360, size.height / 600));
   final Size size;
   final double scale;
   Rect get privacy => Rect.fromLTWH(0, 0, math.min(88, size.width / 3), 44);
   Rect get vibration =>
       Rect.fromLTWH(math.max(0, size.width - 112), 0, 112, 44);
   Rect get retry => Rect.fromLTWH(
-        24 * scale,
-        size.height - math.max(44, 54 * scale) - 24 * scale,
-        size.width - 48 * scale,
-        math.max(44, 54 * scale),
-      );
+    24 * scale,
+    size.height - math.max(44, 54 * scale) - 24 * scale,
+    size.width - 48 * scale,
+    math.max(44, 54 * scale),
+  );
   double get middle => math.max(210 * scale, size.height * .46);
 }
 

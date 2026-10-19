@@ -26,7 +26,7 @@ Android 与 iOS 共用一套 Flutter/Dart 源码的离线随机选择工具。�
 
 完整安装、工具链来源与校验、各端构建命令见 [构建指南](docs/BUILDING.md)。
 
-- Android / iOS：Flutter **3.27.4**，Dart 3.6.2。
+- Android / iOS：Flutter **3.47.7**，Dart 3.13.5。
 - 最低系统：Android 6.0 / API 23，iOS 15。
 - 版本源为 `pubspec.yaml`。
 
@@ -54,9 +54,10 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 为 `com.alex.chouwazi`。Andro
 
 ## 验证状态
 
+- 2026-10-20 升级到 Flutter 3.47.7 后，本机 Linux 的共享测试、静态分析与 Release APK 构建及检查通过；两端 Actions 构建与 iOS 编译尚待新版本的手动 `build.yml` 运行确认。以下 2026-10-08 起的构建、TestFlight、App Store 与真机记录都基于 Flutter 3.27.4。
 - 2026-10-08，[同一提交的三端 Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)全部成功，源码为 `3f85685`，应用版本为 `1.0.4 (5)`。
-- 共享实现：25 项状态与多指交互测试在 Google Flutter 和 Flutter OH 下均通过，静态分析通过；已检查共享渲染器的界面与隐私页。iOS 商店截图的实际生成状态见发布与审核文档。
-- Android：真实编译 Release APK，CI 通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35；系统权限仅震动，内部广播权限保持 signature 级。
+- 共享实现：25 项状态与多指交互测试在 Flutter 3.47.7 下通过（2026-10-20 本机），静态分析通过；已检查共享渲染器的界面与隐私页。iOS 商店截图的实际生成状态见发布与审核文档。
+- Android：真实编译 Release APK，CI 通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35（2026-10-20 在 Flutter 3.47.7 下本机构建并通过同一检查）；系统权限仅震动，内部广播权限保持 signature 级。
 - iOS：macOS / Xcode 26.3、iOS 26.2 SDK 真实编译模拟器 Debug 与真机 Release；CI 回读版本、包名、最低 iOS 15、三语言桌面名、应用与 Flutter 引擎隐私清单及非豁免加密声明。真机包无本地网络调试声明。
 - 鸿蒙：2026-10-20 起不再开发与发布，取舍见 [ADR 0001](docs/adr/0001-drop-harmonyos.md)；上面 2026-10-08 的三端构建是放弃前的记录。
 - 真机：2026-10-09 已确认 iPhone 18 Pro / iOS 27.0.1 安装 1.0.4 (5)，录屏展示多指抽选、结果、再次抽选与隐私页；该机在应用和独立 Safari 触点测试中均报告最多 5 点。用户确认 Xiaomi 17 的 Android 版支持 10 点。完整设备验收、震动手感及其他机型覆盖见 [iOS 真机记录](ios/DEVICE-TESTING.md#2026-10-09-实测记录)。

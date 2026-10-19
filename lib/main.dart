@@ -25,14 +25,14 @@ class ChouwaziApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => WidgetsApp(
-        color: const Color(0xFF0D111B),
-        debugShowCheckedModeBanner: false,
-        title: 'chouwazi',
-        supportedLocales: const [
-          Locale('en'),
-          Locale('zh', 'CN'),
-          Locale('zh', 'TW'),
-        ],
-        builder: (context, child) => const GameScreen(),
-      );
+    color: const Color(0xFF0D111B),
+    debugShowCheckedModeBanner: false,
+    title: 'chouwazi',
+    supportedLocales: const [
+      Locale('en'),
+      Locale('zh', 'CN'),
+      Locale('zh', 'TW'),
+    ],
+    builder: (context, child) => const GameScreen(),
+  );
 }

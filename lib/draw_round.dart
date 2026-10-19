@@ -4,7 +4,7 @@ import 'dart:math';
 /// A round uses pointer identities and one monotonic deadline on every platform.
 class DrawRound {
   DrawRound({int Function(int)? choose})
-      : _choose = choose ?? Random.secure().nextInt;
+    : _choose = choose ?? Random.secure().nextInt;
 
   static const limit = 10;
   static const delay = Duration(milliseconds: 3800);

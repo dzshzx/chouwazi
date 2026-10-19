@@ -83,23 +83,14 @@ void main() {
     session.down(1, 10, 10, Duration.zero, control: Control.privacy);
     session.move(1, 100, 100);
     session.move(1, 10, 10, control: Control.privacy);
-    expect(
-      session.up(1, Duration.zero, control: Control.privacy),
-      isNull,
-    );
+    expect(session.up(1, Duration.zero, control: Control.privacy), isNull);
     session.down(2, 10, 10, Duration.zero, control: Control.privacy);
     session.cancel(2);
-    expect(
-      session.up(2, Duration.zero, control: Control.privacy),
-      isNull,
-    );
+    expect(session.up(2, Duration.zero, control: Control.privacy), isNull);
     session.down(3, 10, 10, Duration.zero, control: Control.privacy);
     session.down(4, 100, 100, Duration.zero);
     session.up(4, Duration.zero);
-    expect(
-      session.up(3, Duration.zero, control: Control.privacy),
-      isNull,
-    );
+    expect(session.up(3, Duration.zero, control: Control.privacy), isNull);
     expect(session.round.players, isEmpty);
     session.down(5, 10, 10, Duration.zero, control: Control.privacy);
     expect(

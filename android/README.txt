@@ -2,7 +2,7 @@
 
 玩法、界面、触控和本地化由根目录 lib/ 的 Dart 源码提供，Android 目录仅保留 FlutterActivity、资源、权限与 Gradle 配置。
 
-在仓库根目录使用 Flutter 3.27.4：
+在仓库根目录使用 Flutter 3.47.7：
   flutter pub get --enforce-lockfile
   flutter test
   flutter build apk --release

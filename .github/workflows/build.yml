@@ -23,11 +23,11 @@ jobs:
           packages: 'platform-tools'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '3.47.7'
           channel: stable
           cache: true
       - name: Install Android SDK
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'ndk;26.3.11579264'
+        run: sdkmanager 'platforms;android-35' 'build-tools;36.0.0' 'ndk;28.2.13676358'
       - name: Check shared source
         run: |
           flutter pub get --enforce-lockfile
@@ -39,9 +39,9 @@ jobs:
       - name: Verify APK signature and permissions
         shell: bash
         run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
-          uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/35.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
+          uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@v4
         with:
           name: chouwazi-android-apk
@@ -60,7 +60,7 @@ jobs:
           enable-cache: false
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '3.47.7'
           channel: stable
           cache: true
       - name: Verify selected Apple toolchain

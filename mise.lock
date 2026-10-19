@@ -3,22 +3,22 @@
 lockfile_version = 3
 
 [[tools.flutter]]
-version = "3.27.4"
+version = "3.47.7"
 backend = "http:flutter"
-specifiers = ["3.27.4"]
+specifiers = ["3.47.7"]
 
 [tools.flutter."platforms.linux-x64"]
-checksum = "sha256:64df4273de625433c7ba41967932b782f5f9abf3199db8330782d64508379344"
-url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.4-stable.tar.xz"
+checksum = "sha256:af7455f540df951184c7953fbe3cf884766e7541dacf8571f9f582db03dd6230"
+url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.47.7-stable.tar.xz"
 
 [tools.flutter."platforms.macos-arm64"]
-checksum = "sha256:cc4d6e6c5b1049e9ca8c7e6444430d916ef08eaf2fd8bca059fa79e424051990"
-url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.27.4-stable.zip"
+checksum = "sha256:dd9da574c3168460550117eb0e8dd0313ae934fabf64a82a6d557fff5fd1422e"
+url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.47.7-stable.zip"
 
 [tools.flutter."platforms.macos-x64"]
-checksum = "sha256:4e10b748a01599a79ce414a6257e6465dc71befa128f3868d659d0fca983a485"
-url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.27.4-stable.zip"
+checksum = "sha256:17d39b000a5d0681e3f7b61a105a36f6f31dd41ab9073f625fd466f38035f901"
+url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_3.47.7-stable.zip"
 
 [tools.flutter."platforms.windows-x64"]
-checksum = "sha256:1141d3edb64c454273feac88f31f84945a1f3309a72c58aa9a5f2bb2b0fc8db3"
-url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.27.4-stable.zip"
+checksum = "sha256:c2c875da25a1a1448d18ee4e8f398b2f6fce888b4775d8f9130538e16d826cb4"
+url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.47.7-stable.zip"

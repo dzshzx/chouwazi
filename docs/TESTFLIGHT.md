@@ -1,7 +1,7 @@
 # TestFlight 上传
 
 `.github/workflows/testflight.yml` 从已合入的 `main` 构建、手动签名并上传 iOS 包。
-Google Flutter 固定为 3.27.4，Xcode 固定为 26.3。2026-10-08 已通过真实 macOS CI 的编译、分发签名、IPA 校验和 Apple 上传验证；当前分发状态统一见 [README 验证状态](../README.md#验证状态)。
+Google Flutter 固定为 3.47.7，Xcode 固定为 26.3。2026-10-08 在 Flutter 3.27.4 下已通过真实 macOS CI 的编译、分发签名、IPA 校验和 Apple 上传验证；当前分发状态统一见 [README 验证状态](../README.md#验证状态)。
 Apple 自 2026-04-28 起要求上传的 iOS 包使用 Xcode 26 与 iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。
 
 ## 账号与签名前提

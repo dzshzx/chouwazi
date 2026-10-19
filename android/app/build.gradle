@@ -1,28 +1,27 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Product minimum is Android 6.0 / API 23. Flutter 3.47.7 still accepts 23 (its version check
+// errors only below 23 and warns below 24), but its MinSdkVersionMigration rewrites a literal
+// minSdk below 24 to flutter.minSdkVersion on every build, so the value lives in a variable.
+def productMinSdk = 23
+
 android {
     namespace = "com.alex.fingerdraw"
     compileSdk = 35
-    buildToolsVersion = "35.0.0"
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     defaultConfig {
         applicationId = "com.alex.fingerdraw"
-        minSdk = 23
+        minSdk = productMinSdk
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -33,6 +32,12 @@ android {
             // Local/CI trial only; store distribution requires an owner-provided key.
             signingConfig = signingConfigs.debug
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
