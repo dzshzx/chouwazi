@@ -53,7 +53,7 @@ base64 只是编码，具有与原始签名文件相同的保密要求。GitHub 
 ## 执行与结果
 
 1. 核对 `pubspec.yaml` 的版本和 build number。上传使用该版本，不自动改号；同一版本的后续新包须增加 build number。
-2. 先完成 `Build Android and iOS` 的两端构建与共享测试，再在 Actions 中手动运行 `Upload iOS to TestFlight`，分支选择 `main`。
+2. 先完成 `Build Android and iOS` 的两端构建与共享测试，再在 Actions 中手动运行 `Upload iOS to TestFlight`，分支选择 `main`。Flutter 升到 3.47.7（2026-10-20）后，本流程与 `screenshots.yml` 都还没有在新版本下实跑过；下次上传前先各跑一次并确认成功，结果记入 README「验证状态」后删去本句。
 3. 流程复跑共享检查，在独立临时 keychain 中导入分发身份，仅对 Runner 的 Release 配置设置手动签名，然后执行 `xcodebuild archive` 和 `-exportArchive`，导出方式为 `app-store-connect`。
 4. 从本次导出目录中定位唯一的 IPA 并规范化文件名，再检查 Bundle ID、版本、构建号、iOS SDK、应用与 Flutter 隐私清单、分发描述文件、签名证书和 entitlement，最后由 Apple `altool` 验证并上传。
 5. 由 Account Holder 到 App Store Connect 网页查看构建处理结果，处理完成后把构建加入测试组。外部测试可能需要 Beta App Review；App Store 上架还需补齐商店资料并单独提交审核。
