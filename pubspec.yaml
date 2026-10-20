@@ -13,6 +13,7 @@ dev_dependencies:
   flutter_lints: 6.0.0
 flutter:
   config:
-    # Keep the existing CocoaPods integration that build.yml, testflight.yml and
-    # screenshots.yml install with `pod install`; the app has no plugins to move.
+    # Flutter 3.47 enables Swift Package Manager by default. Keep the existing
+    # CocoaPods integration that build.yml, testflight.yml and screenshots.yml
+    # install with `pod install`; the app has no plugins to move.
     enable-swift-package-manager: false

@@ -6,7 +6,7 @@
 
 准备一台装有 Xcode 的 Mac、Apple 账号和 iOS / iPadOS 15.0+ 设备。首次验证使用连接线。已验证的构建工具为 Xcode 26.3；设备系统较新时，需使用支持该设备系统的 Xcode。通过 TestFlight 分发使用[签名上传指南](../docs/TESTFLIGHT.md)，安装时不需要连接 Mac。
 
-1. 在 Mac 获取源码并安装 Flutter 3.47.7，在根目录执行 `flutter pub get --enforce-lockfile`、`flutter precache --ios`、`(cd ios && pod install)`、`flutter build ios --config-only --no-codesign`，再打开 `ios/Runner.xcworkspace`，选择 `Runner` scheme。工具链说明见[构建指南](../docs/BUILDING.md)。
+1. 在 Mac 获取源码并安装[构建指南](../docs/BUILDING.md#工具链)固定的 Flutter 版本，在根目录执行 `flutter pub get --enforce-lockfile`、`flutter precache --ios`、`(cd ios && pod install)`、`flutter build ios --config-only --no-codesign`，再打开 `ios/Runner.xcworkspace`，选择 `Runner` scheme。
 2. 在 Xcode 设置中的 Apple Accounts（部分版本称 Accounts）登录自己的 Apple 账号。个人设备开发试用可选择 Personal Team；分发给其他人另行准备签名与分发方案。
 3. 选中 `Runner` target → Signing & Capabilities，开启 Automatically manage signing，选择自己的 Team。若 `com.alex.chouwazi` 无法注册，仅在本地改为账号可用的唯一 Bundle Identifier，并记录实际值；不要把个人 Team 或签名材料提交进仓库。
 4. 连接并解锁设备，按提示信任 Mac，在 Xcode 的运行目标中选择该设备，等待配对和设备准备完成。
@@ -32,7 +32,7 @@ Bundle Identifier 保持 `com.alex.chouwazi`，最低系统为 iOS 15。CI 检�
 - iPhone 18 Pro / iOS 27.0.1，应用 1.0.4 (5)，源码 `3f85685`。TestFlight 后台确认已安装；47.74 秒录屏展示首次启动、多指输入、倒计时、随机结果、再次抽选及简体中文隐私页。
 - 该机实际最多识别 5 个同时触点。用户确认第六指是在倒计时结束前、抽选区域内加入；在同机 Safari 的[独立触点测试](https://patrickhlauke.github.io/touch/tracker/multi-touch-tracker.html)中也最多出现 5 个圆圈。该测试读取真实 `targetTouches` 列表。
 - Android 对照：用户确认 Xiaomi 17 的应用可同时识别 10 点；本次未记录该设备的系统版本和构建号。
-- 软件边界验证：在 Flutter 3.27.4 下向实际 `GameScreen` 触点监听器输入 6 点和 10 点，两项测试均通过，末位触点可被选中；2026-10-20 升级到 Flutter 3.47.7 后尚未重做这项验证与真机验证。此项验证覆盖应用事件处理与界面状态，设备实际触点能力由真机结果记录。
+- 软件边界验证：向实际 `GameScreen` 触点监听器输入 6 点和 10 点，两项测试均通过，末位触点可被选中；本记录基于的 Flutter 版本与当前状态见[根 README](../README.md#验证状态)。此项验证覆盖应用事件处理与界面状态，设备实际触点能力由真机结果记录。
 - Flutter 3.27.4 对应引擎 `82bd5b7209295a5b7ff8cae0df96e7870171e3a5` 已在 [`FlutterViewController.loadView`](https://github.com/flutter/engine/blob/82bd5b7209295a5b7ff8cae0df96e7870171e3a5/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L499) 开启 `multipleTouchEnabled`，并逐个转发 UIKit 提供的触点；应用的软件上限为 10。综合源码、软件边界测试与 Safari 对照，五点限制定位于该设备的 iOS 输入能力。触控芯片、固件与系统内部各自的限制仍缺少公开规格依据。
 - 触点测试应记录实际事件数量。WebKit 当前 [`navigator.maxTouchPoints`](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Navigator.cpp#L456) 在 iOS 分支返回固定值 5，不能单独据此判定某款设备的硬件能力。
 - 录屏 SHA256：`6e8e91d9fe5ae424c5aa63af57d6d6fbc5533716364acae8bc2df6a66b67cc7f`。视频已用于 App Review 补充材料。iPad、其他语言、震动手感、飞行模式及完整生命周期验收仍待逐项完成。
