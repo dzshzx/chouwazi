@@ -13,7 +13,7 @@ Python 构建辅助脚本经 uv 按各自的 PEP 723 声明和 `*.py.lock` 运�
 | Android | Google Flutter 3.47.7 / Dart 3.13.5、Java 17、SDK 35、build-tools 36.0.0、NDK 28.2.13676358 | Gradle 9.3.1、AGP 9.1.0、Kotlin 2.4.0；最低 API 23 |
 | iOS | Google Flutter 3.47.7 / Dart 3.13.5、macOS、Xcode 26.3 | 最低 iOS 15；工程 Runner、产物 Runner.app；Flutter 3.27.4 时已通过真实 CI 编译，3.47.7 待 CI 确认 |
 
-Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升级 Flutter 时同时验证共享依赖、测试和两端编译；如果构建输出出现 CocoaPods 弃用提示，或 Flutter 宣布弃用 CocoaPods，就重开 [dzshzx/chouwazi#4](https://github.com/dzshzx/chouwazi/issues/4)（iOS 迁到 Swift Package Manager）。鸿蒙端已于 2026-10-20 放弃，取舍见 [ADR 0001](adr/0001-drop-harmonyos.md)。
+Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升级 Flutter 时同时验证共享依赖、测试和两端编译；如果构建输出出现 CocoaPods 弃用提示，或 Flutter 宣布弃用 CocoaPods，就重开 [dzshzx/chouwazi#4](https://github.com/dzshzx/chouwazi/issues/4)（iOS 迁到 Swift Package Manager）。只维护 Android 与 iOS 两端（取舍见 [ADR 0001](adr/0001-drop-harmonyos.md)）。
 
 工具链来源：
 
@@ -65,7 +65,7 @@ CI 明确选择 Xcode 26.3 并打印实际 Xcode 和 iPhoneOS SDK 版本，Flutt
 
 Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。签名、IPA 校验与商店上传见 [TestFlight 上传指南](TESTFLIGHT.md)；上传成功须继续等待 Apple 处理并核对测试分发状态。
 
-iOS 继续用 CocoaPods 集成 Flutter 引擎：`pubspec.yaml` 的 `flutter.config.enable-swift-package-manager: false` 关闭 Flutter 3.47 默认开启的 Swift Package Manager，三个工作流都按原样执行 `pod install`。`AppDelegate` 有屏幕常亮的自定义代码，Flutter 不会自动迁移到 UIScene 生命周期，构建时会给出手动迁移提示；迁移须在 macOS 上验证屏幕常亮与生命周期。
+iOS 用 CocoaPods 集成 Flutter 引擎：`pubspec.yaml` 的 `flutter.config.enable-swift-package-manager: false` 关闭 Flutter 3.47 默认开启的 Swift Package Manager，三个工作流都按原样执行 `pod install`。`AppDelegate` 有屏幕常亮的自定义代码，Flutter 不会自动迁移到 UIScene 生命周期，构建时会给出手动迁移提示；迁移须在 macOS 上验证屏幕常亮与生命周期。
 
 Runner 保持 Flutter 标准构建 scheme，CLI 通过 `--debug` 或 `--release` 选择模式。Xcode 真机试用时在 Edit Scheme → Run → Build Configuration 选择 Release。CI 的 Debug 模拟器包仅供开发；Debug/Profile 调试时 Flutter 可能请求本地网络访问以支持 DevTools，不属于 Release 应用功能。CI 检查真机 Release 的 Info.plist 不包含这类声明。
 
