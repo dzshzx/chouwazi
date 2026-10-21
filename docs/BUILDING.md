@@ -42,7 +42,7 @@ uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/
 "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
 ```
 
-输出 `build/app/outputs/flutter-apk/app-release.apk`。包名为 `com.alex.fingerdraw`，Release 优化但使用调试签名供试用。持续分发或覆盖旧包须由用户提供匹配的稳定签名；不能把 CI 的临时调试签名当作原 APK 的签名。
+输出 `build/app/outputs/flutter-apk/app-release.apk`。包名为 `com.alex.fingerdraw`，Release 优化但使用调试签名供试用。持续分发或覆盖旧包须由维护者提供匹配的稳定签名；不能把 CI 的临时调试签名当作原 APK 的签名。
 
 最低 API 23 是产品承诺，`scripts/check-apk.py` 读回编译后的 APK 校验，最低版本变化会失败；`productMinSdk`、`android.newDsl=false` 等相关 Gradle 设置的原因见 `android/app/build.gradle` 与 `android/gradle.properties` 的注释。
 

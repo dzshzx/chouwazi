@@ -10,17 +10,17 @@
 - [三语商店文案](../store/metadata.json)与[审核备注](../store/review-notes.txt)已提交；[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)保留，尚未发送。
 - 已上架版本为 1.0.4 (5)，三语说明按离线随机选择工具的实际功能撰写。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
 - App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项回读。
-- App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存用户提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
+- App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存维护者提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
 - 1.0.4 (5) 已于 2026-10-11 22:46（Asia/Shanghai）获批，并按 `AFTER_APPROVAL` 自动发布。审核经过：2026-10-09 12:45 收到 `Guideline 2.1 - Information Needed - New App Submission`，逐项回复并同步至 App Review Information 的 Notes 与附件，14:02 补交真机录屏和完整六项说明后重新提交。
-- 录屏来自 iPhone 18 Pro / iOS 27.0.1，时长 47.74 秒，展示 TestFlight 首次启动流程、应用多指抽选、结果、再次抽选和隐私页。录屏分别附于审核资料和审核回复，消息附件下载后 SHA256 与用户原始视频一致；正文与 Notes 均与[仓库审核备注](../store/review-notes.txt)对应的定稿一致。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
+- 录屏来自 iPhone 18 Pro / iOS 27.0.1，时长 47.74 秒，展示 TestFlight 首次启动流程、应用多指抽选、结果、再次抽选和隐私页。录屏分别附于审核资料和审核回复，消息附件下载后 SHA256 与维护者原始视频一致；正文与 Notes 均与[仓库审核备注](../store/review-notes.txt)对应的定稿一致。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
 - 为使用另一个 Apple 账号完成真机测试，已将 1.0.4 (5) 加入 TestFlight「公开测试」外部组，并创建[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)。2026-10-09 提交 Beta App Review；2026-10-14 匿名打开公开链接，页面已提供加入入口。这与 App Store 正式上架审核是不同流程。
-- 用户确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆。2026-10-14 公开查询在中国大陆等 30 个抽查地区均可查到 1.0.4，其余地区未逐一核对；大陆上架不等于备案适用性已获确认。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
+- 维护者确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆。2026-10-14 公开查询在中国大陆等 30 个抽查地区均可查到 1.0.4，其余地区未逐一核对；大陆上架不等于备案适用性已获确认。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
 
 ## 个人离线 App 的通常流程
 
 | 顺序 | 工作 | 完成证据 |
 | --- | --- | --- |
-| 1 | 确定真实核心用途、免费/收费安排、发布地区与发布主体 | 与实际功能一致的类目；用户确认商业身份和地区 |
+| 1 | 确定真实核心用途、免费/收费安排、发布地区与发布主体 | 与实际功能一致的类目；维护者确认商业身份和地区 |
 | 2 | 核对地区要求，尤其中国大陆 App 备案、欧盟 DSA | 对本 App 适用的资质或 Apple/接入商的明确答复；不沿用别人的个案结论 |
 | 3 | 准备隐私政策、支持与联系方式 | 公开 HTTPS 页面可匿名访问，App 内容易找到隐私政策 |
 | 4 | 真机与自动验证、生成商店截图 | iPhone/iPad 实测记录；构建/测试回执；当前版本实际截图 |
@@ -42,7 +42,7 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 
 若需 App 备案，可先整理下列资料，不把不适用字段编造完整：
 
-- 现有备案主体、证件、省份、接入商、域名及备案号，由用户提供或确认；证件只交给实际办理平台。
+- 现有备案主体、证件、省份、接入商、域名及备案号，由维护者提供或确认；证件只交给实际办理平台。
 - App 名称“抽袜子”、iOS Bundle ID `com.alex.chouwazi`、实际用途、分发平台及运营安排。
 - iOS 特征信息按办理平台要求从当前分发证书取得，包括公钥与证书 SHA-1；这不是域名的 HTTPS 证书。证书更新时核对是否需变更备案。[阿里特征信息说明](https://help.aliyun.com/zh/icp-filing/basic-icp-service/user-guide/fill-in-app-feature-information)
 - Android 当前只是调试签名试用包，不能把每次 CI 的临时签名当成持续分发的备案签名。
@@ -97,8 +97,8 @@ uv run --locked --script scripts/render-store-site.py
 ## 全球供应的当前事实与待办
 
 1. 独立支持站点已上线，专用邮箱已注册并实测收信，已设自动转发并保留原邮件。凭据与转发配置保存在私有凭据库，仓库不保存密码或验证码。
-2. 用户确认免费身份，已保存免费价格和 DSA 非商家声明；未来商业活动变化时须重新评估。
-3. 用户确认本 App 尚未正式备案；1.0.4 已于 2026-10-11 在中国大陆商店上架。上架不等于备案适用性已获确认，Apple 或主管部门后续提出要求时按实际处理。
+2. 维护者确认免费身份，已保存免费价格和 DSA 非商家声明；未来商业活动变化时须重新评估。
+3. 维护者确认本 App 尚未正式备案；1.0.4 已于 2026-10-11 在中国大陆商店上架。上架不等于备案适用性已获确认，Apple 或主管部门后续提出要求时按实际处理。
 
 个人会员、免费发布都不自动等于欧盟 DSA 的 non-trader。Apple 以实际商业活动和意图自评；trader 的个人联系资料会公开。若 Business 页面出现中国国务院第 810 号令身份信息提示，也须按实际情况处理，这与应用收集用户数据是不同事项。[DSA 自评](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements)、[中国开发者信息](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-information-for-state-council-decree-no-810)
 

@@ -21,4 +21,4 @@
 - Android applicationId 保持 `com.alex.fingerdraw`；iOS 为 `com.alex.chouwazi`。同一包名换了签名也不能覆盖安装。
 - 版本统一来自 `pubspec.yaml`。
 - 离线承诺适用于最终产物：Android 系统权限仅震动；AndroidX 的应用内部广播权限须保持 signature 级；iOS 保留应用与引擎隐私清单。构建脚本校验真实 APK 权限，新增权限或联网能力时同步隐私说明。
-- 签名材料与本机路径不入库。Android Release 是调试签名试用包；`build.yml` 的 iOS 产物未签名。TestFlight 分发使用 `testflight.yml` 的主分支受保护环境，签名、上传和处理状态按 [发布指南](docs/TESTFLIGHT.md) 分别验证；发布和设备签名沿用户授权处理。
+- 签名材料与本机路径不入库。Android Release 是调试签名试用包；`build.yml` 的 iOS 产物未签名。TestFlight 分发使用 `testflight.yml` 的主分支受保护环境，签名、上传和处理状态按 [发布指南](docs/TESTFLIGHT.md) 分别验证；发布和设备签名按维护者授权处理。

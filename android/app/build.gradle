@@ -29,7 +29,7 @@ android {
 
     buildTypes {
         release {
-            // Local/CI trial only; store distribution requires an user-provided key.
+            // Local/CI trial only; store distribution requires a maintainer-provided key.
             signingConfig = signingConfigs.debug
         }
     }
