@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --locked --quiet --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pillow==12.3.0", "websocket-client==1.9.0"]
+# dependencies = ["pillow==13.0.0", "websocket-client==1.9.0"]
 # ///
 """Capture the unmodified production UI from a debug iOS simulator build.
 
