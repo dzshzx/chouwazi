@@ -24,9 +24,9 @@ Android 与 iOS 共用一套 Flutter/Dart 源码的离线随机选择工具。�
 
 ## 构建
 
-完整安装、工具链来源与校验、各端构建命令见 [构建指南](docs/BUILDING.md)。
+完整安装、工具链固定版本与来源、校验和各端构建命令见 [构建指南](docs/BUILDING.md)。
 
-- Android / iOS：Flutter 官方工具链，固定版本见[构建指南「工具链」](docs/BUILDING.md#工具链)。
+- Android / iOS：Flutter 官方工具链。
 - 最低系统：Android 6.0 / API 23，iOS 15。
 - 版本源为 `pubspec.yaml`。
 

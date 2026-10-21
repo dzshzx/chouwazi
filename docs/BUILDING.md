@@ -8,16 +8,18 @@ Python 构建辅助脚本经 uv 按各自的 PEP 723 声明和 `*.py.lock` 运�
 本机先准备 uv；CI 安装固定版本 uv。调用使用 `uv run --locked --script`，
 脚本依赖声明更新后用 `uv lock --script <脚本>` 更新并提交对应锁文件。
 
+两端共用 Google Flutter 3.47.7 / Dart 3.13.5；各端另需的固定工具见下表。
+
 | 平台 | 固定工具 | 说明 |
 | --- | --- | --- |
-| Android | Google Flutter 3.47.7 / Dart 3.13.5、Java 17、SDK 35、build-tools 36.0.0、NDK 28.2.13676358 | Gradle 9.3.1、AGP 9.1.0、Kotlin 2.4.0；最低 API 23 |
-| iOS | Google Flutter 3.47.7 / Dart 3.13.5、macOS、Xcode 26.3 | 最低 iOS 15；工程 Runner、产物 Runner.app |
+| Android | Java 17、SDK 35、build-tools 36.0.0、NDK 28.2.13676358 | Gradle 9.3.1、AGP 9.1.0、Kotlin 2.4.0；最低 API 23 |
+| iOS | macOS、Xcode 26.3 | 最低 iOS 15；工程 Runner、产物 Runner.app |
 
 Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升级 Flutter 时同时验证共享依赖、测试和两端编译；如果构建输出出现 CocoaPods 弃用提示，或 Flutter 宣布弃用 CocoaPods，就重开 [dzshzx/chouwazi#4](https://github.com/dzshzx/chouwazi/issues/4)（iOS 迁到 Swift Package Manager）。只维护 Android 与 iOS 两端（取舍见 [ADR 0001](adr/0001-drop-harmonyos.md)）。
 
 工具链来源：
 
-- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它钉到同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。CI 由 `subosito/flutter-action` 按各工作流的 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`、本表，以及 `build.yml`、`testflight.yml`、`screenshots.yml` 的 `flutter-version`。
+- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它钉到同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。CI 由 `subosito/flutter-action` 按各工作流的 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`、本节，以及 `build.yml`、`testflight.yml`、`screenshots.yml` 的 `flutter-version`。
 
 ## 共享验证
 
@@ -61,7 +63,7 @@ uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.a
 
 必须在 macOS 上执行。使用 Xcode 运行时打开 `ios/Runner.xcworkspace`，选择 Runner scheme。CI 分别打包 `chouwazi-simulator.zip` 与 `chouwazi-device-unsigned.zip`；两者都含 `Runner.app`，只能在匹配的平台使用。真机包未签名，不是可直接安装的 IPA。签名与验收见 [iOS 真机试用指南](../ios/DEVICE-TESTING.md)。
 
-CI 明确选择 Xcode 26.3 并打印实际 Xcode 和 iPhoneOS SDK 版本，Flutter 固定为表中版本。各次编译结果见 [README 验证状态](../README.md#验证状态)；签名上传须再由 TestFlight 流程验证。
+CI 明确选择 Xcode 26.3 并打印实际 Xcode 和 iPhoneOS SDK 版本，Flutter 固定为上文「工具链」所列版本。各次编译结果见 [README 验证状态](../README.md#验证状态)；签名上传须再由 TestFlight 流程验证。
 
 Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。签名、IPA 校验与商店上传见 [TestFlight 上传指南](TESTFLIGHT.md)；上传成功须继续等待 Apple 处理并核对测试分发状态。
 
