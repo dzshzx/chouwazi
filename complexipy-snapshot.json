@@ -1,0 +1,32 @@
+[
+  {
+    "path": "scripts/capture-ios-screenshots.py",
+    "file_name": "capture-ios-screenshots.py",
+    "functions": [
+      {
+        "name": "capture_language",
+        "complexity": 21
+      }
+    ]
+  },
+  {
+    "path": "scripts/render-store-site.py",
+    "file_name": "render-store-site.py",
+    "functions": [
+      {
+        "name": "render_page",
+        "complexity": 23
+      }
+    ]
+  },
+  {
+    "path": "scripts/testflight-assets.py",
+    "file_name": "testflight-assets.py",
+    "functions": [
+      {
+        "name": "run",
+        "complexity": 22
+      }
+    ]
+  }
+]

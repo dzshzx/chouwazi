@@ -1,0 +1,9 @@
+{
+  "oversize": {},
+  "exclude": [],
+  "complexity": {
+    "scripts/capture-ios-screenshots.py::capture_language": "存量，待整改",
+    "scripts/render-store-site.py::render_page": "存量，待整改",
+    "scripts/testflight-assets.py::run": "存量，待整改"
+  }
+}
