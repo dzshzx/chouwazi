@@ -138,6 +138,51 @@ def page_content(translation, kind, config):
     return "\n".join(output)
 
 
+def head_extras(config, preview, kind, relative_path):
+    head_extra = ['<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'self\'; img-src \'self\'; base-uri \'none\'; form-action \'none\'">']
+    if preview:
+        head_extra.append('<meta name="robots" content="noindex, nofollow">')
+    base_url = config.get("public_base_url")
+    if base_url and not preview:
+        base_url = base_url.rstrip("/") + "/"
+        head_extra.append(f'<link rel="canonical" href="{escape(base_url + relative_path, quote=True)}">')
+        if kind is not None:
+            for alternate in LANGUAGES:
+                head_extra.append(f'<link rel="alternate" hreflang="{alternate}" href="{escape(base_url + alternate + "/" + kind + ".html", quote=True)}">')
+    return head_extra
+
+
+def language_switch_links(translations, language, kind, prefix):
+    language_links = []
+    for alternate in LANGUAGES:
+        target = f"{prefix}{alternate}/{kind or 'support'}.html"
+        attributes = f' lang="{alternate}" hreflang="{alternate}"'
+        if alternate == language and kind is not None:
+            attributes += ' aria-current="page"'
+        language_links.append(link(target, translations[alternate]["name"], attributes))
+    return language_links
+
+
+def index_content(translations, translation):
+    content = [f'<h1>{escape(translation["index_title"])}</h1>', paragraph(translation["index_lead"], "lead"), '<div class="index-languages">']
+    for alternate in LANGUAGES:
+        localized = translations[alternate]
+        content.append(f'<section lang="{alternate}"><h2>{escape(localized["name"])}</h2><p>'
+                       + " ".join(link(f"{alternate}/{page}.html", localized[page]["title"])
+                                  for page in PAGE_KINDS) + "</p></section>")
+    content.append("</div>")
+    return "\n".join(content)
+
+
+def draft_notice(translation, missing, preview):
+    if not preview:
+        return ""
+    notice_text = translation["draft"]
+    if missing:
+        notice_text += " " + translation["pending_label"] + ", ".join(translation["missing"][field] for field in missing)
+    return '<aside class="draft-notice">' + paragraph(notice_text) + "</aside>"
+
+
 def render_page(template, translations, config, missing, preview, language, kind=None):
     translation = translations[language]
     is_index = kind is None
@@ -145,41 +190,12 @@ def render_page(template, translations, config, missing, preview, language, kind
     relative_path = "index.html" if is_index else f"{language}/{kind}.html"
     title = translation["index_title"] if is_index else translation[kind]["title"]
     title += " | " + translation["app_name"]
-    head_extra = ['<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'self\'; img-src \'self\'; base-uri \'none\'; form-action \'none\'">']
     if preview:
         title = translation["draft_title"] + " | " + title
-        head_extra.append('<meta name="robots" content="noindex, nofollow">')
-    base_url = config.get("public_base_url")
-    if base_url and not preview:
-        base_url = base_url.rstrip("/") + "/"
-        head_extra.append(f'<link rel="canonical" href="{escape(base_url + relative_path, quote=True)}">')
-        if not is_index:
-            for alternate in LANGUAGES:
-                head_extra.append(f'<link rel="alternate" hreflang="{alternate}" href="{escape(base_url + alternate + "/" + kind + ".html", quote=True)}">')
-    language_links = []
-    for alternate in LANGUAGES:
-        target = f"{prefix}{alternate}/{kind or 'support'}.html"
-        attributes = f' lang="{alternate}" hreflang="{alternate}"'
-        if alternate == language and not is_index:
-            attributes += ' aria-current="page"'
-        language_links.append(link(target, translations[alternate]["name"], attributes))
-    if is_index:
-        content = [f'<h1>{escape(translation["index_title"])}</h1>', paragraph(translation["index_lead"], "lead"), '<div class="index-languages">']
-        for alternate in LANGUAGES:
-            localized = translations[alternate]
-            content.append(f'<section lang="{alternate}"><h2>{escape(localized["name"])}</h2><p>'
-                           + " ".join(link(f"{alternate}/{page}.html", localized[page]["title"])
-                                      for page in PAGE_KINDS) + "</p></section>")
-        content.append("</div>")
-        content = "\n".join(content)
-    else:
-        content = page_content(translation, kind, config)
-    notice = ""
-    if preview:
-        notice_text = translation["draft"]
-        if missing:
-            notice_text += " " + translation["pending_label"] + ", ".join(translation["missing"][field] for field in missing)
-        notice = '<aside class="draft-notice">' + paragraph(notice_text) + "</aside>"
+    head_extra = head_extras(config, preview, kind, relative_path)
+    language_links = language_switch_links(translations, language, kind, prefix)
+    content = index_content(translations, translation) if is_index else page_content(translation, kind, config)
+    notice = draft_notice(translation, missing, preview)
     copyright_text = "© " + config["copyright_holder"] if config.get("copyright_holder") else translation["copyright_pending"]
     return template.substitute(
         language=language, title=escape(title), app_name=escape(translation["app_name"]),

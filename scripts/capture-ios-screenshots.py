@@ -286,6 +286,40 @@ def vm_url(line):
     return match[1] if match else None
 
 
+def poll_until(condition, timeout, message):
+    deadline = time.monotonic() + timeout
+    while not condition():
+        require(time.monotonic() < deadline, message)
+        time.sleep(.2)
+
+
+def machine_messages(line):
+    """The JSON message list on one `flutter --machine` output line, or None."""
+    try:
+        messages = json.loads(line)
+    except json.JSONDecodeError:
+        return None
+    return messages if isinstance(messages, list) else None
+
+
+def attach_ready_parser():
+    """Parse `flutter attach --machine` output until the app started and its debug URI is known."""
+    connection = {}
+
+    def ready(line):
+        messages = machine_messages(line)
+        if messages is None:
+            return None
+        for message in messages:
+            if message.get("event") == "app.debugPort":
+                connection["uri"] = message["params"]["wsUri"]
+            if message.get("event") == "app.started":
+                connection["started"] = True
+        return connection["uri"] if connection.get("started") and connection.get("uri") else None
+
+    return ready
+
+
 def capture_language(udid, label, size, language, region, privacy_text, privacy_title):
     folder = OUTPUT / label / language
     folder.mkdir(parents=True)
@@ -307,23 +341,7 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
         print("Simulator loopback VM service discovered; attaching Flutter", flush=True)
         attach = PrivateProcess("flutter", "attach", "--machine", "--debug",
                                 "--no-dds", "--no-devtools", "-d", udid, "--debug-url", uri)
-        connection = {}
-
-        def ready(line):
-            try:
-                messages = json.loads(line)
-            except json.JSONDecodeError:
-                return None
-            if not isinstance(messages, list):
-                return None
-            for message in messages:
-                if message.get("event") == "app.debugPort":
-                    connection["uri"] = message["params"]["wsUri"]
-                if message.get("event") == "app.started":
-                    connection["started"] = True
-            return connection["uri"] if connection.get("started") and connection.get("uri") else None
-
-        debug_uri = attach.wait_for(ready, "Flutter debug attach")
+        debug_uri = attach.wait_for(attach_ready_parser(), "Flutter debug attach")
         time.sleep(1)
         vm = VM(debug_uri)
         actual_locale = vm.string("WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag()", operation="locale")
@@ -338,15 +356,11 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
                      for index, (x, y) in enumerate(((.24, .28), (.76, .28), (.24, .73), (.76, .73)))]
         vm.touches("Down", positions, operation="players-down")
         # Wait for the ordinary 3.8-second round and its random draw to finish.
-        deadline = time.monotonic() + 10
-        while vm.snapshot(operation="winner-poll")["winner_slot"] is None:
-            require(time.monotonic() < deadline, "The normal game clock did not produce a result")
-            time.sleep(.2)
+        poll_until(lambda: vm.snapshot(operation="winner-poll")["winner_slot"] is not None, 10,
+                   "The normal game clock did not produce a result")
         vm.touches("Up", positions, operation="players-up")
-        deadline = time.monotonic() + 10
-        while not vm.snapshot(operation="players-up")["all_released"]:
-            require(time.monotonic() < deadline, "The normal pointer releases did not finish")
-            time.sleep(.2)
+        poll_until(lambda: vm.snapshot(operation="players-up")["all_released"], 10,
+                   "The normal pointer releases did not finish")
         capture(vm, udid, folder, "02-result", size,
                 lambda state: not state["privacy"] and state["players"] == 4 and
                 state["winner_slot"] in range(4) and state["all_released"], screenshots)
@@ -359,12 +373,10 @@ def capture_language(udid, label, size, language, region, privacy_text, privacy_
           (context as Element).toStringDeep().contains(_strings.text('privacy_title')) &&
           (context as Element).toStringDeep().contains(_strings.text('privacy_summary'))
         """
-        deadline = time.monotonic() + 15
-        while not (vm.snapshot(operation="privacy-rendered")["privacy"] and
-                   vm.string(title_expression, operation="privacy-rendered") == "true" and
-                   vm.string("_strings.text('privacy_title')", operation="privacy-title") == privacy_title):
-            require(time.monotonic() < deadline, "The real localized privacy screen did not render")
-            time.sleep(.2)
+        poll_until(lambda: (vm.snapshot(operation="privacy-rendered")["privacy"] and
+                            vm.string(title_expression, operation="privacy-rendered") == "true" and
+                            vm.string("_strings.text('privacy_title')", operation="privacy-title") == privacy_title),
+                   15, "The real localized privacy screen did not render")
         capture(vm, udid, folder, "03-privacy", size,
                 lambda state: state["privacy"] and state["all_released"], screenshots)
         return {"language": language, "actual_locale": actual_locale, "screenshots": screenshots}

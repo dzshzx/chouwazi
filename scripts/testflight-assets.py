@@ -32,43 +32,47 @@ def require(condition, message):
         raise SigningAssetValidationError(message)
 
 
+def codesign_failure(args, result):
+    operations = (("--verify", "verify"), ("--entitlements", "display-entitlements"),
+                  ("--extract-certificates", "extract-certificates"))
+    operation = next((name for flag, name in operations
+                      if any(arg == flag or arg.startswith(flag + "=") for arg in args[1:])), "unknown")
+    stderr = result.stderr.decode("utf-8", errors="replace")
+    lowered_stderr = stderr.lower()
+    reasons = (
+        ("unsigned", ("code object is not signed at all",)),
+        ("sealed-resource-missing-or-invalid", ("sealed resource is missing or invalid",)),
+        ("main-executable-strict-validation", ("main executable failed strict validation",)),
+        ("unrecognized-or-ambiguous-bundle", ("bundle format unrecognized", "bundle format is ambiguous")),
+        ("invalid-signature", ("invalid signature", "signature invalid", "code or signature have been modified",
+                               "cssmerr_csp_verify_failed")),
+        ("trust-or-certificate-expiry", ("cssmerr_tp_cert_expired", "cssmerr_tp_not_trusted",
+                                         "cssmerr_tp_cert_not_valid_yet", "errseccertificateexpired",
+                                         "certificate has expired", "certificate is not trusted",
+                                         "unable to build chain to self-signed root")),
+        ("unsupported-syntax-or-argument", ("invalid argument", "unknown option", "unrecognized option",
+                                            "unsupported option", "invalid option", "illegal option",
+                                            "requires an argument", "usage: codesign")),
+        ("file-or-path-not-found", ("no such file", "file not found", "path not found")),
+    )
+    reason = next((name for name, patterns in reasons
+                   if any(pattern in lowered_stderr for pattern in patterns)), "unknown")
+    subcomponents = re.findall(r"^In subcomponent:[ \t]*([^\r\n]+)", stderr, re.MULTILINE)
+    component = "none" if not subcomponents else "unknown"
+    if subcomponents:
+        match = re.search(r"(?:^|/)(Runner\.app|Flutter\.framework|App\.framework)/?$",
+                          subcomponents[0].strip())
+        if match:
+            component = match[1]
+    # stderr is untrusted; only fixed operation/reason/component tokens are public.
+    require(False, f"codesign {operation} failed while handling signing assets "
+                   f"(exit={result.returncode}, reason={reason}, subcomponent={component})")
+
+
 def run(*args):
     result = subprocess.run(args, capture_output=True, check=False)
     if args[0] == "codesign" and result.returncode != 0:
-        operations = (("--verify", "verify"), ("--entitlements", "display-entitlements"),
-                      ("--extract-certificates", "extract-certificates"))
-        operation = next((name for flag, name in operations
-                          if any(arg == flag or arg.startswith(flag + "=") for arg in args[1:])), "unknown")
-        stderr = result.stderr.decode("utf-8", errors="replace")
-        lowered_stderr = stderr.lower()
-        reasons = (
-            ("unsigned", ("code object is not signed at all",)),
-            ("sealed-resource-missing-or-invalid", ("sealed resource is missing or invalid",)),
-            ("main-executable-strict-validation", ("main executable failed strict validation",)),
-            ("unrecognized-or-ambiguous-bundle", ("bundle format unrecognized", "bundle format is ambiguous")),
-            ("invalid-signature", ("invalid signature", "signature invalid", "code or signature have been modified",
-                                   "cssmerr_csp_verify_failed")),
-            ("trust-or-certificate-expiry", ("cssmerr_tp_cert_expired", "cssmerr_tp_not_trusted",
-                                             "cssmerr_tp_cert_not_valid_yet", "errseccertificateexpired",
-                                             "certificate has expired", "certificate is not trusted",
-                                             "unable to build chain to self-signed root")),
-            ("unsupported-syntax-or-argument", ("invalid argument", "unknown option", "unrecognized option",
-                                                "unsupported option", "invalid option", "illegal option",
-                                                "requires an argument", "usage: codesign")),
-            ("file-or-path-not-found", ("no such file", "file not found", "path not found")),
-        )
-        reason = next((name for name, patterns in reasons
-                       if any(pattern in lowered_stderr for pattern in patterns)), "unknown")
-        subcomponents = re.findall(r"^In subcomponent:[ \t]*([^\r\n]+)", stderr, re.MULTILINE)
-        component = "none" if not subcomponents else "unknown"
-        if subcomponents:
-            match = re.search(r"(?:^|/)(Runner\.app|Flutter\.framework|App\.framework)/?$",
-                              subcomponents[0].strip())
-            if match:
-                component = match[1]
-        # stderr is untrusted; only fixed operation/reason/component tokens are public.
-        require(False, f"codesign {operation} failed while handling signing assets "
-                       f"(exit={result.returncode}, reason={reason}, subcomponent={component})")
+        codesign_failure(args, result)
     require(result.returncode == 0, f"{args[0]} failed while handling signing assets")
     return result.stdout
 
