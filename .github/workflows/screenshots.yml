@@ -10,7 +10,7 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
@@ -18,7 +18,7 @@ jobs:
         with:
           version: '0.12.19'
           enable-cache: false
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           flutter-version: '3.47.7'
           channel: stable
@@ -43,7 +43,7 @@ jobs:
           uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app
       - name: Capture real UI in English, Simplified and Traditional Chinese
         run: uv run --locked --script scripts/capture-ios-screenshots.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: chouwazi-ios-app-store-screenshots
           path: |
