@@ -2,6 +2,9 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
+#
+# [tool.uv]
+# exclude-newer = "3 days"
 # ///
 """Handle signing assets without printing certificate/profile/key contents."""
 import base64
