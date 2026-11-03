@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 共享源码检查汇总入口：与 .github/workflows/build.yml「Check shared source」一步同源，合入前门禁（.merge-gate.toml）运行它。
+# 共享源码检查汇总入口：与 .github/workflows/build.yml「Check shared source」一步同源。
 # 用法：bash scripts/check.sh
 # Flutter 经 mise 按 mise.toml 固定版本解析；跑完后已跟踪文件须与开始时一致。
 # APK/iOS 真实构建、产物校验与真机体验不在此列，经手动 build.yml 与真机验证。

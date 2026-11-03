@@ -23,7 +23,7 @@ Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升
 
 ## 共享验证
 
-`bash scripts/check.sh` 依次运行下列四步（Flutter 经 mise 解析），与 `build.yml`「Check shared source」同源，也是仓根 `.merge-gate.toml` 声明的合入前门禁，合入时自动运行：
+`bash scripts/check.sh` 依次运行下列四步（Flutter 经 mise 解析），与 `build.yml`「Check shared source」同源：
 
 ```sh
 flutter pub get --enforce-lockfile
