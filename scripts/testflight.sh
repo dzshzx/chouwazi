@@ -13,7 +13,7 @@ trap 'bash scripts/testflight-cleanup.sh' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM HUP
 
-uv run --locked --script scripts/testflight-assets.py prepare
+uv run --script scripts/testflight-assets.py prepare
 state_dir="${RUNNER_TEMP}/chouwazi-testflight-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 export TESTFLIGHT_STATE_DIR="$state_dir"
 keychain_path="$state_dir/signing.keychain-db"
@@ -50,7 +50,7 @@ else
 fi
 security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$keychain_password" "$keychain_path" >/dev/null 2>&1
 unset keychain_password IOS_DISTRIBUTION_P12_PASSWORD IOS_DISTRIBUTION_P12_BASE64 IOS_APP_STORE_PROFILE_BASE64 ASC_API_KEY_P8 ASC_API_KEY_ID ASC_API_ISSUER_ID
-uv run --locked --script scripts/testflight-assets.py install
+uv run --script scripts/testflight-assets.py install
 
 # xcodebuild command-line signing settings would also reach Pods. Configure only
 # Runner's Release target and restore the original project during cleanup.
@@ -77,10 +77,10 @@ xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Relea
   -derivedDataPath "$state_dir/DerivedData" archive
 xcodebuild -exportArchive -archivePath "$state_dir/Runner.xcarchive" \
   -exportPath "$state_dir/export" -exportOptionsPlist "$state_dir/ExportOptions.plist"
-uv run --locked --script scripts/testflight-assets.py verify
+uv run --script scripts/testflight-assets.py verify
 
-api_key_id="$(uv run --locked --quiet --script scripts/testflight-assets.py field api_key_id)"
-api_issuer_id="$(uv run --locked --quiet --script scripts/testflight-assets.py field api_issuer_id)"
+api_key_id="$(uv run --quiet --script scripts/testflight-assets.py field api_key_id)"
+api_issuer_id="$(uv run --quiet --script scripts/testflight-assets.py field api_issuer_id)"
 # altool resolves AuthKey_<key ID>.p8 from this directory. Neither the key nor
 # the raw delivery logs are printed or published as an Actions artifact.
 export API_PRIVATE_KEYS_DIR="$state_dir/private_keys"

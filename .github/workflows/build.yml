@@ -42,7 +42,7 @@ jobs:
         run: |
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
-          uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
+          uv run --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: chouwazi-android-apk
@@ -79,7 +79,7 @@ jobs:
         run: flutter build ios --release --no-codesign --no-pub
       - name: Package build artifacts
         run: |
-          uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
+          uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
           ditto -c -k --sequesterRsrc --keepParent build/ios/iphonesimulator/Runner.app build/chouwazi-simulator.zip
           ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app build/chouwazi-device-unsigned.zip
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

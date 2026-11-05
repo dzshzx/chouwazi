@@ -1,10 +1,8 @@
-#!/usr/bin/env -S uv run --locked --quiet --script
+#!/usr/bin/env -S uv run --quiet --script
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
 #
-# [tool.uv]
-# exclude-newer = "3 days"
 # ///
 """Render the fixed store/site sources; never deploy or fetch remote resources.
 

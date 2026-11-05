@@ -40,7 +40,7 @@ jobs:
           pod install
           cd ..
           flutter build ios --simulator --debug --no-codesign --no-pub
-          uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app
+          uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app
       - name: Capture real UI in English, Simplified and Traditional Chinese
         run: uv run --locked --script scripts/capture-ios-screenshots.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

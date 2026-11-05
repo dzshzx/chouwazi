@@ -4,9 +4,10 @@ Android 与 iOS 的入口均为根目录 `lib/main.dart`。状态机、触控、
 
 ## 工具链
 
-Python 构建辅助脚本经 uv 按各自的 PEP 723 声明和 `*.py.lock` 运行。
-本机先准备 uv；CI 安装固定版本 uv。调用使用 `uv run --locked --script`，
-脚本依赖声明更新后用 `uv lock --script <脚本>` 更新并提交对应锁文件。
+Python 构建辅助脚本经 uv 按各自的 PEP 723 声明运行。
+本机先准备 uv；CI 安装固定版本 uv。有第三方依赖的脚本带同名 `*.py.lock`，调用使用
+`uv run --locked --script`，依赖声明更新后用 `uv lock --script <脚本>` 更新并提交对应锁文件；
+零依赖脚本（`dependencies = []`）不带锁，调用使用 `uv run --script`。
 
 两端共用 Google Flutter 3.47.7 / Dart 3.13.5；各端另需的固定工具见下表。
 
@@ -40,7 +41,7 @@ flutter test --no-pub
 
 ```sh
 flutter build apk --release --no-pub
-uv run --locked --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
+uv run --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
 "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
 ```
 
@@ -60,7 +61,7 @@ flutter precache --ios
 (cd ios && pod install)
 flutter build ios --simulator --debug --no-codesign --no-pub
 flutter build ios --release --no-codesign --no-pub
-uv run --locked --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
+uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
 ```
 
 必须在 macOS 上执行。使用 Xcode 运行时打开 `ios/Runner.xcworkspace`，选择 Runner scheme。CI 分别打包 `chouwazi-simulator.zip` 与 `chouwazi-device-unsigned.zip`；两者都含 `Runner.app`，只能在匹配的平台使用。真机包未签名，不是可直接安装的 IPA。签名与验收见 [iOS 真机试用指南](../ios/DEVICE-TESTING.md)。

@@ -1,10 +1,8 @@
-#!/usr/bin/env -S uv run --locked --quiet --script
+#!/usr/bin/env -S uv run --quiet --script
 # /// script
 # requires-python = ">=3.11"
 # dependencies = []
 #
-# [tool.uv]
-# exclude-newer = "3 days"
 # ///
 """Check the actual app bundle has the shared app, privacy and localized names."""
 from pathlib import Path
