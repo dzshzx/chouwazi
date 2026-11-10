@@ -10,7 +10,7 @@
 
 ## 构建与验证
 
-- 只维护 Android 与 iOS 两端（取舍见 [ADR 0001](docs/adr/0001-drop-harmonyos.md)），均用[构建指南](docs/BUILDING.md#工具链)固定的 Flutter 版本，升级须复验两端。
+- 只维护 Android 与 iOS 两端，均用[构建指南](docs/BUILDING.md#工具链)固定的 Flutter 版本，升级须复验两端。
 - iOS 工程为 `ios/Runner.xcworkspace` / `Runner` scheme。新增原生 iOS 资源需登记 `project.pbxproj`；共享 Dart 文件不需要逐个登记。
 - 共享源码检查入口为 `bash scripts/check.sh`（与 `build.yml`「Check shared source」同源）；改其中一处须同步另一处。
 - GitHub Actions `build.yml` 仅手动触发，执行共享测试并真实构建两端。本机 Linux 可构建 APK，iOS 必须在 macOS/Xcode 构建。
