@@ -5,9 +5,9 @@
 #
 # ///
 """Check the actual app bundle has the shared app, privacy and localized names."""
-from pathlib import Path
 import plistlib
 import sys
+from pathlib import Path
 
 for path in sys.argv[1:]:
     app = Path(path)

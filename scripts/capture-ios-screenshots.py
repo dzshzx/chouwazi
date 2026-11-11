@@ -14,7 +14,6 @@ No service URL, auth token or raw launch/attach log is written or uploaded.
 """
 import hashlib
 import json
-from pathlib import Path
 import plistlib
 import queue
 import re
@@ -23,11 +22,11 @@ import subprocess
 import sys
 import threading
 import time
+from pathlib import Path
 from urllib.parse import urlparse
 
-from PIL import Image, PngImagePlugin
 import websocket
-
+from PIL import Image, PngImagePlugin
 
 BUNDLE_ID = "com.alex.chouwazi"
 APP = Path("build/ios/iphonesimulator/Runner.app")
@@ -94,7 +93,8 @@ def cleanup(steps):
     for label, action in steps:
         try:
             action()
-        except Exception:
+        except Exception:  # noqa: BLE001
+            # Every cleanup step must run; record only its label and keep details private.
             failures.append(label)
     if failures:
         message = "Cleanup failed: " + ", ".join(failures) + "; details kept private"
@@ -442,10 +442,10 @@ def main():
         finally:
             # A failed boot can leave an already-shutdown device to remove.
             cleanup((
-                ("Simulator shutdown", lambda: subprocess.run(
+                ("Simulator shutdown", lambda udid=udid: subprocess.run(
                     ("xcrun", "simctl", "shutdown", udid),
                     capture_output=True, timeout=60, check=False)),
-                ("Simulator deletion", lambda: run("xcrun", "simctl", "delete", udid)),
+                ("Simulator deletion", lambda udid=udid: run("xcrun", "simctl", "delete", udid)),
             ))
     require(len(list(OUTPUT.rglob("*.png"))) == 18, "Expected all three stable screens in three languages on both devices")
     (OUTPUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
@@ -458,7 +458,7 @@ if __name__ == "__main__":
     except ScreenshotError as error:
         print(f"Screenshot capture failed: {error}", file=sys.stderr)
         sys.exit(1)
-    except Exception:
+    except Exception:  # noqa: BLE001
         # External exceptions may embed an authenticated URL. Keep those messages private.
         print("Screenshot capture failed; check simulator, Flutter attach and screenshot prerequisites. Debug output was kept private.", file=sys.stderr)
         sys.exit(1)

@@ -6,11 +6,9 @@
 # ///
 """Handle signing assets without printing certificate/profile/key contents."""
 import base64
-from datetime import datetime, timezone
 import hashlib
 import json
 import os
-from pathlib import Path
 import plistlib
 import re
 import runpy
@@ -19,6 +17,8 @@ import shlex
 import shutil
 import subprocess
 import sys
+from datetime import UTC, datetime
+from pathlib import Path
 
 BUNDLE_ID = "com.alex.chouwazi"
 PROJECT = Path("ios/Runner.xcodeproj/project.pbxproj")
@@ -108,7 +108,7 @@ def profile_data(blob):
     require("ProvisionedDevices" not in profile and not profile.get("ProvisionsAllDevices"), "Ad hoc/enterprise profiles cannot be used")
     expires = profile.get("ExpirationDate")
     require(isinstance(expires, datetime), "Missing profile expiry")
-    require(expires.replace(tzinfo=timezone.utc) > datetime.now(timezone.utc), "Provisioning profile has expired")
+    require(expires.replace(tzinfo=UTC) > datetime.now(UTC), "Provisioning profile has expired")
     require(profile.get("DeveloperCertificates"), "Profile contains no distribution certificate")
     return profile
 
@@ -282,7 +282,7 @@ if __name__ == "__main__":
         # require() messages contain only fixed text/tokens, command names and exit codes.
         print(f"TestFlight asset operation failed: {error}", file=sys.stderr)
         sys.exit(1)
-    except Exception:
+    except Exception:  # noqa: BLE001
         # External exceptions can carry binary or key material. Never print them.
         print("TestFlight asset operation failed; check secrets, signing assets and workflow prerequisites.", file=sys.stderr)
         sys.exit(1)

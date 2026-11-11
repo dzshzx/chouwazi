@@ -17,7 +17,7 @@ internal = "com.alex.fingerdraw.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
 assert permissions <= {"android.permission.VIBRATE", internal}, f"Unexpected permissions: {permissions}"
 if internal in permissions:
     tree = subprocess.check_output([sys.argv[1], "dump", "xmltree", sys.argv[2], "AndroidManifest.xml"], text=True)
-    declarations = re.findall(r"    E: permission .*?(?=\n    E:|\Z)", tree, re.S)
+    declarations = re.findall(r"    E: permission .*?(?=\n    E:|\Z)", tree, re.DOTALL)
     def is_internal_signature(block):
         name = re.search(r'android:name\([^)]*\)="([^"]+)"', block)
         level = re.search(r'android:protectionLevel\([^)]*\)=\(type 0x[0-9a-f]+\)(0x[0-9a-f]+)\b', block)

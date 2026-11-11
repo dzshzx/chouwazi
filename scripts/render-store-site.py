@@ -11,14 +11,13 @@ Use --preview for an explicitly marked, non-indexable local draft.
 """
 
 import argparse
-from html import escape
 import json
-from pathlib import Path
 import re
-from string import Template
 import sys
+from html import escape
+from pathlib import Path
+from string import Template
 from urllib.parse import quote, urlsplit
-
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "store" / "site"
