@@ -35,6 +35,7 @@ jobs:
           dart format --output=none --set-exit-if-changed lib test
           flutter analyze --no-pub
           flutter test --no-pub
+          bash scripts/lint.sh
       - name: Build offline trial APK
         run: flutter build apk --release --no-pub
       - name: Verify APK signature and permissions
