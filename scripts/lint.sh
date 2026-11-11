@@ -68,9 +68,10 @@ fi
 if [ ${#SHELLS[@]} -gt 0 ]; then
   echo "== Swift 与 Kotlin 函数圈复杂度不超过 $MAX_COMPLEXITY"
   uvx -q "lizard==$LIZARD_VERSION" -l swift -l kotlin -C "$MAX_COMPLEXITY" -w "${SHELLS[@]}"
-  # 复杂度不认豁免：lizard 会放过带 "#lizard forgives" 注释的函数和仓根 whitelizard.txt 里列的函数，所以另查一遍。
-  if grep -n -i 'lizard forgive' -- "${SHELLS[@]}" || [ -e whitelizard.txt ]; then
-    echo "lint: 不接受 lizard 的豁免注释与 whitelizard.txt" >&2
+  # 复杂度不认豁免：lizard 会放过带 #lizard forgives 注释的函数、注释里含 GENERATED CODE 的整个文件
+  # 和仓根 whitelizard.txt 里列的函数，所以另查一遍。
+  if grep -n -i -e 'lizard forgive' -e 'generated code' -- "${SHELLS[@]}" || [ -e whitelizard.txt ]; then
+    echo "lint: 不接受 lizard 的豁免注释（#lizard forgives、GENERATED CODE）与 whitelizard.txt" >&2
     exit 1
   fi
 fi
