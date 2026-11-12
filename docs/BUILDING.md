@@ -20,7 +20,7 @@ Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升
 
 工具链来源：
 
-- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它钉到同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。CI 由 `subosito/flutter-action` 按各工作流的 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`、本节，以及 `build.yml`、`testflight.yml`、`screenshots.yml` 的 `flutter-version`。
+- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它固定在同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。CI 由 `subosito/flutter-action` 按各工作流的 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`、本节，以及 `build.yml`、`testflight.yml`、`screenshots.yml` 的 `flutter-version`。
 
 ## 共享验证
 
@@ -38,7 +38,7 @@ bash scripts/lint.sh
 
 依赖锁文件由表中 Flutter / Dart 版本生成，包源为 pub.dev。应用仅依赖 Flutter SDK，测试与 lint 依赖不进入应用运行包。工具链下载与依赖安装会联网；应用运行完全离线。
 
-测试覆盖倒计时边界、增减/移动、槽位复用、十指与重复 ID、每个随机索引、结果冻结、超限及结果后物理触点、按钮手势隔离、取消、应用失活、语言选择和真实 Flutter 多指事件路由。
+测试覆盖倒计时边界、增减/移动、槽位复用、十指与重复 ID、每个随机索引、结果冻结、超限及结果后物理触点、按钮手势隔离、取消、应用转为非活跃、语言选择和真实 Flutter 多指事件路由。
 
 ## Android
 

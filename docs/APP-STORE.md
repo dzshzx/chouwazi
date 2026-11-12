@@ -9,7 +9,7 @@
 - 支持与隐私页已发布到独立站点 [chouwazi.646598.xyz](https://chouwazi.646598.xyz/)，公开支持邮箱为 `dzshzxdev@163.com`，已实测收信；本 App 尚未办理 App 备案。
 - [三语商店文案](../store/metadata.json)与[审核备注](../store/review-notes.txt)已提交；[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)保留，尚未发送。
 - 已上架版本为 1.0.4 (5)，三语说明按离线随机选择工具的实际功能撰写。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
-- App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项回读。
+- App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项读回。
 - App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存维护者提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
 - 1.0.4 (5) 已于 2026-10-11 22:46（Asia/Shanghai）获批，并按 `AFTER_APPROVAL` 自动发布。审核经过：2026-10-09 12:45 收到 `Guideline 2.1 - Information Needed - New App Submission`，逐项回复并同步至 App Review Information 的 Notes 与附件，14:02 补交真机录屏和完整六项说明后重新提交。
 - 录屏来自 iPhone 18 Pro / iOS 27.0.1，时长 47.74 秒，展示 TestFlight 首次启动流程、应用多指抽选、结果、再次抽选和隐私页。录屏分别附于审核资料和审核回复，消息附件下载后 SHA256 与维护者原始视频一致；正文与 Notes 均与[仓库审核备注](../store/review-notes.txt)对应的定稿一致。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
@@ -53,9 +53,9 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 | --- | --- | --- |
 | 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 | 已随版本送审，与 metadata.json 三语内容逐项核对 |
 | 类别、年龄分级、内容权利 | Utilities（工具）；按随机选择功能完成问卷 | 类目、年龄问卷与内容权利声明已保存 |
-| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；三语网页已上线，商店隐私链接已回读 |
+| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；三语网页已上线，商店隐私链接已读回 |
 | 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 三语支持链接、版权与专用审核联系人已保存；公开邮箱已实测收信 |
-| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已回读核对 |
+| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已读回核对 |
 | 审核备注与演示 | 完整六项说明，以及从启动到抽选、再次抽选和隐私页的真机录屏 | 2026-10-09 已保存 Notes、上传视频并回复审核；正文与附件均已读回核验 |
 | 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 | 价格与供应范围已保存；2026-10-11 获批后自动发布，30 个抽查地区可查到 1.0.4 |
 | App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
@@ -88,7 +88,7 @@ uv run --script scripts/render-store-site.py
 
 自动入口是 Actions 的 `Capture iOS App Store screenshots`。2026-10-09 已生成并检查 1.0.4 (5) 的 18 张实际截图：两种设备、三种语言、首页/抽选结果/隐私页各一张。产物 `chouwazi-ios-app-store-screenshots` 包含原始尺寸 PNG 与 manifest；本次截图源码 `3666b60` 的应用代码与 TestFlight 构建 `3f85685` 一致。
 
-18 张图片已随三语版本送审。提交前回读时，图片状态均为 `PREPARE_FOR_SUBMISSION`，截图位置均为 `ACTIVE`。每种语言分别有 iPhone medium 和 iPad 13 两组，各按首页、结果、隐私排序；已核对上传文件大小、服务端尺寸与本地产物一致。
+18 张图片已随三语版本送审。提交前读回时，图片状态均为 `PREPARE_FOR_SUBMISSION`，截图位置均为 `ACTIVE`。每种语言分别有 iPhone medium 和 iPad 13 两组，各按首页、结果、隐私排序；已核对上传文件大小、服务端尺寸与本地产物一致。
 
 上传时使用当前 App Asset Library，在版本本地化下分别建立 iPhone medium 与 iPad 13 的截图位置。Apple 已将旧截图集 API 标记为弃用；程序化上传应从 `appAssetLibraryRefData` 读取当前规格与位置组，核对图片处理完成和各语言的顺序，不硬编码旧屏幕枚举。[Apple 资产库迁移说明](https://developer.apple.com/documentation/appstoreconnectapi/migrating-to-the-app-asset-library)
 
@@ -112,7 +112,7 @@ uv run --script scripts/render-store-site.py
 | --- | --- | --- |
 | 2024-07-28，V2EX jamesdd：[离线 iOS app 也需要 ICP？](https://www.v2ex.com/t/1060673) | 明说不联网、无服务器，送审仍被要求备案号；没有公布解决结果 | 不能把“纯离线”视为后台自动放行；类目和最终判定未知 |
 | 2024-12-15/16，V2EX Eyon：[首个计算器上架](https://www.v2ex.com/t/1097690) | 本地计算器已上线；作者走腾讯云域名/实例备案，称约七个工作日；曾因模仿官方界面被拒 | 个人小工具有成功路径；时长和购买实例是该个案，不是所有人的法定要求 |
-| 2025-06-28/29，V2EX CL7：[调整定价触发国区缺备案号](https://www.v2ex.com/t/1141681) | 原本可销售，后因备案字段失去大陆供应；有内购，申诉结局未知 | 旧版曾上线不等于以后修改地区/定价仍可免补材料；不是纯离线可比样本 |
+| 2025-06-28/29，V2EX CL7：[调整定价触发国区缺备案号](https://www.v2ex.com/t/1141681) | 原本可销售，后因备案字段失去大陆供应；有内购，申诉结果未知 | 旧版曾上线不等于以后修改地区/定价仍可免补材料；不是纯离线可比样本 |
 | 2024-11-05，Reddit Thin-Ad9372：[多次最低功能拒绝](https://www.reddit.com/r/iOSProgramming/comments/1gk5nle/app_keeps_getting_rejected_for_minimal_use/) | 图书推荐 App 五次被拒，涉及 4.2.2 和截图；没有后续通过结果 | 让审核员能理解实际用途，必要时给视频；不能据此预测抽袜子一定被拒 |
 | 2025-04-03，Reddit HamsterBaseMaster：[六次拒绝后获批](https://www.reddit.com/r/iOSProgramming/comments/1jq44yf/the_app_was_rejected_6_times_before_finally/) | 说明原创性、购买路径及被误解的功能后获批 | 对具体问题给证据；作者对框架导致误判的猜测不是 Apple 结论 |
 | 2025-04-24—05-03，Reddit obolli：[首次上架讨论](https://www.reddit.com/r/iOSProgramming/comments/1k6so1m/experienced_ios_devs_what_are_your_tips_to_get/)、[本人通过回报](https://www.reddit.com/r/iOSProgramming/comments/1k6so1m/comment/mqdxyza/) | 单一功能、无付费墙的首款 App 后来获批，未披露产品细节 | 功能聚焦不是必然被拒；不能据此保证首次通过 |
