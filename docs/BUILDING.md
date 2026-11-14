@@ -34,7 +34,7 @@ flutter test --no-pub
 bash scripts/lint.sh
 ```
 
-`scripts/lint.sh` 检查脚本与平台壳：Python 过 ruff check 与函数圈复杂度上限（15），Shell 过 shellcheck，Swift 与 Kotlin 过函数圈复杂度上限（15），代码文件不超过 2000 行；工具经 uvx 取，版本固定在脚本内。
+`scripts/lint.sh` 检查脚本与平台壳：Python 过 ruff check 与函数认知复杂度上限（complexipy，15），Shell 过 shellcheck，Swift 与 Kotlin 过函数圈复杂度上限（lizard，15），代码文件不超过 2000 行；工具经 uvx 取，版本固定在脚本内。
 
 依赖锁文件由表中 Flutter / Dart 版本生成，包源为 pub.dev。应用仅依赖 Flutter SDK，测试与 lint 依赖不进入应用运行包。工具链下载与依赖安装会联网；应用运行完全离线。
 

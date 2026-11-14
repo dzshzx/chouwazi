@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 脚本与平台壳的检查：Python 过 ruff check 与函数圈复杂度上限，Shell 过 shellcheck，
-# Swift 与 Kotlin 过函数圈复杂度上限，代码文件不超过行数上限。Dart 由 flutter analyze 检查，不在这里。
+# 脚本与平台壳的检查：Python 过 ruff check 与函数认知复杂度上限（complexipy），Shell 过 shellcheck，
+# Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。Dart 由 flutter analyze 检查，不在这里。
 # 用法：bash scripts/lint.sh（scripts/check.sh 与 build.yml「Check shared source」都调用它）。
 # 工具经 uvx 取，版本固定在下方常量。每一步直接调用工具并原样透出它的输出，非零即退出。
 set -euo pipefail
@@ -11,7 +11,9 @@ SHELLCHECK_VERSION=0.11.0
 # PyPI 包 shellcheck-py 分发 shellcheck，该版本内置上面的 shellcheck。
 SHELLCHECK_PY_VERSION=0.11.0.1
 LIZARD_VERSION=1.26.0
-# 单个函数的圈复杂度上限与单个代码文件的行数上限。
+COMPLEXIPY_VERSION=8.3.0
+# 单个函数的复杂度上限与单个代码文件的行数上限。Python 量认知复杂度（complexipy），
+# Swift 与 Kotlin 量圈复杂度（lizard），两者共用这一个上限。
 MAX_COMPLEXITY=15
 MAX_LINES=2000
 
@@ -25,6 +27,11 @@ files() {
 
 ruff() {
   uvx -q "ruff==$RUFF_VERSION" "$@"
+}
+
+# 缓存放仓外：complexipy 默认在当前目录建 .complexipy_cache。
+complexipy() {
+  uvx -q "complexipy==$COMPLEXIPY_VERSION" --cache-dir "${XDG_CACHE_HOME:-$HOME/.cache}/complexipy" "$@"
 }
 
 shellcheck() {
@@ -56,10 +63,9 @@ wait "$!"
 if [ ${#PY[@]} -gt 0 ]; then
   echo "== ruff check"
   ruff check --output-format concise -- "${PY[@]}"
-  # 复杂度不认行内的 noqa，要放宽只能改这里。
-  echo "== Python 函数圈复杂度不超过 $MAX_COMPLEXITY"
-  ruff check --select C901 --ignore-noqa --config "lint.mccabe.max-complexity=$MAX_COMPLEXITY" \
-    --output-format concise -- "${PY[@]}"
+  # --no-ignore：不认行内的 noqa: complexipy，要放宽只能改 MAX_COMPLEXITY。
+  echo "== Python 函数认知复杂度不超过 $MAX_COMPLEXITY"
+  complexipy --max-complexity-allowed "$MAX_COMPLEXITY" --no-ignore --failed --plain -- "${PY[@]}"
 fi
 if [ ${#SH[@]} -gt 0 ]; then
   echo "== shellcheck"
