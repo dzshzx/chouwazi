@@ -20,8 +20,8 @@ Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升
 
 工具链来源：
 
-- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机与 CI 都经 [fvm](https://github.com/btwld/fvm) 按仓库根的 `.fvmrc` 取 Flutter，不依赖全局 Flutter；本机先把 fvm 装到 PATH 上，下文命令一律经 `fvm flutter …`、`fvm dart …` 运行。三个工作流都先运行 `scripts/ci-setup-fvm.sh`：下载脚本内固定版本的 fvm 并核对 SHA-256，再由 fvm 按 `.fvmrc` 安装 Flutter；工作流里不写 Flutter 版本。fvm 按版本 tag 从 Flutter 官方 Git 仓库克隆 SDK，不做 sha256 校验；Dart SDK 与引擎产物由 Flutter 从 Google 官方存储下载。`scripts/capture-ios-screenshots.py` 直接调用 PATH 上的 `flutter`，经 `fvm exec` 运行。
-- 升级 Flutter 只改 `.fvmrc`，并同步本节和上文的版本号；fvm 本体的版本与各平台 SHA-256 在 `scripts/ci-setup-fvm.sh`。
+- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机与 CI 都经 [fvm](https://github.com/btwld/fvm) 按仓库根的 `.fvmrc` 取 Flutter，不依赖全局 Flutter；本机先把 fvm 装到 PATH 上，下文命令一律经 `fvm flutter …`、`fvm dart …` 运行。三个工作流都先运行 `scripts/ci-setup-fvm.sh`：下载脚本内固定版本的 fvm 并核对 SHA-256，再由 `scripts/flutter-install.sh` 经 fvm 按 `.fvmrc` 安装 Flutter；工作流里不写 Flutter 版本。fvm 按版本 tag 从 Flutter 官方 Git 仓库克隆 SDK，`flutter-install.sh` 在第一次运行 Flutter 之前核对该 tag 固定的提交号；Dart SDK 与引擎产物由 Flutter 从 Google 官方存储下载。`scripts/capture-ios-screenshots.py` 直接调用 PATH 上的 `flutter`，经 `fvm exec` 运行。
+- 升级 Flutter 改 `.fvmrc` 与 `scripts/flutter-install.sh` 里的提交号（报错信息给出取提交号的命令），并同步本节和上文的版本号；fvm 本体的版本与各平台 SHA-256 在 `scripts/ci-setup-fvm.sh`。
 
 ## 共享验证
 

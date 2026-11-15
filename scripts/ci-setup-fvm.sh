@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CI 安装 fvm 与 Flutter：按 runner 平台下载下方固定版本的 fvm 发布包，核对 SHA-256 后解压，
 # 把 fvm 加进 $GITHUB_PATH，再经 scripts/flutter-install.sh 按仓根 .fvmrc 安装并核对 Flutter。后续步骤经 `fvm flutter …`、`fvm dart …` 调用，
-# 本机用的是同一份 .fvmrc。升级 Flutter 只改 .fvmrc；升级 fvm 改下方版本与各平台校验值
+# 本机用的是同一份 .fvmrc。升级 Flutter 改 .fvmrc 与 scripts/flutter-install.sh 的提交号；升级 fvm 改下方版本与各平台校验值
 # （取自 GitHub API 中该 release 各资产的 digest 字段）。
 # 校验范围：fvm 发布包核对 SHA-256；Flutter 由 scripts/flutter-install.sh 在首次运行前核对固定的提交号；
 # Dart SDK 与引擎产物由 Flutter 首次运行时从 Google 官方存储下载，版本由该提交固定。
@@ -56,7 +56,9 @@ bin="$dest/fvm"
 if [ -n "${GITHUB_PATH:-}" ]; then
   echo "$bin" >>"$GITHUB_PATH"
 fi
-"$bin/fvm" --version
+# $GITHUB_PATH 从下一步才生效，本步骤自己也要用。
+export PATH="$bin:$PATH"
+fvm --version
 
-bash scripts/flutter-install.sh "$bin/fvm"
-"$bin/fvm" flutter --version
+bash scripts/flutter-install.sh
+fvm flutter --version
