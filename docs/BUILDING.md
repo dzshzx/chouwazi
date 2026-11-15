@@ -24,7 +24,7 @@ Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升
 
 ## 共享验证
 
-`bash scripts/check.sh` 依次运行下列五步（Flutter 经 mise 解析），与 `build.yml`「Check shared source」同源：
+`bash scripts/check.sh` 依次运行下列五步（有 mise 时 Flutter 经 mise 解析，否则用 PATH 上的命令），`build.yml`「Check shared source」也调用它：
 
 ```sh
 flutter pub get --enforce-lockfile

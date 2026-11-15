@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 脚本与平台壳的检查：Python 过 ruff check 与函数认知复杂度上限（complexipy），Shell 过 shellcheck，
 # Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。Dart 由 flutter analyze 检查，不在这里。
-# 用法：bash scripts/lint.sh（scripts/check.sh 与 build.yml「Check shared source」都调用它）。
+# 用法：bash scripts/lint.sh（scripts/check.sh 调用它）。
 # 工具经 uvx 取，版本固定在下方常量。每一步直接调用工具并原样透出它的输出，非零即退出。
 set -euo pipefail
 cd "$(dirname "$0")/.."

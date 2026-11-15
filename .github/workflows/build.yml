@@ -28,14 +28,8 @@ jobs:
           cache: true
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;36.0.0' 'ndk;28.2.13676358'
-      # 与 scripts/check.sh（合入前门禁）同源，改一处须同步另一处。
       - name: Check shared source
-        run: |
-          flutter pub get --enforce-lockfile
-          dart format --output=none --set-exit-if-changed lib test
-          flutter analyze --no-pub
-          flutter test --no-pub
-          bash scripts/lint.sh
+        run: bash scripts/check.sh
       - name: Build offline trial APK
         run: flutter build apk --release --no-pub
       - name: Verify APK signature and permissions
