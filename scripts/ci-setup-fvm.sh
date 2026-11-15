@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # CI 安装 fvm 与 Flutter：按 runner 平台下载下方固定版本的 fvm 发布包，核对 SHA-256 后解压，
-# 把 fvm 加进 $GITHUB_PATH，再由 fvm 按仓根 .fvmrc 安装 Flutter。后续步骤经 `fvm flutter …`、`fvm dart …` 调用，
+# 把 fvm 加进 $GITHUB_PATH，再经 scripts/flutter-install.sh 按仓根 .fvmrc 安装并核对 Flutter。后续步骤经 `fvm flutter …`、`fvm dart …` 调用，
 # 本机用的是同一份 .fvmrc。升级 Flutter 只改 .fvmrc；升级 fvm 改下方版本与各平台校验值
 # （取自 GitHub API 中该 release 各资产的 digest 字段）。
-# 校验范围：只有 fvm 发布包核对 SHA-256。fvm 安装 Flutter 时不校验 sha256：它按 .fvmrc 里的版本号（git tag）
-# 从 Flutter 官方 Git 仓库 https://github.com/flutter/flutter.git 克隆，tag 不按提交哈希固定，
-# 只有 git 传输本身的对象校验；Dart SDK 与引擎产物由 Flutter 首次运行时从 Google 官方存储下载。
+# 校验范围：fvm 发布包核对 SHA-256；Flutter 由 scripts/flutter-install.sh 在首次运行前核对固定的提交号；
+# Dart SDK 与引擎产物由 Flutter 首次运行时从 Google 官方存储下载，版本由该提交固定。
 # 用法：bash scripts/ci-setup-fvm.sh。fvm 解压到 $RUNNER_TEMP（没有时用临时目录）下，Flutter 装在 fvm 的缓存目录。
 # 兼容 macOS 自带的 bash 3.2。
 set -euo pipefail
@@ -59,6 +58,5 @@ if [ -n "${GITHUB_PATH:-}" ]; then
 fi
 "$bin/fvm" --version
 
-# --fvm-skip-input：不交互提问；--skip-pub-get：依赖由 scripts/check.sh 或后续步骤按锁文件解析。
-"$bin/fvm" install --fvm-skip-input --skip-pub-get
+bash scripts/flutter-install.sh "$bin/fvm"
 "$bin/fvm" flutter --version

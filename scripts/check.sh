@@ -11,9 +11,7 @@ cd "$(dirname "$0")/.."
 tracked_state() { git status --porcelain --untracked-files=no && git diff HEAD | git hash-object --stdin; }
 before=$(tracked_state)
 
-# 按 .fvmrc 装好 Flutter（已装则跳过）。--fvm-skip-input：不交互提问；
-# --skip-pub-get：依赖由下一步按锁文件解析。
-fvm install --fvm-skip-input --skip-pub-get
+bash scripts/flutter-install.sh
 fvm flutter pub get --enforce-lockfile
 fvm dart format --output=none --set-exit-if-changed lib test
 fvm flutter analyze --no-pub
