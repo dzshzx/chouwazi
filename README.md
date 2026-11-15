@@ -24,7 +24,7 @@ Android 与 iOS 共用一套 Flutter/Dart 源码的离线随机选择工具。�
 
 ## 构建
 
-完整安装、工具链固定版本与来源、校验和各端构建命令见 [构建指南](docs/BUILDING.md)。
+工具链、签名与产物说明见 [构建指南](docs/BUILDING.md)；CI 的完整构建与校验步骤见 `.github/workflows/build.yml`。
 
 - Android / iOS：Flutter 官方工具链。
 - 最低系统：Android 6.0 / API 23，iOS 15。
@@ -46,7 +46,7 @@ fvm flutter build ios --simulator --debug --no-codesign
 fvm flutter build ios --release --no-codesign
 ```
 
-进入 GitHub Actions → **Build Android and iOS** → Run workflow，一次构建两端。工作流仅手动触发，私有仓库会消耗 Actions 额度。产物为试用 APK、iOS 模拟器与未签名真机 app，不执行应用商店发布。
+进入 GitHub Actions → **Build Android and iOS** → Run workflow，一次构建两端。工作流仅手动触发。产物为试用 APK、iOS 模拟器与未签名真机 app，不执行应用商店发布。
 
 TestFlight 使用独立的 **Upload iOS to TestFlight** 手动工作流，从 `main` 签名并上传。账号、签名材料和受保护环境的配置见 [TestFlight 上传指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
 

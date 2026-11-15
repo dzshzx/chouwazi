@@ -2,33 +2,19 @@
 
 核对日期：2026-10-09；上架与供应状态 2026-10-14 复核。目标为全球供应，包含中国大陆。本文把官方规则、开发者自述和本项目的待办分别记录；社区成功经历不构成审核或备案豁免保证。
 
-## 当前基础与材料入口
+## 当前状态与材料入口
 
-- 个人 Apple 开发者会员已验证有效；1.0.4 (5) 已进入 TestFlight 内部测试。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
+- 个人 Apple 开发者会员。云端 macOS 的签名、上传和恢复流程见 [TESTFLIGHT.md](TESTFLIGHT.md)。
 - 应用在设备内完成多指随机选择；没有账号、广告、内购、分析 SDK 或业务服务器。触点和结果只在运行时内存中处理。
 - 支持与隐私页已发布到独立站点 [chouwazi.646598.xyz](https://chouwazi.646598.xyz/)，公开支持邮箱为 `dzshzxdev@163.com`，已实测收信；本 App 尚未办理 App 备案。
 - [三语商店文案](../store/metadata.json)与[审核备注](../store/review-notes.txt)已提交；[中国大陆适用性咨询草稿](../store/mainland-inquiry.txt)保留，尚未发送。
 - 已上架版本为 1.0.4 (5)，三语说明按离线随机选择工具的实际功能撰写。版权署名为 `dzshzx`，商店版权字段为 `2026 dzshzx`。
-- App 内三语本地隐私页已实现，25 项测试与 [1.0.4 (5) 三端构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)通过；官网三语支持与隐私页面已部署并完成匿名 HTTPS 验收，六个链接已填入 App Store Connect 并逐项读回。
-- App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；已选中构建 5，并保存维护者提供的专用审核联系方式和审核备注。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
-- 1.0.4 (5) 已于 2026-10-11 22:46（Asia/Shanghai）获批，并按 `AFTER_APPROVAL` 自动发布。审核经过：2026-10-09 12:45 收到 `Guideline 2.1 - Information Needed - New App Submission`，逐项回复并同步至 App Review Information 的 Notes 与附件，14:02 补交真机录屏和完整六项说明后重新提交。
-- 录屏来自 iPhone 18 Pro / iOS 27.0.1，时长 47.74 秒，展示 TestFlight 首次启动流程、应用多指抽选、结果、再次抽选和隐私页。录屏分别附于审核资料和审核回复，消息附件下载后 SHA256 与维护者原始视频一致；正文与 Notes 均与[仓库审核备注](../store/review-notes.txt)对应的定稿一致。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
-- 为使用另一个 Apple 账号完成真机测试，已将 1.0.4 (5) 加入 TestFlight「公开测试」外部组，并创建[公开邀请链接](https://testflight.apple.com/join/CRjBmUDp)。2026-10-09 提交 Beta App Review；2026-10-14 匿名打开公开链接，页面已提供加入入口。这与 App Store 正式上架审核是不同流程。
-- 维护者确认免费发布后，已保存 175 个国家和地区的免费价格和供应范围，包含中国大陆。2026-10-14 公开查询在中国大陆等 30 个抽查地区均可查到 1.0.4，其余地区未逐一核对；大陆上架不等于备案适用性已获确认。DSA 已按个人非商家声明保存。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，未启用 Mac 或 Apple Vision Pro 分发。
+- App Store Connect 已保存 1.0.4 的三语名称、副标题、描述和关键词，以及版权、Utilities 主类目和无需审核登录的设置；三语支持与隐私的六个链接已填入。专用审核联系方式与公开邮箱分开。年龄问卷按实际功能完成，常规分级为 4+（地区分级以后台为准）；内容权利声明已保存，Data Not Collected 隐私标签已发布。
+- 1.0.4 (5) 已于 2026-10-11 22:46（Asia/Shanghai）获批，并按 `AFTER_APPROVAL` 自动发布。
+- 首次送审收到 `Guideline 2.1 - Information Needed`，补交完整六项说明与真机录屏后获批，定稿见[仓库审核备注](../store/review-notes.txt)。软件上限 10 指与真机实际触点能力的区别已在备注中说明，设备证据见 [iOS 实测记录](../ios/DEVICE-TESTING.md#2026-10-09-实测记录)。
+- 免费发布，175 个国家和地区供应，包含中国大陆；大陆上架不等于备案适用性已获确认。DSA 按个人非商家声明。iOS 分发设备为 iPhone、iPad；需要实体多指触屏，不启用 Mac 或 Apple Vision Pro 分发。
 
-## 个人离线 App 的通常流程
-
-| 顺序 | 工作 | 完成证据 |
-| --- | --- | --- |
-| 1 | 确定真实核心用途、免费/收费安排、发布地区与发布主体 | 与实际功能一致的类目；维护者确认商业身份和地区 |
-| 2 | 核对地区要求，尤其中国大陆 App 备案、欧盟 DSA | 对本 App 适用的资质或 Apple/接入商的明确答复；不沿用别人的个案结论 |
-| 3 | 准备隐私政策、支持与联系方式 | 公开 HTTPS 页面可匿名访问，App 内容易找到隐私政策 |
-| 4 | 真机与自动验证、生成商店截图 | iPhone/iPad 实测记录；构建/测试回执；当前版本实际截图 |
-| 5 | 填写商店资料、隐私标签、年龄分级、审核联系人 | 各必填字段完整；无账号应用关闭审核登录要求 |
-| 6 | 选择匹配版本的构建并提交 App Review | App Store Connect 显示已提交/待审核，而不只是已上传 |
-| 7 | 按实际审核意见回复或修改，获批后发布 | 对目标地区读回可供下载的商店页面；逐地区核对供应状态 |
-
-Apple 的[必填属性表](https://developer.apple.com/help/app-store-connect/reference/app-information/required-localizable-and-editable-properties)与[版本信息说明](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/)是字段依据。当前已上传的构建可以作为基础；隐私入口等代码变更后须重新构建并增加构建号。
+Apple 的[必填属性表](https://developer.apple.com/help/app-store-connect/reference/app-information/required-localizable-and-editable-properties)与[版本信息说明](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/)是字段依据。隐私入口等代码变更后须重新构建并增加构建号。
 
 ## 独立支持站点与备案
 
@@ -49,17 +35,17 @@ Apple 当前说明是“部分 App”需要 ICP 信息；腾讯备案渠道 FAQ 
 
 ## 商店材料：必需与可选
 
-| 材料 | 本项目准备方式 | 当前状态 |
-| --- | --- | --- |
-| 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 | 已随版本送审，与 metadata.json 三语内容逐项核对 |
-| 类别、年龄分级、内容权利 | Utilities（工具）；按随机选择功能完成问卷 | 类目、年龄问卷与内容权利声明已保存 |
-| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 | 本地入口已实现，Data Not Collected 已发布；三语网页已上线，商店隐私链接已读回 |
-| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 | 三语支持链接、版权与专用审核联系人已保存；公开邮箱已实测收信 |
-| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 | [云端截图运行](https://github.com/dzshzx/chouwazi/actions/runs/37806273467)成功；18 张 RGB PNG 已逐张检查并上传，六组顺序、尺寸与文件大小均已读回核对 |
-| 审核备注与演示 | 完整六项说明，以及从启动到抽选、再次抽选和隐私页的真机录屏 | 2026-10-09 已保存 Notes、上传视频并回复审核；正文与附件均已读回核验 |
-| 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 | 价格与供应范围已保存；2026-10-11 获批后自动发布，30 个抽查地区可查到 1.0.4 |
-| App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项 | 暂不制作 |
-| Product page Header / Search Results 创意素材 | 与截图独立，Apple 明确列为可选 | 暂不制作 |
+| 材料 | 本项目准备方式 |
+| --- | --- |
+| 名称、描述、关键词 | 简体、繁体、英文；只描述真实随机选择、倒计时和离线功能 |
+| 类别、年龄分级、内容权利 | Utilities（工具）；按随机选择功能完成问卷 |
+| 隐私政策、隐私标签 | 公共网页和 App 内入口；核对应用与 SDK 不向设备外发送用户数据 |
+| 支持 URL、版权、审核联系人 | 版权署名 `dzshzx`；审核联系人与公开邮箱用途分开 |
+| iPhone/iPad 截图 | 当前应用真实运行画面，三语首页、抽选结果与隐私页 |
+| 审核备注与演示 | 完整六项说明，以及从启动到抽选、再次抽选和隐私页的真机录屏 |
+| 价格、全球供应与发布方式 | 175 个国家和地区免费供应，包含中国大陆 |
+| App Preview、推广文字、Marketing URL、自定义 EULA | 可选，不是首次送审的必填项；暂不制作 |
+| Product page Header / Search Results 创意素材 | 与截图独立，Apple 明确列为可选；暂不制作 |
 
 Apple 要求所有 App 在商店资料和 App 内提供易于访问的隐私政策。仅在设备内处理、不发送到设备外的数据不属于其隐私标签定义的“收集”；是否申报 Data Not Collected 还须结合实际嵌入 SDK 和产物核对。[审核指南 5.1.1](https://developer.apple.com/app-store/review/guidelines/#privacy)、[隐私标签定义](https://developer.apple.com/app-store/app-privacy-details/)
 
@@ -74,9 +60,9 @@ uv run --script scripts/render-store-site.py --preview
 uv run --script scripts/render-store-site.py
 ```
 
-输出为 `build/store-site/`，入口 `index.html`。发布 manifest 所列的九个公共文件，manifest 留在本地。2026-10-09 已逐文件核对线上 HTTPS 响应与本地产物字节一致，语言切换、联系链接和备案图标检查通过。页面无脚本、分析代码或登录要求；网站托管边界见网页隐私政策。草稿预览地址不能填写为正式商店 URL。
+输出为 `build/store-site/`，入口 `index.html`。发布 manifest 所列的九个公共文件，manifest 留在本地。页面无脚本、分析代码或登录要求；网站托管边界见网页隐私政策。草稿预览地址不能填写为正式商店 URL。
 
-网页源码与生成产物由本应用仓库维护，发布到上述独立站点目录。正式生成前核对 HTTPS 地址、公开邮箱与实际托管政策；生成器会拒绝缺少公开信息的正式构建。部署按内部运维仓的部署契约执行，保留源文件摘要和线上验收回执。
+网页源码与生成产物由本应用仓库维护，发布到上述独立站点目录。正式生成前核对 HTTPS 地址、公开邮箱与实际托管政策；生成器会拒绝缺少公开信息的正式构建。部署按内部运维仓的部署契约执行。
 
 ### 当前截图规格
 
@@ -86,9 +72,7 @@ uv run --script scripts/render-store-site.py
 - iPad：2064 × 2752 或 2048 × 2732；本项目准备 2064 × 2752。
 - 截图与用户将安装的版本和语言一致，保留来源 SHA、设备、运行时、尺寸和画面状态记录。模拟器截图不等于真机触控、震动验收。
 
-自动入口是 Actions 的 `Capture iOS App Store screenshots`。2026-10-09 已生成并检查 1.0.4 (5) 的 18 张实际截图：两种设备、三种语言、首页/抽选结果/隐私页各一张。产物 `chouwazi-ios-app-store-screenshots` 包含原始尺寸 PNG 与 manifest；本次截图源码 `3666b60` 的应用代码与 TestFlight 构建 `3f85685` 一致。
-
-18 张图片已随三语版本送审。提交前读回时，图片状态均为 `PREPARE_FOR_SUBMISSION`，截图位置均为 `ACTIVE`。每种语言分别有 iPhone medium 和 iPad 13 两组，各按首页、结果、隐私排序；已核对上传文件大小、服务端尺寸与本地产物一致。
+自动入口是 Actions 的 `Capture iOS App Store screenshots`。
 
 上传时使用当前 App Asset Library，在版本本地化下分别建立 iPhone medium 与 iPad 13 的截图位置。Apple 已将旧截图集 API 标记为弃用；程序化上传应从 `appAssetLibraryRefData` 读取当前规格与位置组，核对图片处理完成和各语言的顺序，不硬编码旧屏幕枚举。[Apple 资产库迁移说明](https://developer.apple.com/documentation/appstoreconnectapi/migrating-to-the-app-asset-library)
 
@@ -96,9 +80,9 @@ uv run --script scripts/render-store-site.py
 
 ## 全球供应的当前事实与待办
 
-1. 独立支持站点已上线，专用邮箱已注册并实测收信，已设自动转发并保留原邮件。凭据与转发配置保存在私有凭据库，仓库不保存密码或验证码。
-2. 维护者确认免费身份，已保存免费价格和 DSA 非商家声明；未来商业活动变化时须重新评估。
-3. 维护者确认本 App 尚未正式备案；1.0.4 已于 2026-10-11 在中国大陆商店上架。上架不等于备案适用性已获确认，Apple 或主管部门后续提出要求时按实际处理。
+1. 专用支持邮箱设有自动转发并保留原邮件。凭据与转发配置保存在私有凭据库，仓库不保存密码或验证码。
+2. 免费发布与 DSA 非商家声明在商业活动变化时须重新评估。
+3. 本 App 尚未办理 App 备案，1.0.4 已在中国大陆商店上架。Apple 或主管部门后续提出要求时按实际处理。
 
 个人会员、免费发布都不自动等于欧盟 DSA 的 non-trader。Apple 以实际商业活动和意图自评；trader 的个人联系资料会公开。若 Business 页面出现中国国务院第 810 号令身份信息提示，也须按实际情况处理，这与应用收集用户数据是不同事项。[DSA 自评](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements)、[中国开发者信息](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-information-for-state-council-decree-no-810)
 

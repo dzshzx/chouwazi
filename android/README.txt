@@ -2,7 +2,7 @@
 
 玩法、界面、触控和本地化由根目录 lib/ 的 Dart 源码提供，Android 目录仅保留 FlutterActivity、资源、权限与 Gradle 配置。
 
-在仓库根目录使用 docs/BUILDING.md 固定的 Flutter 版本：
+在仓库根目录使用 .fvmrc 固定的 Flutter 版本：
   fvm flutter pub get --enforce-lockfile
   fvm flutter test
   fvm flutter build apk --release
