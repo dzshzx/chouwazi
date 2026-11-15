@@ -3,6 +3,7 @@
 # Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。Dart 由 flutter analyze 检查，不在这里。
 # 用法：bash scripts/lint.sh（scripts/check.sh 调用它）。
 # 工具经 uvx 取，版本固定在下方常量。每一步直接调用工具并原样透出它的输出，非零即退出。
+# 兼容 macOS 自带的 bash 3.2（screenshots.yml、testflight.yml 在 macOS 上经 scripts/check.sh 调用本脚本）。
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -50,38 +51,45 @@ max_lines() {
   wc -l -- "$@" /dev/null | sed '$d' | awk -v max="$MAX_LINES" '$1 > max { print; bad = 1 } END { exit bad }'
 }
 
-# 进程替换的退出码不会自动传出：每个 < <(...) 之后 wait "$!" 取回，git ls-files 失败时随 set -e 退出。
-mapfile -d '' PY < <(files '*.py' '*.pyi')
-wait "$!"
-mapfile -d '' SH < <(files '*.sh' '*.bash')
-wait "$!"
-mapfile -d '' SHELLS < <(files '*.swift' '*.kt' '*.kts')
-wait "$!"
-mapfile -d '' CODE < <(files '*.py' '*.pyi' '*.sh' '*.bash' '*.swift' '*.kt' '*.kts' '*.dart')
-wait "$!"
+# 把匹配的文件读进数组 FILES。bash 3.2 没有 mapfile，空数组在 set -u 下也不能展开，
+# 所以先写进临时文件（git ls-files 失败时随 set -e 退出），用到 FILES 的地方都先判断非空。
+collect() {
+  local list f
+  list=$(mktemp)
+  files "$@" >"$list"
+  FILES=()
+  while IFS= read -r -d '' f; do
+    FILES+=("$f")
+  done <"$list"
+  rm -f "$list"
+}
 
-if [ ${#PY[@]} -gt 0 ]; then
+collect '*.py' '*.pyi'
+if [ ${#FILES[@]} -gt 0 ]; then
   echo "== ruff check"
-  ruff check --output-format concise -- "${PY[@]}"
+  ruff check --output-format concise -- "${FILES[@]}"
   # --no-ignore：不认行内的 noqa: complexipy；--snapshot-ignore：不认基线快照 complexipy-snapshot.json；
   # --isolated：不读 pyproject.toml、complexipy.toml 里的配置。要放宽只能改 MAX_COMPLEXITY。
   echo "== Python 函数认知复杂度不超过 $MAX_COMPLEXITY"
-  complexipy --max-complexity-allowed "$MAX_COMPLEXITY" --no-ignore --snapshot-ignore --isolated --failed --plain -- "${PY[@]}"
+  complexipy --max-complexity-allowed "$MAX_COMPLEXITY" --no-ignore --snapshot-ignore --isolated --failed --plain -- "${FILES[@]}"
 fi
-if [ ${#SH[@]} -gt 0 ]; then
+collect '*.sh' '*.bash'
+if [ ${#FILES[@]} -gt 0 ]; then
   echo "== shellcheck"
-  shellcheck -- "${SH[@]}"
+  shellcheck -- "${FILES[@]}"
 fi
-if [ ${#SHELLS[@]} -gt 0 ]; then
+collect '*.swift' '*.kt' '*.kts'
+if [ ${#FILES[@]} -gt 0 ]; then
   echo "== Swift 与 Kotlin 函数圈复杂度不超过 $MAX_COMPLEXITY"
-  uvx -q "lizard==$LIZARD_VERSION" -l swift -l kotlin -C "$MAX_COMPLEXITY" -w "${SHELLS[@]}"
+  uvx -q "lizard==$LIZARD_VERSION" -l swift -l kotlin -C "$MAX_COMPLEXITY" -w "${FILES[@]}"
   # 复杂度不认豁免：lizard 会放过带 #lizard forgives 注释的函数、注释里含 GENERATED CODE 的整个文件
   # 和仓根 whitelizard.txt 里列的函数，所以另查一遍。
-  if grep -n -i -e 'lizard forgive' -e 'generated code' -- "${SHELLS[@]}" || [ -e whitelizard.txt ]; then
+  if grep -n -i -e 'lizard forgive' -e 'generated code' -- "${FILES[@]}" || [ -e whitelizard.txt ]; then
     echo "lint: 不接受 lizard 的豁免注释（#lizard forgives、GENERATED CODE）与 whitelizard.txt" >&2
     exit 1
   fi
 fi
+collect '*.py' '*.pyi' '*.sh' '*.bash' '*.swift' '*.kt' '*.kts' '*.dart'
 echo "== 代码文件不超过 $MAX_LINES 行"
-max_lines "${CODE[@]}"
+max_lines "${FILES[@]}"
 echo "lint: ok"

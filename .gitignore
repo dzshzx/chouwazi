@@ -31,3 +31,6 @@ ios/Flutter/flutter_export_environment.sh
 *.app
 *.cer
 *.csr
+
+# FVM Version Cache
+.fvm/

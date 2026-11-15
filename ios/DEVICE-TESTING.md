@@ -6,7 +6,7 @@
 
 准备一台装有 Xcode 的 Mac、Apple 账号和 iOS / iPadOS 15.0+ 设备。首次验证使用连接线。已验证的构建工具为 Xcode 26.3；设备系统较新时，需使用支持该设备系统的 Xcode。通过 TestFlight 分发使用[签名上传指南](../docs/TESTFLIGHT.md)，安装时不需要连接 Mac。
 
-1. 在 Mac 获取源码并安装[构建指南](../docs/BUILDING.md#工具链)固定的 Flutter 版本，在根目录执行 `flutter pub get --enforce-lockfile`、`flutter precache --ios`、`(cd ios && pod install)`、`flutter build ios --config-only --no-codesign`，再打开 `ios/Runner.xcworkspace`，选择 `Runner` scheme。
+1. 在 Mac 获取源码并按[构建指南](../docs/BUILDING.md#工具链)安装 fvm（Flutter 版本由仓库根的 `.fvmrc` 固定），在根目录执行 `fvm flutter pub get --enforce-lockfile`、`fvm flutter precache --ios`、`(cd ios && pod install)`、`fvm flutter build ios --config-only --no-codesign`，再打开 `ios/Runner.xcworkspace`，选择 `Runner` scheme。
 2. 在 Xcode 设置中的 Apple Accounts（部分版本称 Accounts）登录自己的 Apple 账号。个人设备开发试用可选择 Personal Team；分发给其他人另行准备签名与分发方案。
 3. 选中 `Runner` target → Signing & Capabilities，开启 Automatically manage signing，选择自己的 Team。若 `com.alex.chouwazi` 无法注册，仅在本地改为账号可用的唯一 Bundle Identifier，并记录实际值；不要把个人 Team 或签名材料提交进仓库。
 4. 连接并解锁设备，按提示信任 Mac，在 Xcode 的运行目标中选择该设备，等待配对和设备准备完成。

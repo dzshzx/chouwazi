@@ -21,14 +21,14 @@ jobs:
         with:
           # Override the action default, which includes the unavailable legacy tools package.
           packages: 'platform-tools'
-      - name: Install Flutter (mise.lock pinned, SHA-256 verified)
-        run: bash scripts/ci-install-flutter.sh
+      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
+        run: bash scripts/ci-setup-fvm.sh
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;36.0.0' 'ndk;28.2.13676358'
       - name: Check shared source
         run: bash scripts/check.sh
       - name: Build offline trial APK
-        run: flutter build apk --release --no-pub
+        run: fvm flutter build apk --release --no-pub
       - name: Verify APK signature and permissions
         shell: bash
         run: |
@@ -51,21 +51,21 @@ jobs:
         with:
           version: '0.12.19'
           enable-cache: false
-      - name: Install Flutter (mise.lock pinned, SHA-256 verified)
-        run: bash scripts/ci-install-flutter.sh
+      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
+        run: bash scripts/ci-setup-fvm.sh
       - name: Verify selected Apple toolchain
         run: |
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
-      - run: flutter pub get --enforce-lockfile
-      - run: flutter precache --ios
+      - run: fvm flutter pub get --enforce-lockfile
+      - run: fvm flutter precache --ios
       - name: Install iOS engine integration
         working-directory: ios
         run: pod install
       - name: Build simulator app
-        run: flutter build ios --simulator --debug --no-codesign --no-pub
+        run: fvm flutter build ios --simulator --debug --no-codesign --no-pub
       - name: Build unsigned device app
-        run: flutter build ios --release --no-codesign --no-pub
+        run: fvm flutter build ios --release --no-codesign --no-pub
       - name: Package build artifacts
         run: |
           uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app

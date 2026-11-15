@@ -24,22 +24,15 @@ jobs:
         with:
           version: '0.12.19'
           enable-cache: false
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
-        with:
-          flutter-version: '3.47.7'
-          channel: stable
-          cache: true
+      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
+        run: bash scripts/ci-setup-fvm.sh
       - name: Verify selected Apple toolchain
         run: |
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
       - name: Check shared source
-        run: |
-          flutter pub get --enforce-lockfile
-          dart format --output=none --set-exit-if-changed lib test
-          flutter analyze --no-pub
-          flutter test --no-pub
-          flutter precache --ios
+        run: bash scripts/check.sh
+      - run: fvm flutter precache --ios
       - name: Install iOS engine integration
         working-directory: ios
         run: pod install

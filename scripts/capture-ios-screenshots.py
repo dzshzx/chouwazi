@@ -11,6 +11,8 @@
 Only the debug VM service receives synthetic touch events. The ordinary game
 clock, random draw, localization and privacy navigation produce every screen.
 No service URL, auth token or raw launch/attach log is written or uploaded.
+Flutter is the `flutter` on PATH: run it as `fvm exec uv run --locked --script
+scripts/capture-ios-screenshots.py` so that is the .fvmrc SDK.
 """
 import hashlib
 import json

@@ -3,9 +3,9 @@
 玩法、界面、触控和本地化由根目录 lib/ 的 Dart 源码提供，Android 目录仅保留 FlutterActivity、资源、权限与 Gradle 配置。
 
 在仓库根目录使用 docs/BUILDING.md 固定的 Flutter 版本：
-  flutter pub get --enforce-lockfile
-  flutter test
-  flutter build apk --release
+  fvm flutter pub get --enforce-lockfile
+  fvm flutter test
+  fvm flutter build apk --release
 
 输出：build/app/outputs/flutter-apk/app-release.apk。
 包名：com.alex.fingerdraw；最低 Android 6.0 / API 23。

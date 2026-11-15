@@ -18,31 +18,28 @@ jobs:
         with:
           version: '0.12.19'
           enable-cache: false
-      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
-        with:
-          flutter-version: '3.47.7'
-          channel: stable
-          cache: true
+      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
+        run: bash scripts/ci-setup-fvm.sh
       - name: Verify Apple toolchain and available simulators
         run: |
           xcodebuild -version
           xcrun --sdk iphonesimulator --show-sdk-version
           xcrun simctl list devicetypes
           xcrun simctl list runtimes
-      - name: Check shared source and build the actual simulator app
+      - name: Check shared source
+        run: bash scripts/check.sh
+      - name: Build the actual simulator app
         run: |
-          flutter pub get --enforce-lockfile
-          dart format --output=none --set-exit-if-changed lib test
-          flutter analyze --no-pub
-          flutter test --no-pub
-          flutter precache --ios
+          fvm flutter precache --ios
           cd ios
           pod install
           cd ..
-          flutter build ios --simulator --debug --no-codesign --no-pub
+          fvm flutter build ios --simulator --debug --no-codesign --no-pub
           uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app
       - name: Capture real UI in English, Simplified and Traditional Chinese
-        run: uv run --locked --script scripts/capture-ios-screenshots.py
+        # fvm exec puts the .fvmrc Flutter on PATH; the script runs flutter directly so stopping
+        # `flutter attach` stops Flutter itself (fvm does not forward SIGTERM to its child).
+        run: fvm exec uv run --locked --script scripts/capture-ios-screenshots.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: chouwazi-ios-app-store-screenshots

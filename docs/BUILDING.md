@@ -20,19 +20,12 @@ Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升
 
 工具链来源：
 
-- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它固定在同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。`build.yml` 用 `scripts/ci-install-flutter.sh` 按 `mise.lock` 里的官方发布包地址与 SHA-256 安装；`testflight.yml` 与 `screenshots.yml` 由 `subosito/flutter-action` 按 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`（`mise lock` 生成）、本节，以及 `testflight.yml`、`screenshots.yml` 的 `flutter-version`。
+- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机与 CI 都经 [fvm](https://github.com/btwld/fvm) 按仓库根的 `.fvmrc` 取 Flutter，不依赖全局 Flutter；本机先把 fvm 装到 PATH 上，下文命令一律经 `fvm flutter …`、`fvm dart …` 运行。三个工作流都先运行 `scripts/ci-setup-fvm.sh`：下载脚本内固定版本的 fvm 并核对 SHA-256，再由 fvm 按 `.fvmrc` 安装 Flutter；工作流里不写 Flutter 版本。fvm 按版本 tag 从 Flutter 官方 Git 仓库克隆 SDK，不做 sha256 校验；Dart SDK 与引擎产物由 Flutter 从 Google 官方存储下载。`scripts/capture-ios-screenshots.py` 直接调用 PATH 上的 `flutter`，经 `fvm exec` 运行。
+- 升级 Flutter 只改 `.fvmrc`，并同步本节和上文的版本号；fvm 本体的版本与各平台 SHA-256 在 `scripts/ci-setup-fvm.sh`。
 
 ## 共享验证
 
-`bash scripts/check.sh` 依次运行下列五步（有 mise 时 Flutter 经 mise 解析，否则用 PATH 上的命令），`build.yml`「Check shared source」也调用它：
-
-```sh
-flutter pub get --enforce-lockfile
-dart format --output=none --set-exit-if-changed lib test
-flutter analyze --no-pub
-flutter test --no-pub
-bash scripts/lint.sh
-```
+共享验证运行 `bash scripts/check.sh`，步骤见脚本；`build.yml` 的 Android 任务与 `screenshots.yml`、`testflight.yml` 的「Check shared source」都调用它。
 
 `scripts/lint.sh` 检查脚本与平台壳：Python 过 ruff check 与函数认知复杂度上限（complexipy，15），Shell 过 shellcheck，Swift 与 Kotlin 过函数圈复杂度上限（lizard，15），代码文件不超过 2000 行；工具经 uvx 取，版本固定在脚本内。
 
@@ -43,7 +36,7 @@ bash scripts/lint.sh
 ## Android
 
 ```sh
-flutter build apk --release --no-pub
+fvm flutter build apk --release --no-pub
 uv run --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
 "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
 ```
@@ -60,10 +53,10 @@ uv run --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" bui
 export DEVELOPER_DIR=/Applications/Xcode_26.3.app/Contents/Developer
 xcodebuild -version
 xcrun --sdk iphoneos --show-sdk-version
-flutter precache --ios
+fvm flutter precache --ios
 (cd ios && pod install)
-flutter build ios --simulator --debug --no-codesign --no-pub
-flutter build ios --release --no-codesign --no-pub
+fvm flutter build ios --simulator --debug --no-codesign --no-pub
+fvm flutter build ios --release --no-codesign --no-pub
 uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
 ```
 

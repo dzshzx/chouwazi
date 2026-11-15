@@ -32,18 +32,18 @@ Android 与 iOS 共用一套 Flutter/Dart 源码的离线随机选择工具。�
 
 共享源码检查（依赖锁、格式、静态分析、测试，以及脚本与平台壳的检查）的入口是 `bash scripts/check.sh`，也是合入前门禁，合入时由机器运行；真实构建两端仍按下列命令或手动工作流。
 
-Android / iOS 在根目录运行：
+Android / iOS 在根目录经 fvm 按 `.fvmrc` 固定的 Flutter 运行：
 
 ```sh
-flutter pub get --enforce-lockfile
-flutter analyze
-flutter test
-flutter build apk --release
+fvm flutter pub get --enforce-lockfile
+fvm flutter analyze
+fvm flutter test
+fvm flutter build apk --release
 # 以下 iOS 命令需要 macOS 和 Xcode
-flutter precache --ios
+fvm flutter precache --ios
 (cd ios && pod install)
-flutter build ios --simulator --debug --no-codesign
-flutter build ios --release --no-codesign
+fvm flutter build ios --simulator --debug --no-codesign
+fvm flutter build ios --release --no-codesign
 ```
 
 进入 GitHub Actions → **Build Android and iOS** → Run workflow，一次构建两端。工作流仅手动触发，私有仓库会消耗 Actions 额度。产物为试用 APK、iOS 模拟器与未签名真机 app，不执行应用商店发布。
