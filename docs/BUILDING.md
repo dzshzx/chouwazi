@@ -20,7 +20,7 @@ Android 与 iOS 都使用 Flutter 官方工具链，编译同一份 `lib/`。升
 
 工具链来源：
 
-- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它固定在同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。CI 由 `subosito/flutter-action` 按各工作流的 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`、本节，以及 `build.yml`、`testflight.yml`、`screenshots.yml` 的 `flutter-version`。
+- [Google Flutter 3.47.7](https://github.com/flutter/flutter/tree/3.47.7)。本机 Flutter 由 mise 管理：仓库根的 `mise.toml` 与 `mise.lock` 把它固定在同一版本，在仓库内运行 `flutter` 即用该版本，不修改全局默认版本。`build.yml` 用 `scripts/ci-install-flutter.sh` 按 `mise.lock` 里的官方发布包地址与 SHA-256 安装；`testflight.yml` 与 `screenshots.yml` 由 `subosito/flutter-action` 按 `flutter-version` 安装。升级时一起改 `mise.toml`、`mise.lock`（`mise lock` 生成）、本节，以及 `testflight.yml`、`screenshots.yml` 的 `flutter-version`。
 
 ## 共享验证
 
