@@ -22,10 +22,11 @@ bash scripts/lint.sh
 bash scripts/check-go.sh
 
 # 允许清单之外的 Python 文件一律拒绝。
+# case 模式前的左括号不能省：macOS 自带的 bash 3.2 会把 $( ) 里模式的右括号当成命令替换的结尾。
 unexpected=$(git ls-files '*.py' | while IFS= read -r file; do
   allowed=
   while IFS= read -r entry || [ -n "$entry" ]; do
-    case "$file" in "$entry" | "$entry"/*) [ -n "$entry" ] && allowed=1 ;; esac
+    case "$file" in ("$entry" | "$entry"/*) [ -n "$entry" ] && allowed=1 ;; esac
   done <scripts/python-allowlist.txt
   [ -n "$allowed" ] || echo "$file"
 done)
