@@ -4,10 +4,11 @@
 
 ## 工具链
 
-Python 构建辅助脚本经 uv 按各自的 PEP 723 声明运行。
-本机先准备 uv；CI 安装固定版本 uv。有第三方依赖的脚本带同名 `*.py.lock`，调用使用
-`uv run --locked --script`，依赖声明更新后用 `uv lock --script <脚本>` 更新并提交对应锁文件；
-零依赖脚本（`dependencies = []`）不带锁，调用使用 `uv run --script`。
+构建辅助程序是 `tool/` 下的 Go 模块（商店网页生成、TestFlight 签名素材处理、App Store 截图），经
+`bash scripts/tool.sh <子命令>` 构建并在仓根运行；Go 版本由 `tool/go.mod` 的 `go` 行固定，CI 用 `actions/setup-go`
+按它安装。APK 与 iOS 产物检查是 `scripts/check-apk.sh`、`scripts/check-ios.sh`（后者用 macOS 的 `plutil`）。
+本机还要准备 uv：`scripts/lint.sh` 经 `uvx` 取 shellcheck 与 lizard；CI 安装固定版本 uv。仓内不放 Python 文件，门禁按
+`scripts/python-allowlist.txt` 拒绝清单之外的 `*.py`。
 
 Flutter 版本由仓库根的 `.fvmrc` 固定，各端工具版本见 `android/app/build.gradle`、`android/settings.gradle`、`android/gradle/wrapper/gradle-wrapper.properties` 与 `build.yml`。本机先把 [fvm](https://github.com/btwld/fvm) 装到 PATH 上，命令一律经 `fvm flutter …`、`fvm dart …` 运行，不依赖全局 Flutter。
 

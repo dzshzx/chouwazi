@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
-# 脚本与平台壳的检查：Python 过 ruff check 与函数认知复杂度上限（complexipy），Shell 过 shellcheck，
-# Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。Dart 由 flutter analyze 检查，不在这里。
+# 脚本与平台壳的检查：Shell 过 shellcheck，Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。
+# Dart 由 flutter analyze 检查，Go 由 scripts/check-go.sh 检查，不在这里。
 # 用法：bash scripts/lint.sh（scripts/check.sh 调用它）。
 # 工具经 uvx 取，版本固定在下方常量。每一步直接调用工具并原样透出它的输出，非零即退出。
 # 兼容 macOS 自带的 bash 3.2（screenshots.yml、release.yml 在 macOS 上经 scripts/check.sh 调用本脚本）。
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-RUFF_VERSION=0.17.3
 SHELLCHECK_VERSION=0.11.0
 # PyPI 包 shellcheck-py 分发 shellcheck，该版本内置上面的 shellcheck。
 SHELLCHECK_PY_VERSION=0.11.0.1
 LIZARD_VERSION=1.26.0
-COMPLEXIPY_VERSION=8.3.0
-# 单个函数的复杂度上限与单个代码文件的行数上限。Python 量认知复杂度（complexipy），
-# Swift 与 Kotlin 量圈复杂度（lizard），两者共用这一个上限。
+# 单个函数的圈复杂度上限（Swift 与 Kotlin，由 lizard 量）与单个代码文件的行数上限。
 MAX_COMPLEXITY=15
 MAX_LINES=2000
 
@@ -24,15 +21,6 @@ files() {
     [ -f "$f" ] || continue
     printf '%s\0' "$f"
   done
-}
-
-ruff() {
-  uvx -q "ruff==$RUFF_VERSION" "$@"
-}
-
-# 缓存放仓外：complexipy 默认在当前目录建 .complexipy_cache。
-complexipy() {
-  uvx -q "complexipy==$COMPLEXIPY_VERSION" --cache-dir "${XDG_CACHE_HOME:-$HOME/.cache}/complexipy" "$@"
 }
 
 shellcheck() {
@@ -64,15 +52,6 @@ collect() {
   rm -f "$list"
 }
 
-collect '*.py' '*.pyi'
-if [ ${#FILES[@]} -gt 0 ]; then
-  echo "== ruff check"
-  ruff check --output-format concise -- "${FILES[@]}"
-  # --no-ignore：不认行内的 noqa: complexipy；--snapshot-ignore：不认基线快照 complexipy-snapshot.json；
-  # --isolated：不读 pyproject.toml、complexipy.toml 里的配置。要放宽只能改 MAX_COMPLEXITY。
-  echo "== Python 函数认知复杂度不超过 $MAX_COMPLEXITY"
-  complexipy --max-complexity-allowed "$MAX_COMPLEXITY" --no-ignore --snapshot-ignore --isolated --failed --plain -- "${FILES[@]}"
-fi
 collect '*.sh' '*.bash'
 if [ ${#FILES[@]} -gt 0 ]; then
   echo "== shellcheck"
@@ -89,7 +68,7 @@ if [ ${#FILES[@]} -gt 0 ]; then
     exit 1
   fi
 fi
-collect '*.py' '*.pyi' '*.sh' '*.bash' '*.swift' '*.kt' '*.kts' '*.dart'
+collect '*.go' '*.sh' '*.bash' '*.swift' '*.kt' '*.kts' '*.dart'
 echo "== 代码文件不超过 $MAX_LINES 行"
 max_lines "${FILES[@]}"
 echo "lint: ok"

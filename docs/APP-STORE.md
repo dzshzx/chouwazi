@@ -55,9 +55,9 @@ Apple 要求所有 App 在商店资料和 App 内提供易于访问的隐私政�
 
 ```sh
 # 本地草稿：缺少公开信息时仍可预览，带显著草稿标记和 noindex。
-uv run --script scripts/render-store-site.py --preview
+bash scripts/tool.sh store-site --preview
 # 完整信息确认后生成可部署文件；缺项会直接失败。
-uv run --script scripts/render-store-site.py
+bash scripts/tool.sh store-site
 ```
 
 输出为 `build/store-site/`，入口 `index.html`。发布 manifest 所列的九个公共文件，manifest 留在本地。页面无脚本、分析代码或登录要求；网站托管边界见网页隐私政策。草稿预览地址不能填写为正式商店 URL。

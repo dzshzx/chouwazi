@@ -16,6 +16,9 @@ fi
 
 state_dir="${RUNNER_TEMP}/chouwazi-testflight-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 export TESTFLIGHT_STATE_DIR="$state_dir"
+# testflight-cleanup.sh reuses this binary, so cleanup does not depend on building again.
+export CHOUWAZI_TOOL="$RUNNER_TEMP/chouwazi-tool"
+assets() { bash scripts/tool.sh testflight-assets "$@"; }
 trap 'exit 130' INT
 trap 'exit 143' TERM HUP
 
@@ -23,8 +26,8 @@ trap 'exit 143' TERM HUP
 # the raw delivery logs are printed or published as an Actions artifact.
 altool() {
   local api_key_id api_issuer_id
-  api_key_id="$(uv run --quiet --script scripts/testflight-assets.py field api_key_id)"
-  api_issuer_id="$(uv run --quiet --script scripts/testflight-assets.py field api_issuer_id)"
+  api_key_id="$(assets field api_key_id)"
+  api_issuer_id="$(assets field api_issuer_id)"
   API_PRIVATE_KEYS_DIR="$state_dir/private_keys" xcrun altool "$@" -f "$state_dir/export/Runner.ipa" -t ios \
     --apiKey "$api_key_id" --apiIssuer "$api_issuer_id" --output-format json
 }
@@ -66,7 +69,7 @@ cleanup_on_failure() {
   return "$status"
 }
 trap cleanup_on_failure EXIT
-uv run --script scripts/testflight-assets.py prepare
+assets prepare
 keychain_path="$state_dir/signing.keychain-db"
 keychain_password="$(< "$state_dir/keychain-password")"
 
@@ -101,7 +104,7 @@ else
 fi
 security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$keychain_password" "$keychain_path" >/dev/null 2>&1
 unset keychain_password IOS_DISTRIBUTION_P12_PASSWORD IOS_DISTRIBUTION_P12_BASE64 IOS_APP_STORE_PROFILE_BASE64 ASC_API_KEY_P8 ASC_API_KEY_ID ASC_API_ISSUER_ID
-uv run --script scripts/testflight-assets.py install
+assets install
 
 # xcodebuild command-line signing settings would also reach Pods. Configure only
 # Runner's Release target and restore the original project during cleanup.
@@ -128,7 +131,7 @@ xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Relea
   -derivedDataPath "$state_dir/DerivedData" archive
 xcodebuild -exportArchive -archivePath "$state_dir/Runner.xcarchive" \
   -exportPath "$state_dir/export" -exportOptionsPlist "$state_dir/ExportOptions.plist"
-uv run --script scripts/testflight-assets.py verify
+assets verify
 
 if ! altool --validate-app >"$state_dir/validation.json" 2>"$state_dir/validation.log"; then
   echo 'Apple binary validation failed. Check App Store Connect delivery status.' >&2

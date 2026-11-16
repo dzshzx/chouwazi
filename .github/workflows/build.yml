@@ -13,6 +13,11 @@ jobs:
         with:
           version: '0.12.19'
           enable-cache: false
+      # scripts/check.sh and scripts/tool.sh run the Go on PATH; the go line of tool/go.mod pins it.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: tool/go.mod
+          cache: false
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
@@ -34,7 +39,7 @@ jobs:
         run: |
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose build/app/outputs/flutter-apk/app-release.apk
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging build/app/outputs/flutter-apk/app-release.apk
-          uv run --script scripts/check-apk.py "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
+          bash scripts/check-apk.sh "$ANDROID_HOME/build-tools/36.0.0/aapt" build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: chouwazi-android-apk
@@ -47,10 +52,6 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-        with:
-          version: '0.12.19'
-          enable-cache: false
       - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
         run: bash scripts/ci-setup-fvm.sh
       - name: Verify selected Apple toolchain
@@ -68,7 +69,7 @@ jobs:
         run: fvm flutter build ios --release --no-codesign --no-pub
       - name: Package build artifacts
         run: |
-          uv run --script scripts/check-ios.py build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
+          bash scripts/check-ios.sh build/ios/iphonesimulator/Runner.app build/ios/iphoneos/Runner.app
           ditto -c -k --sequesterRsrc --keepParent build/ios/iphonesimulator/Runner.app build/chouwazi-simulator.zip
           ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app build/chouwazi-device-unsigned.zip
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
