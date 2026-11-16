@@ -1,8 +1,9 @@
 name: Release
 # 发版：gh workflow run release.yml --ref main -f bump=patch。版本号由最高的纯 vX.Y.Z tag 按 bump 算出，
 # 构建号由版本号按固定公式算出（scripts/release-version.sh），只在构建时传给 Flutter，不提交回仓库。
-# dry_run 走 dry-run 作业：跑门禁、带新版本号构建未签名的 iOS 包并核对版本，不进受保护环境、不签名、不打 tag、不上传。
-# 正式发版走 publish 作业：在受保护环境里算版本、跑门禁、签名并核对 IPA，通过后才打 tag、上传。
+# 共享源码门禁（scripts/check.sh）与平台无关，只在 Linux 的 gate 作业里跑一次。
+# dry_run 走 dry-run 作业（与 gate 并行）：带新版本号构建未签名的 iOS 包并核对版本，不进受保护环境、不签名、不打 tag、不上传。
+# 正式发版走 publish 作业（等 gate 通过）：在受保护环境里算版本、签名并核对 IPA，通过后才打 tag、上传。
 on:
   workflow_dispatch:
     inputs:
@@ -21,12 +22,32 @@ concurrency:
   group: chouwazi-release
   cancel-in-progress: false
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      # scripts/lint.sh fetches shellcheck and lizard through uvx.
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      # scripts/check.sh runs the Go on PATH; the go line of tool/go.mod pins it.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: tool/go.mod
+          cache: false
+      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
+        run: bash scripts/ci-setup-fvm.sh
+      - name: Check shared source
+        run: bash scripts/check.sh
   dry-run:
     if: ${{ inputs.dry_run }}
     runs-on: macos-15
     timeout-minutes: 45
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -37,27 +58,7 @@ jobs:
         env:
           BUMP: ${{ inputs.bump }}
         run: bash scripts/release-version.sh "$BUMP"
-      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-        with:
-          version: '0.12.19'
-          enable-cache: false
-      # scripts/check.sh and scripts/tool.sh run the Go on PATH; the go line of tool/go.mod pins it.
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: tool/go.mod
-          cache: false
-      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
-        run: bash scripts/ci-setup-fvm.sh
-      - name: Verify selected Apple toolchain
-        run: |
-          xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
-      - name: Check shared source
-        run: bash scripts/check.sh
-      - run: fvm flutter precache --ios
-      - name: Install iOS engine integration
-        working-directory: ios
-        run: pod install
+      - uses: ./.github/actions/ios-setup
       - name: Build unsigned device app with the release version
         run: fvm flutter build ios --release --no-codesign --no-pub --build-name "$RELEASE_VERSION" --build-number "$RELEASE_BUILD"
       # check-ios.sh also checks the app carries RELEASE_VERSION and RELEASE_BUILD.
@@ -76,14 +77,14 @@ jobs:
           } >>"$GITHUB_STEP_SUMMARY"
   publish:
     if: ${{ !inputs.dry_run }}
+    # The tag is pushed only after the shared source gate has passed.
+    needs: gate
     runs-on: macos-15
     timeout-minutes: 60
     # Configure this environment to allow only main before adding its secrets.
     environment: testflight
     permissions:
       contents: write
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -103,27 +104,12 @@ jobs:
         env:
           BUMP: ${{ inputs.bump }}
         run: bash scripts/release-version.sh "$BUMP" --release
-      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-        with:
-          version: '0.12.19'
-          enable-cache: false
-      # scripts/check.sh and scripts/tool.sh run the Go on PATH; the go line of tool/go.mod pins it.
+      # scripts/testflight.sh runs the Go helper through scripts/tool.sh; the go line of tool/go.mod pins it.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: tool/go.mod
           cache: false
-      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
-        run: bash scripts/ci-setup-fvm.sh
-      - name: Verify selected Apple toolchain
-        run: |
-          xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
-      - name: Check shared source
-        run: bash scripts/check.sh
-      - run: fvm flutter precache --ios
-      - name: Install iOS engine integration
-        working-directory: ios
-        run: pod install
+      - uses: ./.github/actions/ios-setup
       - name: Write the release version into the Xcode build settings
         run: fvm flutter build ios --config-only --release --no-codesign --no-pub --build-name "$RELEASE_VERSION" --build-number "$RELEASE_BUILD"
       # Checks the signed IPA, including its version and build, before Apple validation.

@@ -21,10 +21,10 @@ gh workflow run release.yml --ref main -f bump=patch
 
 ### 流程与出错处理
 
-试跑与正式发版各走工作流里的一个作业，各用一台托管 macOS，正式发版不另做未签名构建：
+共享源码门禁 `scripts/check.sh` 与平台无关，在 Linux 的 `gate` 作业里跑一次。试跑与正式发版各走一个 macOS 作业，正式发版不另做未签名构建：
 
-- 试跑：算出版本号，跑门禁 `scripts/check.sh`，带新版本号构建未签名真机包，由 `scripts/check-ios.sh` 核对产物里的版本号与构建号，到此结束。
-- 正式发版：进入受保护环境 `testflight`，先核对运行在 `main` 上、头提交未发过版，再算版本号、跑门禁，然后带新版本号签名、导出并检查 IPA（含版本号与构建号），经 Apple 校验（`altool --validate-app`）。校验通过后在源提交上推送附注 tag `vX.Y.Z`，再上传 TestFlight；运行摘要写明版本、`source_commit` 与 IPA 的 sha256。签名材料只由最后一步 `scripts/testflight-cleanup.sh` 清理，前面成败都会执行。签名与上传细节见 `scripts/testflight.sh`。
+- 试跑：与 `gate` 并行，算出版本号，带新版本号构建未签名真机包，由 `scripts/check-ios.sh` 核对产物里的版本号与构建号，到此结束。
+- 正式发版：`gate` 通过后进入受保护环境 `testflight`，先核对运行在 `main` 上、头提交未发过版，再算版本号，然后带新版本号签名、导出并检查 IPA（含版本号与构建号），经 Apple 校验（`altool --validate-app`）。校验通过后在源提交上推送附注 tag `vX.Y.Z`，再上传 TestFlight；运行摘要写明版本、`source_commit` 与 IPA 的 sha256。签名材料只由最后一步 `scripts/testflight-cleanup.sh` 清理，前面成败都会执行。签名与上传细节见 `scripts/testflight.sh`。
 
 推送 tag 之前任何一步失败都不留 tag：修好、合入后用同一 `bump` 重跑即可。
 

@@ -45,24 +45,13 @@ jobs:
           name: chouwazi-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
+  # The shared source gate runs in the android job; this job only builds and checks the iOS apps.
   ios:
     runs-on: macos-15
     timeout-minutes: 30
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
-        run: bash scripts/ci-setup-fvm.sh
-      - name: Verify selected Apple toolchain
-        run: |
-          xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
-      - run: fvm flutter pub get --enforce-lockfile
-      - run: fvm flutter precache --ios
-      - name: Install iOS engine integration
-        working-directory: ios
-        run: pod install
+      - uses: ./.github/actions/ios-setup
       - name: Build simulator app
         run: fvm flutter build ios --simulator --debug --no-codesign --no-pub
       - name: Build unsigned device app

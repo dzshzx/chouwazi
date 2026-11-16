@@ -7,38 +7,23 @@ jobs:
   screenshots:
     runs-on: macos-15
     timeout-minutes: 35
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-        with:
-          version: '0.12.19'
-          enable-cache: false
-      # scripts/check.sh and scripts/tool.sh run the Go on PATH; the go line of tool/go.mod pins it.
+      # scripts/tool.sh runs the Go capture helper; the go line of tool/go.mod pins it.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: tool/go.mod
           cache: false
-      - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
-        run: bash scripts/ci-setup-fvm.sh
-      - name: Verify Apple toolchain and available simulators
+      - uses: ./.github/actions/ios-setup
+      - name: List available simulators
         run: |
-          xcodebuild -version
-          xcrun --sdk iphonesimulator --show-sdk-version
           xcrun simctl list devicetypes
           xcrun simctl list runtimes
-      - name: Check shared source
-        run: bash scripts/check.sh
       - name: Build the actual simulator app
         run: |
-          fvm flutter precache --ios
-          cd ios
-          pod install
-          cd ..
           fvm flutter build ios --simulator --debug --no-codesign --no-pub
           bash scripts/check-ios.sh build/ios/iphonesimulator/Runner.app
       - name: Capture real UI in English, Simplified and Traditional Chinese

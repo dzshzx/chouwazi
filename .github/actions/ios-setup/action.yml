@@ -1,0 +1,26 @@
+name: iOS build setup
+description: >-
+  Selects the pinned Xcode, installs fvm and the .fvmrc Flutter, and prepares the iOS
+  project (pub get, precache, pod install). Every macOS job runs this before building.
+  The shared source gate (scripts/check.sh) is platform independent and runs on Linux instead.
+runs:
+  using: composite
+  steps:
+    - name: Select Xcode
+      shell: bash
+      run: echo "DEVELOPER_DIR=/Applications/Xcode_26.3.app/Contents/Developer" >>"$GITHUB_ENV"
+    - name: Install fvm (SHA-256 verified) and Flutter (.fvmrc pinned)
+      shell: bash
+      run: bash scripts/ci-setup-fvm.sh
+    - name: Verify selected Apple toolchain
+      shell: bash
+      run: |
+        xcodebuild -version
+        xcrun --sdk iphoneos --show-sdk-version
+    - name: Prepare the iOS project
+      shell: bash
+      run: |
+        fvm flutter pub get --enforce-lockfile
+        fvm flutter precache --ios
+        cd ios
+        pod install
