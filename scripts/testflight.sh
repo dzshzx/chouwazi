@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Only run on a trusted main checkout in the protected testflight environment.
 # Usage: bash scripts/testflight.sh sign    # sign, verify and validate the IPA with Apple
-#        bash scripts/testflight.sh upload  # upload the validated IPA, then remove credentials
+#        bash scripts/testflight.sh upload  # upload the validated IPA
 # release.yml pushes the release tag between the two phases. `sign` takes the version and
-# build number from RELEASE_VERSION and RELEASE_BUILD and keeps the signing state for
-# `upload` only when it succeeds; the workflow's cleanup step also runs in every case.
+# build number from RELEASE_VERSION and RELEASE_BUILD. Neither phase removes the signing
+# state: release.yml's last step runs testflight-cleanup.sh whether the job passed or failed.
 set +x
 set -euo pipefail
 umask 077
@@ -19,8 +19,6 @@ export TESTFLIGHT_STATE_DIR="$state_dir"
 # testflight-cleanup.sh reuses this binary, so cleanup does not depend on building again.
 export CHOUWAZI_TOOL="$RUNNER_TEMP/chouwazi-tool"
 assets() { bash scripts/tool.sh testflight-assets "$@"; }
-trap 'exit 130' INT
-trap 'exit 143' TERM HUP
 
 # altool resolves AuthKey_<key ID>.p8 from API_PRIVATE_KEYS_DIR. Neither the key nor
 # the raw delivery logs are printed or published as an Actions artifact.
@@ -33,7 +31,6 @@ altool() {
 }
 
 upload() {
-  trap 'bash scripts/testflight-cleanup.sh' EXIT
   local ipa_sha256
   ipa_sha256="$(shasum -a 256 "$state_dir/export/Runner.ipa" | awk '{ print $1 }')"
   if ! altool --upload-app >"$state_dir/upload.json" 2>"$state_dir/upload.log"; then
@@ -61,14 +58,6 @@ case "${1:-}" in
     ;;
 esac
 
-cleanup_on_failure() {
-  local status=$?
-  if [[ $status -ne 0 ]]; then
-    bash scripts/testflight-cleanup.sh
-  fi
-  return "$status"
-}
-trap cleanup_on_failure EXIT
 assets prepare
 keychain_path="$state_dir/signing.keychain-db"
 keychain_password="$(< "$state_dir/keychain-password")"
@@ -84,7 +73,7 @@ if openssl pkcs12 -in "$state_dir/distribution.p12" \
 else
   echo 'OpenSSL PKCS#12 validation failed.' >&2
 fi
-# The protected state directory is removed by cleanup. Never print raw import
+# The protected state directory is removed by testflight-cleanup.sh. Never print raw import
 # errors: they may contain signing metadata or paths to private material.
 if security import "$state_dir/distribution.p12" -k "$keychain_path" -P "$IOS_DISTRIBUTION_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security >/dev/null 2>"$state_dir/import.log"; then
   :
@@ -107,7 +96,7 @@ unset keychain_password IOS_DISTRIBUTION_P12_PASSWORD IOS_DISTRIBUTION_P12_BASE6
 assets install
 
 # xcodebuild command-line signing settings would also reach Pods. Configure only
-# Runner's Release target and restore the original project during cleanup.
+# Runner's Release target; testflight-cleanup.sh restores the original project.
 ruby <<'RUBY'
 require 'json'
 require 'xcodeproj'

@@ -1,7 +1,8 @@
 name: Release
 # 发版：gh workflow run release.yml --ref main -f bump=patch。版本号由最高的纯 vX.Y.Z tag 按 bump 算出，
 # 构建号由版本号按固定公式算出（scripts/release-version.sh），只在构建时传给 Flutter，不提交回仓库。
-# dry_run 只跑门禁、带新版本号构建未签名的 iOS 包并核对版本，不进受保护环境、不签名、不打 tag、不上传。
+# dry_run 走 dry-run 作业：跑门禁、带新版本号构建未签名的 iOS 包并核对版本，不进受保护环境、不签名、不打 tag、不上传。
+# 正式发版走 publish 作业：在受保护环境里算版本、跑门禁、签名并核对 IPA，通过后才打 tag、上传。
 on:
   workflow_dispatch:
     inputs:
@@ -20,15 +21,12 @@ concurrency:
   group: chouwazi-release
   cancel-in-progress: false
 jobs:
-  build:
+  dry-run:
+    if: ${{ inputs.dry_run }}
     runs-on: macos-15
     timeout-minutes: 45
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-      build: ${{ steps.version.outputs.build }}
-      tag: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -36,24 +34,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Compute release version
-        id: version
         env:
           BUMP: ${{ inputs.bump }}
         run: bash scripts/release-version.sh "$BUMP"
-      - name: Check release preconditions
-        if: ${{ !inputs.dry_run }}
-        env:
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: |
-          if [ "$GITHUB_REF" != "refs/heads/$DEFAULT_BRANCH" ]; then
-            echo "正式发版只能在默认分支 $DEFAULT_BRANCH 上运行，当前是 $GITHUB_REF；试跑请加 -f dry_run=true。" >&2
-            exit 1
-          fi
-          released=$(git tag --points-at HEAD | grep -E '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' || true)
-          if [ -n "$released" ]; then
-            echo "这个提交已发过版：$released。先合入新的改动再发版。" >&2
-            exit 1
-          fi
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           version: '0.12.19'
@@ -76,28 +59,15 @@ jobs:
         working-directory: ios
         run: pod install
       - name: Build unsigned device app with the release version
-        env:
-          RELEASE_VERSION: ${{ steps.version.outputs.version }}
-          RELEASE_BUILD: ${{ steps.version.outputs.build }}
         run: fvm flutter build ios --release --no-codesign --no-pub --build-name "$RELEASE_VERSION" --build-number "$RELEASE_BUILD"
-      - name: Verify the version in the built app
-        env:
-          RELEASE_VERSION: ${{ steps.version.outputs.version }}
-          RELEASE_BUILD: ${{ steps.version.outputs.build }}
-          DRY_RUN: ${{ inputs.dry_run }}
+      # check-ios.sh also checks the app carries RELEASE_VERSION and RELEASE_BUILD.
+      - name: Verify the built app
         run: |
-          app=build/ios/iphoneos/Runner.app
-          bash scripts/check-ios.sh "$app"
-          name=$(plutil -extract CFBundleShortVersionString raw "$app/Info.plist")
-          number=$(plutil -extract CFBundleVersion raw "$app/Info.plist")
-          if [ "$name" != "$RELEASE_VERSION" ] || [ "$number" != "$RELEASE_BUILD" ]; then
-            echo "产物版本是 $name ($number)，应为 $RELEASE_VERSION ($RELEASE_BUILD)。" >&2
-            exit 1
-          fi
-          ditto -c -k --sequesterRsrc --keepParent "$app" build/chouwazi-device-unsigned.zip
+          bash scripts/check-ios.sh build/ios/iphoneos/Runner.app
+          ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app build/chouwazi-device-unsigned.zip
           sha256=$(shasum -a 256 build/chouwazi-device-unsigned.zip | awk '{ print $1 }')
           {
-            echo "## 发版（dry_run=$DRY_RUN）"
+            echo "## 发版试跑（dry_run）"
             echo
             echo "- 将要发布的版本：v$RELEASE_VERSION（iOS 构建号 $RELEASE_BUILD）"
             echo "- source_commit：$GITHUB_SHA"
@@ -105,24 +75,38 @@ jobs:
             echo "- 发布渠道是 TestFlight：签名后的 IPA 只在正式发版时生成，其 sha256 写在发布步骤的摘要里。"
           } >>"$GITHUB_STEP_SUMMARY"
   publish:
-    needs: build
     if: ${{ !inputs.dry_run }}
     runs-on: macos-15
-    timeout-minutes: 45
+    timeout-minutes: 60
     # Configure this environment to allow only main before adding its secrets.
     environment: testflight
     permissions:
       contents: write
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
-      RELEASE_VERSION: ${{ needs.build.outputs.version }}
-      RELEASE_BUILD: ${{ needs.build.outputs.build }}
-      RELEASE_TAG: ${{ needs.build.outputs.tag }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: false
+      - name: Require the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/$DEFAULT_BRANCH" ]; then
+            echo "正式发版只能在默认分支 $DEFAULT_BRANCH 上运行，当前是 $GITHUB_REF；试跑请加 -f dry_run=true。" >&2
+            exit 1
+          fi
+      # --release fails when this commit already carries a release tag.
+      - name: Compute release version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: bash scripts/release-version.sh "$BUMP" --release
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: '0.12.19'
+          enable-cache: false
       # scripts/check.sh and scripts/tool.sh run the Go on PATH; the go line of tool/go.mod pins it.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -134,13 +118,15 @@ jobs:
         run: |
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
-      - run: fvm flutter pub get --enforce-lockfile
+      - name: Check shared source
+        run: bash scripts/check.sh
       - run: fvm flutter precache --ios
       - name: Install iOS engine integration
         working-directory: ios
         run: pod install
       - name: Write the release version into the Xcode build settings
         run: fvm flutter build ios --config-only --release --no-codesign --no-pub --build-name "$RELEASE_VERSION" --build-number "$RELEASE_BUILD"
+      # Checks the signed IPA, including its version and build, before Apple validation.
       - name: Sign, verify and validate IPA
         shell: bash
         env:
@@ -155,13 +141,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          object=$(gh api "repos/$GITHUB_REPOSITORY/git/tags" -f tag="$RELEASE_TAG" \
+          tag="v$RELEASE_VERSION"
+          object=$(gh api "repos/$GITHUB_REPOSITORY/git/tags" -f tag="$tag" \
             -f message="chouwazi $RELEASE_VERSION ($RELEASE_BUILD)" -f object="$GITHUB_SHA" -f type=commit --jq .sha)
-          gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$RELEASE_TAG" -f sha="$object" >/dev/null
-          echo "已在 $GITHUB_SHA 上推送附注 tag $RELEASE_TAG。"
+          gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$tag" -f sha="$object" >/dev/null
+          echo "已在 $GITHUB_SHA 上推送附注 tag $tag。"
       - name: Upload IPA to TestFlight
         shell: bash
         run: bash scripts/testflight.sh upload
+      # The only place signing material is removed, whether the steps above passed or failed.
       - name: Remove signing credentials
         if: always()
         shell: bash

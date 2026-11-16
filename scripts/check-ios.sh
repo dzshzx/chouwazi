@@ -2,6 +2,7 @@
 # Check the actual iOS app bundles have the shared app, privacy manifest and localized names,
 # and that a device build carries no debug network service. Runs on macOS (plutil).
 # Usage: bash scripts/check-ios.sh <Runner.app>...
+# With RELEASE_VERSION and RELEASE_BUILD set (release.yml), each app must carry that version and build.
 set -euo pipefail
 fail() {
   echo "$1" >&2
@@ -26,5 +27,9 @@ for app in "$@"; do
     ! has "$app" NSLocalNetworkUsageDescription || fail 'Device release includes debug network service'
     ! has "$app" NSBonjourServices || fail 'Device release advertises a network service'
   fi
-  echo "Verified $app: $platform, $(value "$app" CFBundleShortVersionString) ($(value "$app" CFBundleVersion))"
+  version=$(value "$app" CFBundleShortVersionString)
+  build=$(value "$app" CFBundleVersion)
+  [[ -z "${RELEASE_VERSION:-}" || "$version" == "$RELEASE_VERSION" ]] || fail "$app has version $version, expected $RELEASE_VERSION"
+  [[ -z "${RELEASE_BUILD:-}" || "$build" == "$RELEASE_BUILD" ]] || fail "$app has build $build, expected $RELEASE_BUILD"
+  echo "Verified $app: $platform, $version ($build)"
 done
