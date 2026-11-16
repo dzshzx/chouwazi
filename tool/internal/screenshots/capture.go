@@ -355,9 +355,11 @@ func (r *resources) connect(udid string, language language, stdout io.Writer) er
 		"--predicate", `eventType = logEvent AND processImagePath ENDSWITH "/Runner"`); err != nil {
 		return err
 	}
+	// On a slow hosted macOS runner the stream can take minutes to print its
+	// banner after boot; the wait ends as soon as it appears.
 	if _, err := r.logs.waitFor(func(line string) (string, bool) {
 		return "", strings.HasPrefix(line, "Filtering the log data using ")
-	}, "Simulator unified log startup", 30*time.Second); err != nil {
+	}, "Simulator unified log startup", 180*time.Second); err != nil {
 		return err
 	}
 	if _, err := run120("xcrun", "simctl", "launch", udid, bundleID, "--enable-checked-mode", "--verify-entry-points",
