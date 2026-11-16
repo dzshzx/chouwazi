@@ -13,6 +13,7 @@
 - 只维护 Android 与 iOS 两端，均用 `.fvmrc` 固定的 Flutter 版本（见[构建指南](docs/BUILDING.md#工具链)），升级须复验两端。
 - iOS 工程为 `ios/Runner.xcworkspace` / `Runner` scheme。新增原生 iOS 资源需登记 `project.pbxproj`；共享 Dart 文件不需要逐个登记。
 - 门禁：`bash scripts/check.sh`（三个工作流也调用它）。
+- 发版：`gh workflow run release.yml --ref main -f bump=patch`，先试跑加 `-f dry_run=true`。版本号由最高的纯 `vX.Y.Z` tag 算出，构建号按公式由版本号算出，`pubspec.yaml` 只放占位版本，不手改；`minor`、`major` 须维护者先确认。详见[发版指南](docs/TESTFLIGHT.md#发版)。
 - 本机 Linux 可构建 APK，iOS 必须在 macOS/Xcode 构建。
 - 多指触控、显示和震动仍须真机确认；验证结论变化时更新 README「验证状态」，保留编译、安装与真机体验的区别。
 
@@ -20,4 +21,4 @@
 
 - Android applicationId 保持 `com.alex.fingerdraw`；iOS 为 `com.alex.chouwazi`。同一包名换了签名也不能覆盖安装。
 - 离线承诺适用于最终产物：Android 系统权限仅震动；AndroidX 的应用内部广播权限须保持 signature 级；iOS 保留应用与引擎隐私清单。构建脚本校验真实 APK 权限，新增权限或联网能力时同步隐私说明。
-- 签名材料与本机路径不入库。Android Release 是调试签名试用包；`build.yml` 的 iOS 产物未签名。TestFlight 分发使用 `testflight.yml` 的主分支受保护环境，签名、上传和处理状态按 [发布指南](docs/TESTFLIGHT.md) 分别验证；发布和设备签名按维护者授权处理。
+- 签名材料与本机路径不入库。Android Release 是调试签名试用包；`build.yml` 的 iOS 产物未签名。TestFlight 分发使用 `release.yml` 的主分支受保护环境，签名、上传和处理状态按 [发版指南](docs/TESTFLIGHT.md) 分别验证；发布和设备签名按维护者授权处理。

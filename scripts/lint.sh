@@ -3,7 +3,7 @@
 # Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。Dart 由 flutter analyze 检查，不在这里。
 # 用法：bash scripts/lint.sh（scripts/check.sh 调用它）。
 # 工具经 uvx 取，版本固定在下方常量。每一步直接调用工具并原样透出它的输出，非零即退出。
-# 兼容 macOS 自带的 bash 3.2（screenshots.yml、testflight.yml 在 macOS 上经 scripts/check.sh 调用本脚本）。
+# 兼容 macOS 自带的 bash 3.2（screenshots.yml、release.yml 在 macOS 上经 scripts/check.sh 调用本脚本）。
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

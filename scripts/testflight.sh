@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # Only run on a trusted main checkout in the protected testflight environment.
+# Usage: bash scripts/testflight.sh sign    # sign, verify and validate the IPA with Apple
+#        bash scripts/testflight.sh upload  # upload the validated IPA, then remove credentials
+# release.yml pushes the release tag between the two phases. `sign` takes the version and
+# build number from RELEASE_VERSION and RELEASE_BUILD and keeps the signing state for
+# `upload` only when it succeeds; the workflow's cleanup step also runs in every case.
 set +x
 set -euo pipefail
 umask 077
@@ -9,13 +14,59 @@ if [[ "${GITHUB_ACTIONS:-}" != true || "${GITHUB_EVENT_NAME:-}" != workflow_disp
   exit 1
 fi
 
-trap 'bash scripts/testflight-cleanup.sh' EXIT
+state_dir="${RUNNER_TEMP}/chouwazi-testflight-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+export TESTFLIGHT_STATE_DIR="$state_dir"
 trap 'exit 130' INT
 trap 'exit 143' TERM HUP
 
+# altool resolves AuthKey_<key ID>.p8 from API_PRIVATE_KEYS_DIR. Neither the key nor
+# the raw delivery logs are printed or published as an Actions artifact.
+altool() {
+  local api_key_id api_issuer_id
+  api_key_id="$(uv run --quiet --script scripts/testflight-assets.py field api_key_id)"
+  api_issuer_id="$(uv run --quiet --script scripts/testflight-assets.py field api_issuer_id)"
+  API_PRIVATE_KEYS_DIR="$state_dir/private_keys" xcrun altool "$@" -f "$state_dir/export/Runner.ipa" -t ios \
+    --apiKey "$api_key_id" --apiIssuer "$api_issuer_id" --output-format json
+}
+
+upload() {
+  trap 'bash scripts/testflight-cleanup.sh' EXIT
+  local ipa_sha256
+  ipa_sha256="$(shasum -a 256 "$state_dir/export/Runner.ipa" | awk '{ print $1 }')"
+  if ! altool --upload-app >"$state_dir/upload.json" 2>"$state_dir/upload.log"; then
+    echo 'Apple upload failed. Check App Store Connect before retrying this build.' >&2
+    exit 1
+  fi
+  echo 'Upload accepted by Apple. Processing and TestFlight availability are still pending.'
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    {
+      printf '%s\n' "Uploaded ${RELEASE_VERSION} (${RELEASE_BUILD}), source_commit ${GITHUB_SHA}, IPA SHA-256 ${ipa_sha256}."
+      printf '%s\n' 'The signed IPA passed local checks and Apple validation; Apple accepted the upload. Wait for processing in App Store Connect, then assign the build to testers. This run does not establish TestFlight availability or App Store approval.'
+    } >> "$GITHUB_STEP_SUMMARY"
+  fi
+}
+
+case "${1:-}" in
+  sign) ;;
+  upload)
+    upload
+    exit 0
+    ;;
+  *)
+    echo 'Usage: bash scripts/testflight.sh <sign|upload>' >&2
+    exit 2
+    ;;
+esac
+
+cleanup_on_failure() {
+  local status=$?
+  if [[ $status -ne 0 ]]; then
+    bash scripts/testflight-cleanup.sh
+  fi
+  return "$status"
+}
+trap cleanup_on_failure EXIT
 uv run --script scripts/testflight-assets.py prepare
-state_dir="${RUNNER_TEMP}/chouwazi-testflight-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-export TESTFLIGHT_STATE_DIR="$state_dir"
 keychain_path="$state_dir/signing.keychain-db"
 keychain_password="$(< "$state_dir/keychain-password")"
 
@@ -79,24 +130,8 @@ xcodebuild -exportArchive -archivePath "$state_dir/Runner.xcarchive" \
   -exportPath "$state_dir/export" -exportOptionsPlist "$state_dir/ExportOptions.plist"
 uv run --script scripts/testflight-assets.py verify
 
-api_key_id="$(uv run --quiet --script scripts/testflight-assets.py field api_key_id)"
-api_issuer_id="$(uv run --quiet --script scripts/testflight-assets.py field api_issuer_id)"
-# altool resolves AuthKey_<key ID>.p8 from this directory. Neither the key nor
-# the raw delivery logs are printed or published as an Actions artifact.
-export API_PRIVATE_KEYS_DIR="$state_dir/private_keys"
-if ! xcrun altool --validate-app -f "$state_dir/export/Runner.ipa" -t ios \
-  --apiKey "$api_key_id" --apiIssuer "$api_issuer_id" --output-format json \
-  >"$state_dir/validation.json" 2>"$state_dir/validation.log"; then
+if ! altool --validate-app >"$state_dir/validation.json" 2>"$state_dir/validation.log"; then
   echo 'Apple binary validation failed. Check App Store Connect delivery status.' >&2
   exit 1
 fi
-if ! xcrun altool --upload-app -f "$state_dir/export/Runner.ipa" -t ios \
-  --apiKey "$api_key_id" --apiIssuer "$api_issuer_id" --output-format json \
-  >"$state_dir/upload.json" 2>"$state_dir/upload.log"; then
-  echo 'Apple upload failed. Check App Store Connect before retrying this build.' >&2
-  exit 1
-fi
-echo 'Upload accepted by Apple. Processing and TestFlight availability are still pending.'
-if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
-  printf '%s\n' 'The signed IPA passed local checks and Apple validation; Apple accepted the upload. Wait for processing in App Store Connect, then assign the build to testers. This run does not establish TestFlight availability or App Store approval.' >> "$GITHUB_STEP_SUMMARY"
-fi
+echo 'Apple validated the signed IPA; it is ready for upload.'

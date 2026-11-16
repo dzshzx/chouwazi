@@ -1,7 +1,8 @@
 name: chouwazi
 description: Offline multi-touch drawing game for Android and iOS.
 publish_to: none
-version: 1.0.4+5
+# Development placeholder: release.yml passes the real version and build number at build time.
+version: 0.0.0+1
 environment:
   sdk: '>=3.13.5 <4.0.0'
 dependencies:
@@ -14,6 +15,6 @@ dev_dependencies:
 flutter:
   config:
     # Flutter 3.47 enables Swift Package Manager by default. Keep the existing
-    # CocoaPods integration that build.yml, testflight.yml and screenshots.yml
+    # CocoaPods integration that build.yml, release.yml and screenshots.yml
     # install with `pod install`; the app has no plugins to move.
     enable-swift-package-manager: false

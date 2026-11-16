@@ -1,7 +1,31 @@
-# TestFlight 上传
+# 发版与 TestFlight 上传
 
-`.github/workflows/testflight.yml` 从已合入的 `main` 构建、手动签名并上传 iOS 包。
-Flutter 版本由 `.fvmrc` 固定（见[构建指南](BUILDING.md#工具链)），Xcode 版本见 `testflight.yml`。编译、签名、上传与分发的验证状态统一见 [README 验证状态](../README.md#验证状态)。
+发版由 `.github/workflows/release.yml` 从已合入的 `main` 构建、签名并上传 iOS 包到 TestFlight。
+Flutter 版本由 `.fvmrc` 固定（见[构建指南](BUILDING.md#工具链)），Xcode 版本见 `release.yml`。编译、签名、上传与分发的验证状态统一见 [README 验证状态](../README.md#验证状态)。
+
+## 发版
+
+```sh
+gh workflow run release.yml --ref main -f bump=patch
+```
+
+- `bump` 取 `patch`（默认）、`minor` 或 `major`。`minor` 用于用户能感知的新能力，`major` 用于破坏性变化（含 0.x→1.0），这两档须维护者先确认；内部重构、目录搬迁、删兼容层不算破坏性，用 `patch`。
+- 加 `-f dry_run=true` 是试跑，可在任意分支运行：跑门禁、带新版本号构建未签名的 iOS 真机包并核对产物版本，在运行摘要里列出将要发布的版本、源提交和产物 sha256；不进受保护环境、不签名、不打 tag、不上传。
+- 正式发版只能在 `main` 上运行；`main` 的头提交已带纯 `vX.Y.Z` tag 时直接失败，说明这个提交已发过版。
+
+### 版本号与构建号
+
+- 版本号：仓里形如 `vX.Y.Z`（纯数字三段，无前后缀）的 tag 中最高的一个，按 `bump` 升一档。
+- 构建号（iOS `CFBundleVersion`）= 主版本 × 1000000 + 次版本 × 1000 + 修订号，次版本与修订号须小于 1000，例如 1.0.5 的构建号是 1000005。构建号随版本单调递增。
+- 两者由 `scripts/release-version.sh` 算出，构建时经 `--build-name`、`--build-number` 传给 Flutter，不提交回仓库。`pubspec.yaml` 的 `version` 是开发占位值 `0.0.0+1`，本地构建与 `build.yml` 试用产物显示的都是这个占位版本。
+
+### 流程与出错处理
+
+1. 托管 macOS 上跑门禁 `scripts/check.sh`，带新版本号构建未签名真机包，核对产物里的版本号与构建号。dry_run 到此结束。
+2. 进入受保护环境 `testflight`，签名、导出并检查 IPA，再经 Apple 校验（`altool --validate-app`）。
+3. 校验通过后在源提交上推送附注 tag `vX.Y.Z`，再上传 TestFlight；运行摘要写明版本、`source_commit` 与 IPA 的 sha256。签名与上传细节见 `scripts/testflight.sh`。
+
+推送 tag 之前任何一步失败都不留 tag：修好、合入后用同一 `bump` 重跑即可。tag 推送后上传失败，先到 App Store Connect 查看实际状态，再修好、合入并发下一个 patch。已发布的 tag 不移动、不删除、不复用；版本只升不降，出问题向前修。
 
 ## 账号与签名前提
 
@@ -49,16 +73,13 @@ openssl pkcs12 -export \
 用可信本机工具编码后直接填入 GitHub secret 输入框，不把 base64、密码或私钥粘进聊天、终端日志、工单或仓库。
 base64 只是编码，具有与原始签名文件相同的保密要求。GitHub secrets 的设置与使用见[官方指南](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)。
 
-## 执行与结果
+## 发版前后
 
-1. 核对 `pubspec.yaml` 的版本和 build number。上传使用该版本，不自动改号；同一版本的后续新包须增加 build number。
-2. 先完成 `Build Android and iOS` 的两端构建与共享测试，再在 Actions 中手动运行 `Upload iOS to TestFlight`，分支选择 `main`。Flutter 升级后的首次上传前，先在新版本下手动跑通一次 `screenshots.yml`，结果记入 README「验证状态」；上传完成后把 `testflight.yml` 的结果一并记入。
-3. 签名、IPA 检查与上传步骤见 `scripts/testflight.sh`。
-4. 由 Account Holder 到 App Store Connect 网页查看构建处理结果，处理完成后把构建加入测试组。外部测试可能需要 Beta App Review；App Store 上架还需补齐商店资料并单独提交审核。
+1. Flutter 升级后的首次发版前，先在新版本下手动跑通一次 `screenshots.yml`，结果记入 README「验证状态」；发版完成后把 `release.yml` 的结果一并记入。
+2. 由 Account Holder 到 App Store Connect 网页查看构建处理结果，处理完成后把构建加入测试组。外部测试可能需要 Beta App Review；App Store 上架还需补齐商店资料并单独提交审核。
 
 “上传被 Apple 接受”与“处理完成、TestFlight 可安装”是不同状态。[Apple 上传说明](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds)明确要求构建先完成处理。
 签名材料、原始上传日志与 IPA 均不发布为 Actions artifacts。
-上传出错或取消后先查看 App Store Connect 的实际状态，再决定是否重跑，避免重复上传同一构建。
 仍须按 [iOS 真机试用指南](../ios/DEVICE-TESTING.md) 验收多指、画面与震动。
 
 ## TestFlight 安装

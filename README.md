@@ -28,7 +28,7 @@ Android 与 iOS 共用一套 Flutter/Dart 源码的离线随机选择工具。�
 
 - Android / iOS：Flutter 官方工具链。
 - 最低系统：Android 6.0 / API 23，iOS 15。
-- 版本源为 `pubspec.yaml`。
+- 版本号与构建号在发版时由 tag 算出，`pubspec.yaml` 只放开发占位版本 `0.0.0+1`，本地与试用构建显示的是这个占位版本；见 [发版指南](docs/TESTFLIGHT.md#发版)。
 
 共享源码检查（依赖锁、格式、静态分析、测试，以及脚本与平台壳的检查）的入口是 `bash scripts/check.sh`，也是合入前门禁，合入时由机器运行；真实构建两端仍按下列命令或手动工作流。
 
@@ -48,7 +48,7 @@ fvm flutter build ios --release --no-codesign
 
 进入 GitHub Actions → **Build Android and iOS** → Run workflow，一次构建两端。工作流仅手动触发。产物为试用 APK、iOS 模拟器与未签名真机 app，不执行应用商店发布。
 
-TestFlight 使用独立的 **Upload iOS to TestFlight** 手动工作流，从 `main` 签名并上传。账号、签名材料和受保护环境的配置见 [TestFlight 上传指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
+发版用 **Release** 手动工作流，一条命令 `gh workflow run release.yml --ref main -f bump=patch` 从 `main` 算出版本、签名并上传 TestFlight。账号、签名材料和受保护环境的配置见 [发版指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
 
 正式 App Store 的审核状态、三语商店材料、[支持与隐私网站](https://chouwazi.646598.xyz/)及地区要求见 [发布与审核](docs/APP-STORE.md)。
 
@@ -56,7 +56,7 @@ Android 包名保持 `com.alex.fingerdraw`，iOS 为 `com.alex.chouwazi`。Andro
 
 ## 验证状态
 
-- 2026-10-20 升级到 Flutter 3.47.7 后，本机 Linux 的共享测试、静态分析与 Release APK 构建及检查通过；[`build.yml` 两端构建](https://github.com/dzshzx/chouwazi/actions/runs/39290633740)已在升级提交 `dbe5d0e` 上通过；`testflight.yml` 与 `screenshots.yml` 尚未在新版本下运行，真机验证尚未在新版本下重做。以下 2026-10-08 起的构建、TestFlight、App Store 与真机记录都基于 Flutter 3.27.4。
+- 2026-10-20 升级到 Flutter 3.47.7 后，本机 Linux 的共享测试、静态分析与 Release APK 构建及检查通过；[`build.yml` 两端构建](https://github.com/dzshzx/chouwazi/actions/runs/39290633740)已在升级提交 `dbe5d0e` 上通过；TestFlight 签名上传与 `screenshots.yml` 尚未在新版本下运行，真机验证尚未在新版本下重做。以下 2026-10-08 起的构建、TestFlight、App Store 与真机记录都基于 Flutter 3.27.4。
 - 2026-10-08，[同一提交的三端 Actions 构建](https://github.com/dzshzx/chouwazi/actions/runs/37801507597)全部成功，源码为 `3f85685`，应用版本为 `1.0.4 (5)`。
 - 共享实现：25 项状态与多指交互测试及静态分析通过；已检查共享渲染器的界面与隐私页。iOS 商店截图的实际生成状态见发布与审核文档。
 - Android：真实编译 Release APK，CI 通过签名及权限检查，保持原包名、最低 API 23 与目标 API 35；系统权限仅震动，内部广播权限保持 signature 级。

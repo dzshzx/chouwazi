@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 共享源码检查汇总入口，也是合入前门禁；build.yml、screenshots.yml、testflight.yml 的「Check shared source」也调用本脚本。
+# 共享源码检查汇总入口，也是合入前门禁；build.yml、screenshots.yml、release.yml 的「Check shared source」也调用本脚本。
 # 用法：bash scripts/check.sh
 # 本机与 CI 都经 fvm 按仓根 .fvmrc 取 Flutter：PATH 上须有 fvm（CI 由 scripts/ci-setup-fvm.sh 安装），
 # flutter/dart 一律经 `fvm flutter …`、`fvm dart …` 调用。跑完后已跟踪文件须与开始时一致。

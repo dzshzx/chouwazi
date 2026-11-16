@@ -136,10 +136,13 @@ def prepare(state):
     private_key = private_keys / f"AuthKey_{key_id}.p8"
     private_key.write_text(os.environ["ASC_API_KEY_P8"])
     run("openssl", "pkey", "-in", str(private_key), "-noout")
-    version = re.search(r"^version:\s*(\d+\.\d+\.\d+)\+(\d+)\s*$", Path("pubspec.yaml").read_text(), re.MULTILINE)
-    require(version is not None, "Expected version name+build in pubspec.yaml")
+    # release.yml computes these from the release tags; see scripts/release-version.sh.
+    version = os.environ.get("RELEASE_VERSION", "")
+    build = os.environ.get("RELEASE_BUILD", "")
+    require(re.fullmatch(r"\d+\.\d+\.\d+", version) and re.fullmatch(r"[1-9]\d*", build),
+            "Expected RELEASE_VERSION x.y.z and a positive RELEASE_BUILD")
     data = {"team_id": profile["TeamIdentifier"][0], "app_id": profile["Entitlements"]["application-identifier"],
-            "profile_uuid": profile["UUID"], "version": version[1], "build": version[2],
+            "profile_uuid": profile["UUID"], "version": version, "build": build,
             "api_key_id": key_id, "api_issuer_id": issuer,
             "certificate_sha1s": [hashlib.sha1(cert).hexdigest().upper() for cert in profile["DeveloperCertificates"]]}
     (state / "settings.json").write_text(json.dumps(data))

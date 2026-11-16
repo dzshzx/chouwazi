@@ -1,6 +1,6 @@
 # 构建
 
-两端构建工作流提供试用产物；iOS 商店签名与上传使用独立的 [TestFlight 流程](TESTFLIGHT.md)。各端构建与检查命令以 `.github/workflows/build.yml` 为准。
+两端构建工作流提供试用产物；iOS 商店签名与上传使用独立的[发版流程](TESTFLIGHT.md)。各端构建与检查命令以 `.github/workflows/build.yml` 为准。
 
 ## 工具链
 
@@ -25,7 +25,7 @@ Release 优化但使用调试签名供试用。持续分发或覆盖旧包须由
 
 必须在 macOS 上执行。CI 的模拟器 zip 与真机 zip 都含 `Runner.app`，只能在匹配的平台使用；真机包未签名，不是可直接安装的 IPA。签名与验收见 [iOS 真机试用指南](../ios/DEVICE-TESTING.md)。
 
-Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。签名、IPA 校验与商店上传见 [TestFlight 上传指南](TESTFLIGHT.md)；上传成功须继续等待 Apple 处理并核对测试分发状态。
+Apple 自 2026-04-28 起要求上传包使用 Xcode 26 / iOS 26 SDK 或更新版本，见[官方要求](https://developer.apple.com/news/upcoming-requirements/)。签名、IPA 校验与商店上传见[发版指南](TESTFLIGHT.md)；上传成功须继续等待 Apple 处理并核对测试分发状态。
 
 iOS 用 CocoaPods 集成 Flutter 引擎，`pubspec.yaml` 关闭了 Swift Package Manager（原因见该处注释）。`AppDelegate` 有屏幕常亮的自定义代码，Flutter 不会自动迁移到 UIScene 生命周期，构建时会给出手动迁移提示；迁移须在 macOS 上验证屏幕常亮与生命周期。
 
