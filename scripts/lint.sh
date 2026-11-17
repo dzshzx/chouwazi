@@ -2,18 +2,14 @@
 # 脚本与平台壳的检查：Shell 过 shellcheck，Swift 与 Kotlin 过函数圈复杂度上限（lizard），代码文件不超过行数上限。
 # Dart 由 flutter analyze 检查，Go 由 scripts/check-go.sh 检查，不在这里。
 # 用法：bash scripts/lint.sh（scripts/check.sh 调用它）。
-# 工具经 uvx 取，版本固定在下方常量。每一步直接调用工具并原样透出它的输出，非零即退出。
+# 工具经 uvx 取，版本固定在 scripts/gatelib.sh。每一步直接调用工具并原样透出它的输出，非零即退出。
 # 兼容 macOS 自带的 bash 3.2（在本机 macOS 上经 scripts/check.sh 运行时可能用到它）。
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-SHELLCHECK_VERSION=0.11.0
-# PyPI 包 shellcheck-py 分发 shellcheck，该版本内置上面的 shellcheck。
-SHELLCHECK_PY_VERSION=0.11.0.1
-LIZARD_VERSION=1.26.0
-# 单个函数的圈复杂度上限（Swift 与 Kotlin，由 lizard 量）与单个代码文件的行数上限。
-MAX_COMPLEXITY=15
-MAX_LINES=2000
+# 工具版本与上限（SHELLCHECK_VERSION、LIZARD_VERSION、函数圈复杂度上限 MAX_COMPLEXITY、行数上限 MAX_LINES）在 scripts/gatelib.sh。
+# shellcheck source=scripts/gatelib.sh
+source scripts/gatelib.sh
 
 files() {
   local f

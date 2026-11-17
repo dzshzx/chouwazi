@@ -22,11 +22,9 @@ bash scripts/lint.sh
 bash scripts/check-go.sh
 
 # 仓内不放 Python 文件，有就列出并拒绝。
-py=$(git ls-files '*.py')
-if [ -n "$py" ]; then
-  printf '仓内不放 Python 文件，改用 Go：\n%s\n' "$py" >&2
-  exit 1
-fi
+# shellcheck source=scripts/gatelib.sh
+source scripts/gatelib.sh
+gate_python_allowlist
 
 if [[ "$(tracked_state)" != "$before" ]]; then
   echo "检查改动了已跟踪文件：" >&2
