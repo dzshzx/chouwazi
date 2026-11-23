@@ -5,6 +5,8 @@ Flutter 版本由 `.fvmrc` 固定（见[构建指南](BUILDING.md#工具链)）�
 
 ## 发版
 
+维护者用私有的 rollout 工具派发本仓 `release.yml`，等价于：
+
 ```sh
 gh workflow run release.yml --ref main -f bump=patch
 ```

@@ -48,7 +48,7 @@ fvm flutter build ios --release --no-codesign
 
 进入 GitHub Actions → **Build Android and iOS** → Run workflow，一次构建两端。工作流仅手动触发。产物为试用 APK、iOS 模拟器与未签名真机 app，不执行应用商店发布。
 
-发版用 **Release** 手动工作流，一条命令 `gh workflow run release.yml --ref main -f bump=patch` 从 `main` 算出版本、签名并上传 TestFlight。账号、签名材料和受保护环境的配置见 [发版指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
+发版用 **Release** 手动工作流，从 `main` 算出版本、签名并上传 TestFlight。维护者用私有的 rollout 工具派发本仓 `release.yml`（等价于 `gh workflow run release.yml --ref main -f bump=patch [-f gate=true]`）。账号、签名材料和受保护环境的配置见 [发版指南](docs/TESTFLIGHT.md)。上传之后还须确认 Apple 处理完成并分配测试组。
 
 正式 App Store 的审核状态、三语商店材料、[支持与隐私网站](https://chouwazi.646598.xyz/)及地区要求见 [发布与审核](docs/APP-STORE.md)。
 
