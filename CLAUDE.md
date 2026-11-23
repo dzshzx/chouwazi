@@ -12,8 +12,8 @@
 
 - 只维护 Android 与 iOS 两端，均用 `.fvmrc` 固定的 Flutter 版本（见[构建指南](docs/BUILDING.md#工具链)），升级须复验两端。
 - iOS 工程为 `ios/Runner.xcworkspace` / `Runner` scheme。新增原生 iOS 资源需登记 `project.pbxproj`；共享 Dart 文件不需要逐个登记。
-- 门禁：`bash scripts/check.sh`（CI 只在 Linux 上跑它：`build.yml` 的 Android 作业与 `release.yml` 的 `gate` 作业；macOS 作业经 `.github/actions/ios-setup` 准备，只做 iOS 构建与检查）。
-- 发版：`gh workflow run release.yml --ref main -f bump=patch`，先试跑加 `-f dry_run=true`。版本号由最高的纯 `vX.Y.Z` tag 算出，构建号按公式由版本号算出，`pubspec.yaml` 只放占位版本，不手改；`minor`、`major` 须维护者先确认。详见[发版指南](docs/TESTFLIGHT.md#发版)。
+- 门禁：`bash scripts/check.sh`（CI 只在 Linux 上跑它：`build.yml` 的 Android 作业与 `release.yml` 的 `gate` 作业，后者只在发版时传 `-f gate=true` 才跑，默认不跑；macOS 作业经 `.github/actions/ios-setup` 准备，只做 iOS 构建与检查）。
+- 发版：`gh workflow run release.yml --ref main -f bump=patch`，先试跑加 `-f dry_run=true`，要跑门禁加 `-f gate=true`（默认不跑）。版本号由最高的纯 `vX.Y.Z` tag 算出，构建号按公式由版本号算出，`pubspec.yaml` 只放占位版本，不手改；`minor`、`major` 须维护者先确认。详见[发版指南](docs/TESTFLIGHT.md#发版)。
 - 本机 Linux 可构建 APK，iOS 必须在 macOS/Xcode 构建。
 - 多指触控、显示和震动仍须真机确认；验证结论变化时更新 README「验证状态」，保留编译、安装与真机体验的区别。
 

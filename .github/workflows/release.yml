@@ -1,9 +1,10 @@
 name: Release
 # 发版：gh workflow run release.yml --ref main -f bump=patch。版本号由最高的纯 vX.Y.Z tag 按 bump 算出，
 # 构建号由版本号按固定公式算出（scripts/release-version.sh），只在构建时传给 Flutter，不提交回仓库。
-# 共享源码门禁（scripts/check.sh）与平台无关，只在 Linux 的 gate 作业里跑一次。
+# 共享源码门禁（scripts/check.sh）与平台无关，只在 Linux 的 gate 作业里跑，且只在输入 gate 打开时跑（-f gate=true）：
+# 默认不跑，每个提交合入时已过 wt land 的门禁，手动触发的 build.yml 也跑它。打开时没过就不发布。
 # dry_run 走 dry-run 作业（与 gate 并行）：带新版本号构建未签名的 iOS 包并核对版本，不进受保护环境、不签名、不打 tag、不上传。
-# 正式发版走 publish 作业（等 gate 通过）：在受保护环境里算版本、签名并核对 IPA，通过后才打 tag、上传。
+# 正式发版走 publish 作业（gate 通过或没打开时）：在受保护环境里算版本、签名并核对 IPA，通过后才打 tag、上传。
 on:
   workflow_dispatch:
     inputs:
@@ -16,6 +17,10 @@ on:
         description: 只构建与核对，不签名、不打 tag、不上传
         type: boolean
         default: false
+      gate:
+        description: 跑全量门禁；默认不跑，合入门禁与每晚 CI 已查过
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -23,6 +28,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   gate:
+    if: ${{ inputs.gate }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -76,8 +82,8 @@ jobs:
             echo "- 发布渠道是 TestFlight：签名后的 IPA 只在正式发版时生成，其 sha256 写在发布步骤的摘要里。"
           } >>"$GITHUB_STEP_SUMMARY"
   publish:
-    if: ${{ !inputs.dry_run }}
-    # The tag is pushed only after the shared source gate has passed.
+    # With gate on, the tag is pushed only after the shared source gate has passed; with gate off the skipped gate lets it run.
+    if: ${{ !cancelled() && !inputs.dry_run && (needs.gate.result == 'success' || needs.gate.result == 'skipped') }}
     needs: gate
     runs-on: macos-15
     timeout-minutes: 60

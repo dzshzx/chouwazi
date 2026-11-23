@@ -10,7 +10,8 @@ gh workflow run release.yml --ref main -f bump=patch
 ```
 
 - `bump` 取 `patch`（默认）、`minor` 或 `major`。`minor` 用于用户能感知的新能力，`major` 用于破坏性变化（含 0.x→1.0），这两档须维护者先确认；内部重构、目录搬迁、删兼容层不算破坏性，用 `patch`。
-- 加 `-f dry_run=true` 是试跑，可在任意分支运行：跑门禁、带新版本号构建未签名的 iOS 真机包并核对产物版本，在运行摘要里列出将要发布的版本、源提交和产物 sha256；不进受保护环境、不签名、不打 tag、不上传。
+- 默认不跑门禁，直接构建、发布：每个提交合入时已过 `wt land` 的门禁，手动触发的 `build.yml` 也跑它。要跑时加 `-f gate=true`，门禁没过就不发布。
+- 加 `-f dry_run=true` 是试跑，可在任意分支运行：带新版本号构建未签名的 iOS 真机包并核对产物版本，在运行摘要里列出将要发布的版本、源提交和产物 sha256；不进受保护环境、不签名、不打 tag、不上传。
 - 正式发版只能在 `main` 上运行；`main` 的头提交已带纯 `vX.Y.Z` tag 时直接失败，说明这个提交已发过版。
 
 ### 版本号与构建号
@@ -21,10 +22,10 @@ gh workflow run release.yml --ref main -f bump=patch
 
 ### 流程与出错处理
 
-共享源码门禁 `scripts/check.sh` 与平台无关，在 Linux 的 `gate` 作业里跑一次。试跑与正式发版各走一个 macOS 作业，正式发版不另做未签名构建：
+共享源码门禁 `scripts/check.sh` 与平台无关，在 Linux 的 `gate` 作业里跑，只在 `gate=true` 时跑。试跑与正式发版各走一个 macOS 作业，正式发版不另做未签名构建：
 
 - 试跑：与 `gate` 并行，算出版本号，带新版本号构建未签名真机包，由 `scripts/check-ios.sh` 核对产物里的版本号与构建号，到此结束。
-- 正式发版：`gate` 通过后进入受保护环境 `testflight`，先核对运行在 `main` 上、头提交未发过版，再算版本号，然后带新版本号签名、导出并检查 IPA（含版本号与构建号），经 Apple 校验（`altool --validate-app`）。校验通过后在源提交上推送附注 tag `vX.Y.Z`，再上传 TestFlight；运行摘要写明版本、`source_commit` 与 IPA 的 sha256。签名材料只由最后一步 `scripts/testflight-cleanup.sh` 清理，前面成败都会执行。签名与上传细节见 `scripts/testflight.sh`。
+- 正式发版：`gate` 通过（或没打开、被跳过）后进入受保护环境 `testflight`，先核对运行在 `main` 上、头提交未发过版，再算版本号，然后带新版本号签名、导出并检查 IPA（含版本号与构建号），经 Apple 校验（`altool --validate-app`）。校验通过后在源提交上推送附注 tag `vX.Y.Z`，再上传 TestFlight；运行摘要写明版本、`source_commit` 与 IPA 的 sha256。签名材料只由最后一步 `scripts/testflight-cleanup.sh` 清理，前面成败都会执行。签名与上传细节见 `scripts/testflight.sh`。
 
 推送 tag 之前任何一步失败都不留 tag：修好、合入后用同一 `bump` 重跑即可。
 
