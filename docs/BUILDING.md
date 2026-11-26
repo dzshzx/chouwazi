@@ -12,9 +12,9 @@
 
 Flutter 版本由仓库根的 `.fvmrc` 固定，各端工具版本见 `android/app/build.gradle`、`android/settings.gradle`、`android/gradle/wrapper/gradle-wrapper.properties` 与 `build.yml`。本机先把 [fvm](https://github.com/btwld/fvm) 装到 PATH 上，命令一律经 `fvm flutter …`、`fvm dart …` 运行，不依赖全局 Flutter。
 
-只维护 Android 与 iOS 两端。升级 Flutter 时同时验证共享依赖、测试和两端编译；如果构建输出出现 CocoaPods 弃用提示，或 Flutter 宣布弃用 CocoaPods，就重开 [dzshzx/chouwazi#4](https://github.com/dzshzx/chouwazi/issues/4)（iOS 迁到 Swift Package Manager）。
+只维护 Android 与 iOS 两端。升级 Flutter 时同时验证共享依赖、测试和两端编译：Flutter 或 Android 构建的 Gradle、插件版本变了，合入前本机 `fvm flutter build apk --release`，再推任务分支派发 `build.yml` 编两端。如果构建输出出现 CocoaPods 弃用提示，或 Flutter 宣布弃用 CocoaPods，就重开 [dzshzx/chouwazi#4](https://github.com/dzshzx/chouwazi/issues/4)（iOS 迁到 Swift Package Manager）。
 
-- 升级 Flutter 改 `.fvmrc` 与 `scripts/flutter-install.sh` 里的提交号（报错信息给出取提交号的命令）；fvm 本体的版本与各平台 SHA-256 在 `scripts/ci-setup-fvm.sh`。
+- 升级 Flutter 改 `.fvmrc` 与 `scripts/flutter-install.sh` 里的提交号（报错信息给出取提交号的命令），再 `fvm flutter pub upgrade`；周批里直接升到最新 patch，跨 minor 先问维护者。fvm 本体的版本与各平台 SHA-256 在 `scripts/ci-setup-fvm.sh`。
 
 ## Android
 
