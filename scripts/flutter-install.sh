@@ -9,7 +9,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-FLUTTER_REVISION=abaf9c523780a608bd46686fd5e53740a07077f8
+FLUTTER_REVISION=c197ca5199e9ee5661e865596c9c07294dfab51c
 
 # --fvm-skip-input：不交互提问；--skip-pub-get：依赖由调用方按锁文件解析。已装则跳过。
 fvm install --fvm-skip-input --skip-pub-get
