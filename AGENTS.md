@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 使用与验证状态见 [README.md](README.md)，工具链和产物见 [docs/BUILDING.md](docs/BUILDING.md)。
 
